@@ -6,11 +6,6 @@
     <script src="{% static "documentHandler.js" %}" type="text/javascript"></script>
     <script type="text/javascript">
         var documents = [];
-        {% if documents %}
-        {% for document in documents %}
-        documents.push("{{ document.docfile.name }}");       
-        {% endfor %}
-        {% endif %}
     </script>
     <head>
         <meta charset="utf-8">
@@ -18,11 +13,14 @@
     </head>
 
     <body>
+
+        </script>
         <!-- List of uploaded documents -->
         {% if documents %}
             <ul>
                 {% for document in documents %}
                     <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+                    <script type="text/javascript">documents.push("{{ document.docfile.name }}");</script>
                 {% endfor %}
             </ul>
         {% else %}
