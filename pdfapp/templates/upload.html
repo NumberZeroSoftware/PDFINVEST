@@ -30,6 +30,49 @@
             </p>
             <p><input type="submit" value="Subir"/></p>
         </form>
+
+
+
+        {% if documents %}
+            <table style="  margin-left: auto;
+                            margin-right: auto;
+                            max-width: 500px;
+                            height: 500px;">
+            <tr>
+                {% for document in documents %}
+                    <th><embed src= "{{ document.docfile.url }}" 
+                    style=" margin-left: auto;
+                            margin-right: auto;
+                            max-width: 500px;
+                            height: 500px;"></th>
+                {% endfor %}
+            </tr>
+            </table>
+        {% else %}
+            <p>No documents to show.</p>
+        {% endif %}
+        
+
+        <table style="  margin-left: auto;
+                            margin-right: auto;
+                            max-width: 500px;
+                            height: 500px;">
+
+        <tr>
+        {% if not col1%}
+        <th>Columna 1</th>
+        {% endif %}
+        {% if not col2%}
+        <th>Columna 2</th>
+        {% endif %}
+        {% if not col3%}
+        <th>Columna 3</th>
+        {% endif %}
+        </tr>
+
+        </table>
+
+
     </body>
 
 </html>
