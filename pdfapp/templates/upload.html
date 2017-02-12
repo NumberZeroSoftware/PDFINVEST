@@ -3,6 +3,7 @@
 <html>
     <script src="{% static "hide.js" %}" type="text/javascript"></script>
     <script src="{% static "cookies.js" %}" type="text/javascript"></script>
+    <script src="{% static "documentHandler.js" %}" type="text/javascript"></script>
     <head>
         <meta charset="utf-8">
         <title>Minimal Django File Upload Example</title>
@@ -35,46 +36,42 @@
         </form>
 
 
-        {% if not columns %}
-            {% if documents %}
-                <table style="  margin-left: auto;
-                                margin-right: auto;
-                                max-width: 500px;
-                                height: 500px;">
-                <tr>
-                    {% for document in documents %}
-                        <th><embed src= "{{ document.docfile.url }}" 
-                        style=" margin-left: auto;
-                                margin-right: auto;
-                                max-width: 500px;
-                                height: 500px;"></th>
-                    {% endfor %}
-                </tr>
-                </table>
-            {% else %}
-                <p>No documents to show.</p>
-            {% endif %}
-        {% endif %}
-        
-
-        <table style="  margin-left: auto;
+        {% if documents %}
+            <table style="  margin-left: left;
                             margin-right: auto;
                             max-width: 500px;
                             height: 500px;">
-
-        <tr>
-        <th>Columna 1</th>
-        <th>Columna 2</th>
-        <th>Columna 3</th>
-        </tr>
-
-        </table>
-
-        <h1 id="id1">My Heading 1</h1>
-
-        <input name="button" id="button" type="button" value="Click Me!" onClick="return showStuff('id1', this);"/>
-
-
+                <tr>
+                    <th style="text-align: left; vertical-align: text-top;">
+                    {% for document in documents %}
+                    <p><input   id="{{ document.docfile.name|add:"_btn" }}"
+                                type="button"
+                                value="Show " 
+                                onClick="return showStuff('{{ document.docfile.name }}', this);"
+                    /></p>
+                    <script type="text/javascript">
+                        document.getElementById('{{ document.docfile.name|add:"_btn" }}').name = getDocumentName("{{ document.docfile.name }}"); 
+                        document.getElementById('{{ document.docfile.name|add:"_btn" }}').value = document.getElementById('{{ document.docfile.name|add:"_btn" }}'). value + document.getElementById('{{ document.docfile.name|add:"_btn" }}').name;
+                    </script>
+                    {% endfor %}
+                    </th>
+                    {% for document in documents %}
+                        <th>
+                            <embed  src= "{{ document.docfile.url }}" 
+                                    style="     margin-left: auto;
+                                                margin-right: auto;
+                                                max-width: 500px;
+                                                height: 500px;
+                                                display: none;"
+                                    id="{{ document.docfile.name }}"
+                            />
+                        </th>
+                    {% endfor %}
+                </tr>
+            </table>
+        {% else %}
+            <p>No documents to show.</p>
+        {% endif %}
     </body>
 
 </html>
