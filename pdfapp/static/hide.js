@@ -1,12 +1,16 @@
+// Made by Christian Oliveros ( oliveroschristian.wordpress.com )
+// Last edit 02/12/2017
 
 function showStuff(id, btn) {
-    if (document.getElementById(id).style.display != 'none') {
+    var displayStyle = document.getElementById(id).style.display;
+    if (displayStyle != 'none') {
+        setCookie(id+"cssStyleDisplay", displayStyle, 1);
         document.getElementById(id).style.display = 'none';
+        btn.value = "Show";
     }
-    
-    // hide the link
-    //btn.style.display = 'none';
-
-    // Stop Js from reloading page
+    else {
+        document.getElementById(id).style.display = getCookie(id+"cssStyleDisplay");
+        btn.value = "Hide";
+    }
     return false;
 }

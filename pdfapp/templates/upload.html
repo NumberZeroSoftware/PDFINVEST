@@ -1,5 +1,8 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
+    <script src="{% static "hide.js" %}" type="text/javascript"></script>
+    <script src="{% static "cookies.js" %}" type="text/javascript"></script>
     <head>
         <meta charset="utf-8">
         <title>Minimal Django File Upload Example</title>
@@ -69,9 +72,7 @@
 
         <h1 id="id1">My Heading 1</h1>
 
-        <button type="button"
-        onclick="document.getElementById('id1').style.color = 'red'">
-        Click Me!</button>
+        <input name="button" id="button" type="button" value="Click Me!" onClick="return showStuff('id1', this);"/>
 
 
     </body>
