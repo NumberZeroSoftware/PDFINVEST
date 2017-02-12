@@ -13,11 +13,14 @@ def upload_view(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
+            #print('valid')
             newdoc = Document(docfile=request.FILES['docfile'])
             newdoc.save()
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('upload'))
+        else:
+            print('not valid')
     else:
         form = UploadFileForm()  # A empty, unbound form
 
