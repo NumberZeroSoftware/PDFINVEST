@@ -33,3 +33,23 @@ def upload_view(request):
         'upload.html',
         {'documents': documents, 'form': form}
     )
+
+# Get the edit view of a file
+# request is the django request handle
+# fileName is the name of the file
+# filePath is the file path of the pdf to edit
+# TODO: better send file names rather than this
+def edit_view(request, fileName, filePath=None,):
+    render_dic = {}
+    full_filePath = fileName
+    if filePath is not None:
+        full_filePath = filePath + "/" + full_filePath
+    # Load documents to search for the requested file
+    documents = Document.objects.all()
+    for doc in documents:
+        # If we got this doc we send it
+        if doc.docfile.name == full_filePath:
+            render_dic['doc'] = doc
+            render_dic['fileName'] = fileName
+            break
+    return render(request, 'edit.html', render_dic)

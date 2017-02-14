@@ -9,24 +9,12 @@
     </script>
     <head>
         <meta charset="utf-8">
-        <title>Minimal Django File Upload Example</title>
+        <title>PDFINVEST The Best Invest</title>
     </head>
 
     <body>
-
-        </script>
-        <!-- List of uploaded documents -->
-        {% if documents %}
-            <ul>
-                {% for document in documents %}
-                    <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
-                    <script type="text/javascript">documents.push("{{ document.docfile.name }}");</script>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No documents.</p>
-        {% endif %}
-
+    <table style="width: auto;height: auto;">
+        <tr>
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "upload" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -41,26 +29,48 @@
             <p><input type="submit" value="Subir"/></p>
         </form>
 
-
+        <!-- List of uploaded documents -->
         {% if documents %}
+            <p>Documents: </p>
+            <p>
+            <ul>
+                {% for document in documents %}
+                    <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a>   
+                    <input   id="{{ document.docfile.name|add:"_edit_btn" }}"
+                                            type="button"
+                                            value="Editar" 
+                                            onClick="window.open('../edit/{{ document.docfile.name }}', '_blank'); return false;"
+                    /></li>
+                    <script type="text/javascript">documents.push("{{ document.docfile.name }}");</script>
+                    
+                {% endfor %}
+            </ul>
+            </p>
+        {% else %}
+            <p>No documents to Show.</p>
+        {% endif %}
+        </tr>
+        <tr>
+        {% if documents %}
+            <th style="text-align: left; vertical-align: text-top;">
+            {% for document in documents %}
+            <p><input   id="{{ document.docfile.name|add:"_btn" }}"
+                        type="button"
+                        value="Show " 
+                        onClick="showStuff('{{ document.docfile.name }}', this); resize(documents); return false;"
+            /></p>
+            <script type="text/javascript">
+                document.getElementById('{{ document.docfile.name|add:"_btn" }}').name = getDocumentName("{{ document.docfile.name }}"); 
+                document.getElementById('{{ document.docfile.name|add:"_btn" }}').value = document.getElementById('{{ document.docfile.name|add:"_btn" }}'). value + document.getElementById('{{ document.docfile.name|add:"_btn" }}').name;
+            </script>
+            {% endfor %}
+            </th>
+            <th>
             <table style="  margin-left: left;
                             margin-right: auto;
                             width: 100%;
-                            height: auto;>
+                            height: auto;">
                 <tr>
-                    <th style="text-align: left; vertical-align: text-top;">
-                    {% for document in documents %}
-                    <p><input   id="{{ document.docfile.name|add:"_btn" }}"
-                                type="button"
-                                value="Show " 
-                                onClick="showStuff('{{ document.docfile.name }}', this); resize(documents); return false;"
-                    /></p>
-                    <script type="text/javascript">
-                        document.getElementById('{{ document.docfile.name|add:"_btn" }}').name = getDocumentName("{{ document.docfile.name }}"); 
-                        document.getElementById('{{ document.docfile.name|add:"_btn" }}').value = document.getElementById('{{ document.docfile.name|add:"_btn" }}'). value + document.getElementById('{{ document.docfile.name|add:"_btn" }}').name;
-                    </script>
-                    {% endfor %}
-                    </th>
                     {% for document in documents %}
                         <th id="{{ document.docfile.name }}" style="display: none;">
                             <div style="border: 2px solid;
@@ -80,9 +90,10 @@
                     {% endfor %}
                 </tr>
             </table>
-        {% else %}
-            <p>No documents to show.</p>
+            </th>
         {% endif %}
+        </tr>
+    </table>
     </body>
 
 </html>

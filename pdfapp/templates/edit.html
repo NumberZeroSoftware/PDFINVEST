@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+    <meta charset="utf-8">
+    {% if fileName%}
+    <title>Edit PDF's: {{ fileName }}</title>
+    {% else %}
+    <!-- No Wabbit -->
+    <title>Edit PDF's: Sorry. File Not Found :(</title>
+    {% endif %}
+</head>
+<body style="height: 100%;">
+    <table style="width: 100%; height: 100%;">
+        <tr style="width: 100%; height: 50%;">
+            <th>
+                <table style="width: 100%; height: auto">
+                    <th>
+                        <p><iframe width="560" height="315" src="https://www.youtube.com/embed/LhlASZXjSbw" frameborder="0" allowfullscreen></iframe></p>
+                    </th>
+                    <th>
+                        <p><iframe width="560" height="315" src="https://www.youtube.com/embed/ImAPi79tGE4" frameborder="0" allowfullscreen></iframe></p>
+                    </th>
+                </table>
+            </th>
+        </tr>
+        <tr style="width: 100%; height: 50%;">
+            <th style="width: 100%; height: 100%;">
+                <!-- Doc to Edit-->
+                {% if doc %}
+                <!-- Wabbit -->
+                <p style="width: 100%; height: 100%;"><embed   src="{{ doc.docfile.url }}" 
+                            style="      width: 100%;
+                                        height: 100%;"
+                /></p>
+                {% else %}
+                <!-- No Wabbit -->
+                <p>Sorry. File Not Found :(</p>
+                {% endif %}
+            </th>
+        </tr>
+    </table>
+</body>
+</html>
