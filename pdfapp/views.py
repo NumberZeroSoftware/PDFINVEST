@@ -47,12 +47,7 @@ def edit_view(request, fileName, filePath=None,):
     if filePath is not None:
         full_filePath = filePath + "/" + full_filePath
     #Calculate the number of years between 1969 and the present
-    years = []
-    i = date.today().year
-    while 1969 <= i:
-        years.append(i)
-        i -= 1
-    render_dic['years'] = years
+    render_dic['years'] = [i for i in range(date.today().year, 1968, -1)]
     # Load documents to search for the requested file
     documents = Document.objects.all()
     try:
