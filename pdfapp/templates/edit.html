@@ -65,7 +65,13 @@
                                     </select>
                                     <select>
                                         <option value="" disabled selected hidden>Año</option>
-                                        <option value="year">year<option>
+                                        {% if years %}
+                                        {% for year in years %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="" disabled selected hidden>Error Loading Valid Years</option>
+                                        {% endif %}
                                     </select>
                                 </div>
                                 <h4>Código:</h4>
