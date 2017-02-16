@@ -57,6 +57,6 @@ def edit_view(request, fileName, filePath=None,):
     render_dic['doc'] = doc
     render_dic['fileName'] = fileName
     #path = call_main(filePath + "/" + full_filePath)
-    path = '/home/ubuntu/workspace/PDFINVEST/media/test.html'
+    path = 'media/test.html'
     render_dic['html_string'] = open(path, 'r').read()
     return render(request, 'edit.html', render_dic)
