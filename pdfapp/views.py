@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 from .models import Document
 from .forms import UploadFileForm
 
+from datetime import date
+
 
 def upload_view(request):
     # Handle file upload
@@ -44,6 +46,13 @@ def edit_view(request, fileName, filePath=None,):
     full_filePath = fileName
     if filePath is not None:
         full_filePath = filePath + "/" + full_filePath
+    #Calculate the number of years between 1969 and the present
+    years = []
+    i = date.today().year
+    while 1969 <= i:
+        years.append(i)
+        i -= 1
+    render_dic['years'] = years
     # Load documents to search for the requested file
     documents = Document.objects.all()
     for doc in documents:
