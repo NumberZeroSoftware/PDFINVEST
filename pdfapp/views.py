@@ -46,10 +46,13 @@ def edit_view(request, fileName, filePath=None,):
         full_filePath = filePath + "/" + full_filePath
     # Load documents to search for the requested file
     documents = Document.objects.all()
-    for doc in documents:
-        # If we got this doc we send it
-        if doc.docfile.name == full_filePath:
-            render_dic['doc'] = doc
-            render_dic['fileName'] = fileName
-            break
+    try:
+        doc = next(filter(lambda document: document.docfile.name == full_filePath, documents))
+    except StopIteration:
+        render_dic['error'] = 'File not found.'
+    render_dic['doc'] = doc
+    render_dic['fileName'] = fileName
+    #path = call_main(filePath + "/" + full_filePath)
+    path = '/home/ubuntu/workspace/PDFINVEST/media/test.html'
+    render_dic['html_string'] = open(path, 'r').read()
     return render(request, 'edit.html', render_dic)
