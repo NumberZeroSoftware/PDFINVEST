@@ -1,0 +1,14 @@
+from subprocess import Popen
+import re
+
+
+# Execute ocropy to the desired pdf
+# filePath : full path to the target pdf to be converted to textString
+def call_main(filePath):
+	tokens = re.match(r'((?P<filePath>[^\.\s]+)/)*(?P<fileName>[^\.\s/]+)\.pdf', filePath)
+	print(tokens.group('filePath'), tokens.group('fileName'))
+	path = tokens.group('filePath')
+	if path is None:
+		path = " "
+	file_name = tokens.group('fileName')
+	Process=Popen('utils/run_ocropy.sh %s %s' % (str(file_name),str(path),), shell=True)
