@@ -66,6 +66,7 @@ def edit_view(request, fileName, filePath=None,):
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
+        render_dic['html_string_status'] = -1
         return render(request, 'edit.html', render_dic)
     
     # Lets see if the html file is ready

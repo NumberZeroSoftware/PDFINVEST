@@ -8,15 +8,20 @@ else
 	FULL_PATH="$FILE_PATH"/"$FILE_NAME"
 fi
 
+mkdir -p "$FULL_PATH"
+echo "Starting Processing: $FULL_PATH.pdf"
 
-mkdir -p $FULL_PATH
-
-cd $FULL_PATH
+cd "$FULL_PATH"
 	convert -density 300 "$FULL_PATH".pdf "$FILE_NAME".png
-	ls . | xargs -I % cp % $FILE_NAME
-	ls . > "$FULL_PATH".html
+	ls | grep "$FILE_NAME" > images.txt
+	ocropus-nlbin $(cat images.txt) -o temp
+	ocropus-gpageseg 'temp/????.bin.png'
+	ocropus-rpred -n 'temp/????/??????.bin.png'
+	ocropus-hocr 'temp/????.bin.png' -o "$FULL_PATH".html
 cd ..
-rm -rf $FULL_PATH
+#rm -rf "$FULL_PATH"
+
+echo "Done Processing: $FULL_PATH.pdf"
 
 
 

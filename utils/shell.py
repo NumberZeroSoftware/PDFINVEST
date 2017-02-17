@@ -5,7 +5,7 @@ import re
 
 # Execute ocropy to the desired pdf
 # filePath : full path to the target pdf to be converted to textString
-# Returns the name of the file containing the textString
+# Returns the name of the file containing the textString if it is ready or None if is being processed
 def call_main(filePath):
     tokens = re.match(r'((?P<filePath>([^\.])+)/)*(?P<fileName>[^\.\s/]+)\.pdf', filePath)
     file_name = tokens.group('fileName')
