@@ -17,7 +17,8 @@ cd "$FULL_PATH"
 	ocropus-nlbin $(cat images.txt) -o temp
 	ocropus-gpageseg 'temp/????.bin.png'
 	ocropus-rpred -n 'temp/????/??????.bin.png'
-	ocropus-hocr 'temp/????.bin.png' -o "$FULL_PATH".html
+	ocropus-hocr 'temp/????.bin.png' -o temp.html
+	cp temp.html ../"$FILE_NAME".html
 cd ..
 #rm -rf "$FULL_PATH"
 
