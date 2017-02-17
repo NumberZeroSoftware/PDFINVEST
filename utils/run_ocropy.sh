@@ -20,7 +20,7 @@ cd "$FULL_PATH"
 	ocropus-hocr 'temp/????.bin.png' -o temp.html
 	cp temp.html ../"$FILE_NAME".html
 cd ..
-#rm -rf "$FULL_PATH"
+rm -rf "$FULL_PATH"
 
 echo "Done Processing: $FULL_PATH.pdf"
 

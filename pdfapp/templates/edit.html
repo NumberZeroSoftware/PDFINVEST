@@ -12,6 +12,10 @@
     {% endif %}
 </head>
 <body style="width: 100%; height: 100%;">
+    {% if reload %}
+    <!-- Reload page every 60s to check if the file is ready <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>-->
+    
+    {% endif %}
     <table style="width: 100%; height: 100%;">
         <tr style="width: 100%; height: 100%;">
             <th style="width: 50%; height: 100%;">
@@ -30,7 +34,8 @@
                 <table style="width: 100%; height: 100%;">
                     <tr style="width: 100%; height: 50%; min-height:50%;">
                         <th style="width: 100%; height: 50%;" >
-                            <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: auto; white-space: nowrap;">
+                            <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+                                <!--<div contenteditable="true">{% autoescape off %}{{ html_string }}{% endautoescape %}</div>-->
                                 <textarea name="pdfString" rows="12" cols="60" style="padding: 3%;">{{ html_string }}</textarea>
                                 <hr style="color:gray; width:95%; size:1; margin-top:5%">
                             </div>

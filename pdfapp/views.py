@@ -54,29 +54,33 @@ def edit_view(request, fileName, filePath=None,):
     # Load documents to search for the requested file
     documents = Document.objects.all()
     html_file = None
-    render_dic['html_string_status'] = 0
     render_dic['html_string'] = 'File is being created. Please be patient.'
     try:
         doc = next(filter(lambda document: document.docfile.name == full_filePath+".pdf", documents))
         render_dic['doc'] = doc
         #Process file
-        if not doc.ready_html:
-            html_file = call_main(doc.docfile.path)
+        if not doc.ready_html and not doc.processing_html:
             doc.processing_html = True
+            doc.save()
+            html_file = call_main(doc.docfile.path) 
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
-        render_dic['html_string_status'] = -1
         return render(request, 'edit.html', render_dic)
     
     # Lets see if the html file is ready
     if html_file is not None:
         try:
             render_dic['html_string'] = open(html_file, 'r').read()
-            render_dic['html_string_status'] = 1
             doc.processing_html = False
             doc.ready_html = True
+            doc.save()
         except Exception as e:
             render_dic['html_string'] = 'File is being created. Please be patient.'
-        
+            render_dic['reload'] = True
+            doc.ready_html = False
+            doc.save()
+    else:
+        render_dic['reload'] = True
+
     return render(request, 'edit.html', render_dic)
