@@ -1,0 +1,14 @@
+mkdir pdf_prueba
+pdf=$1
+file=$2
+cd pdf_prueba
+convert -density 300 $pdf prueba.png
+ls . | xargs -I % cp % $file
+path=$(pwd)
+echo $path
+cd ..
+rm -rf $path
+
+
+
+
