@@ -8,6 +8,18 @@ else
 	FULL_PATH="$FILE_PATH"/"$FILE_NAME"
 fi
 
+FULL_PATH_HTML="$FULL_PATH.html"
+
+
+if [ -e "$FULL_PATH" ]; then
+	exit 0
+fi
+
+if [ -e "$FULL_PATH_HTML" ]; then
+	exit 0
+fi
+
+
 mkdir -p "$FULL_PATH"
 echo "Starting Processing: $FULL_PATH.pdf"
 
@@ -23,7 +35,4 @@ cd ..
 rm -rf "$FULL_PATH"
 
 echo "Done Processing: $FULL_PATH.pdf"
-
-
-
 
