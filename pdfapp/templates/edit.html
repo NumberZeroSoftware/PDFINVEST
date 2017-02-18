@@ -1,0 +1,100 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%;">
+<head>
+    <meta charset="utf-8">
+    {{ error }}
+    {% if fileName %}
+    <title>Edit PDF's: {{ fileName }}</title>
+    {% else %}
+    <!-- No Wabbit -->
+    <title>Edit PDF's: Sorry. File Not Found :(</title>
+    {% endif %}
+</head>
+<body style="width: 100%; height: 100%;">
+    {% if reload %}
+    <!-- Reload page every 60s to check if the file is ready -->
+    <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>
+    
+    {% endif %}
+    <table style="width: 100%; height: 100%;">
+        <tr style="width: 100%; height: 100%;">
+            <th style="width: 50%; height: 100%;">
+                <!-- Doc to Edit-->
+                {% if doc %}
+                <!-- Wabbit -->
+                <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: auto; white-space: nowrap;">
+                    <embed src="{{ doc.docfile.url }}" style="width: 100%; height: 100%;"/>
+                </div>
+                {% else %}
+                <!-- No Wabbit -->
+                Sorry. File Not Found :(
+                {% endif %}
+            </th>
+            <th style="width: 50%; height: 100%;">
+                <table style="width: 100%; height: 100%;">
+                    <tr style="width: 100%; height: 50%; min-height:50%;">
+                        <th style="width: 100%; height: 50%;" >
+                            <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+                                <div contenteditable="true">{% autoescape off %}{{ html_string }}{% endautoescape %}</div>
+                                <!--<textarea name="pdfString" rows="12" cols="60" style="padding: 3%;">{{ html_string }}</textarea>-->
+                                <hr style="color:gray; width:95%; size:1; margin-top:5%">
+                            </div>
+                        </th>
+                    </tr>
+                    <tr style="width: 100%; height: 50%;">
+                        <th style="width: 100%; height: 50%;">
+                            <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: auto; white-space: nowrap; text-align: left; margin: 1% 3% 3% 8%; overflow:scroll;">
+                                <h4>Departamento:</h4>
+                                <select>
+                                    <option value="" disabled selected hidden>Seleccione Departamento</option>
+                                    <option value="Departamento de Física">Departamento de Física</option>
+                                    <option value="Departamento de Química">Departamento de Química</option>
+                                    <option value="Departamento de Mecánica">Departamento de Mecánica</option>
+                                    <option value="Departamento de Matemáticas Puras y Aplicadas">Departamento de Matemáticas Puras y Aplicadas</option>
+                                    <option value="Departamento de Computación y Tecnología de la Información">Departamento de Computación y Tecnología de la Información</option>
+                                    <option value="Departamento de Cómputo Científico y Estadística">Departamento de Cómputo Científico y Estadística</option>
+                                    <option value="Departamento de Electrónica y Circuitos">Departamento de Electrónica y Circuitos</option>
+                                    <option value="Departamento de Termodinámica y Fenómenos de Transferencia">Departamento de Termodinámica y Fenómenos de Transferencia</option>
+                                    <option value="Departamento de Conversión y Transporte de Energía">Departamento de Conversión y Transporte de Energía</option>
+                                    <option value="Departamento de Procesos y Sistemas">Departamento de Procesos y Sistemas</option>
+                                    <option value="Departamento de Ciencias de los Materiales">Departamento de Ciencias de los Materiales</option>
+                                    <option value="Departamento de Ciencias de la Tierra">Departamento de Ciencias de la Tierra</option>
+                                </select>
+                                <h4>Periodo de vigencia:</h4>
+                                <div style="display: inline">
+                                    <select>
+                                        <option value="" disabled selected hidden>Seleccione trimestre</option>
+                                        <option value="Ene-Mar">Ene-Mar</option>
+                                        <option value="Abr-Jul">Abr-Jul</option>
+                                        <option value="Jul-Ago">Jul-Ago (Int)</option>
+                                        <option value="Sep-Dic">Sep-Dic</option>
+                                    </select>
+                                    <select>
+                                        <option value="" disabled selected hidden>Año</option>
+                                        {% if years %}
+                                        {% for year in years %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        <option value="" disabled selected hidden>Error Loading Valid Years</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <h4>Código:</h4>
+                                <textarea name="programCode" cols="50" rows="2"></textarea>
+                                <h4>Títulos:</h4>
+                                <textarea name="programTittle" cols="50" rows="3"></textarea>
+                                <h4>Objetivos:</h4>
+                                <textarea name="programObjectives" cols="50" rows="5"></textarea>
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+            </th>
+
+
+        </tr>
+    </table>
+</body>
+</html>
