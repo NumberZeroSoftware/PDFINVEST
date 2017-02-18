@@ -88,6 +88,10 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Ocropy
+.pynative
+utils/ocropy
+
 # PDFINVEST ignore
 media/documents
 db.sqlite3
