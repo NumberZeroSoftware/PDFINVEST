@@ -1,5 +1,5 @@
 from subprocess import Popen
-import os.path
+from pathlib import Path
 import re
 
 
@@ -12,10 +12,10 @@ def call_main(filePath):
     path = tokens.group('filePath')
 
     if path is None:
-        exists = os.path.isfile(file_name) 
+        exists = Path(file_name+".html").is_file() 
         path = " "
     else:
-        exists = os.path.isfile(path+"/"+file_name+".html") 
+        exists = Path(path+"/"+file_name+".html").is_file()
 
     # We are not going to recalculate file
     if exists:

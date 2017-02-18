@@ -9,6 +9,7 @@ from .models import Document
 from .forms import UploadFileForm
 
 from datetime import date
+from pathlib import Path
 
 from utils.shell import call_main
 
@@ -39,7 +40,7 @@ def upload_view(request):
 
 # Get the edit view of a file
 # request is the django request handle
-# fileName is the name of the file
+# fileName is the name of the file without extension
 # filePath is the file path of the pdf to edit
 # TODO: better send file names rather than this
 def edit_view(request, fileName, filePath=None,):
@@ -61,8 +62,9 @@ def edit_view(request, fileName, filePath=None,):
         #Process file
         if not doc.ready_html and not doc.processing_html:
             doc.processing_html = True
+            doc.ready_html = False
             doc.save()
-            html_file = call_main(doc.docfile.path) 
+        html_file = call_main(doc.docfile.path) 
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
@@ -70,17 +72,38 @@ def edit_view(request, fileName, filePath=None,):
     
     # Lets see if the html file is ready
     if html_file is not None:
-        try:
-            render_dic['html_string'] = open(html_file, 'r').read()
+        # Lets see if it really exists
+        if Path(html_file).is_file():
+            with open(html_file, 'r') as f:
+                render_dic['html_string'] = f.read()
             doc.processing_html = False
             doc.ready_html = True
             doc.save()
-        except Exception as e:
+        else:
             render_dic['html_string'] = 'File is being created. Please be patient.'
             render_dic['reload'] = True
             doc.ready_html = False
             doc.save()
     else:
         render_dic['reload'] = True
+        doc.ready_html = False
+        doc.save()
 
+    # Lets see if it is processing
+    if 'reload' in render_dic:
+        if Path(full_filePath).is_dir():
+            doc.processing_html = True
+            doc.save()
+        else:
+            doc.processing_html = False
+            doc.save()
+            call_main(doc.docfile.path) 
+            doc.processing_html = True
+            doc.save()
+
+    print("---------------")
+    print("Checking:", full_filePath+".pdf")
+    print("Processing:", doc.processing_html)
+    print("Ready:", doc.ready_html)
+    print("---------------")
     return render(request, 'edit.html', render_dic)
