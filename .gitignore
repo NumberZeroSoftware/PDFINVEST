@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# PDFINVEST ignore
+media/documents
+db.sqlite3
