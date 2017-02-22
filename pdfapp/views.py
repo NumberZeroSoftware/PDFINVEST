@@ -5,12 +5,13 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .models import Document
-from .forms import UploadFileForm
+from .models import Document, Program, Department
+from .forms import UploadFileForm, ProgramForm
 
 from datetime import date
 from pathlib import Path
 import re
+from pdb import set_trace
 
 from utils.shell import call_main
 
@@ -54,11 +55,12 @@ def edit_view(request, fileName, filePath=None,):
     render_dic = {}
     full_filePath = fileName
     if filePath is not None:
-        full_filePath = filePath + "/" + full_filePath
+        full_filePath = filePath + "/" + fileName
     #Calculate the number of years between 1969 and the present
     render_dic['years'] = [i for i in range(date.today().year, 1968, -1)]
     #Save fileName
     render_dic['fileName'] = fileName
+    render_dic['filePath'] = filePath
     # Load documents to search for the requested file
     documents = Document.objects.all()
     html_file = None
@@ -115,4 +117,32 @@ def edit_view(request, fileName, filePath=None,):
     print("Processing:", doc.processing_html)
     print("Ready:", doc.ready_html)
     print("---------------")
+
+    program = Program.objects.get_or_create(document=doc)[0]
+
+    # if request.method == "POST":
+    #     program.department = Department.objects.get(pk=request.POST['department'])
+    #     program.code = request.POST['code']
+    #     program.validity_trimester = request.POST['validity_trimester']
+    #     program.validity_year = int(request.POST['validity_year'])
+    #     program.objectives = request.POST['objectives']
+    #     program.save()
+
+    # render_dic['program'] = program
+    # render_dic['departments'] = Department.objects.all()
+    # render_dic['trimesters'] = ['Ene-Mar', 'Abr-Jul', 'Jul-Ago', 'Sep-Dic']
+    # return render(request, 'edit.html', render_dic)
+
+    if request.method == "POST":
+        program_form = ProgramForm(request.POST, instance=program)
+        
+        if program_form.is_valid():
+            program = program_form.save(commit=True)
+        #else:
+    else:
+        program_form = ProgramForm(instance=program)
+
+    render_dic['program_form'] = program_form
+    render_dic['departments'] = Department.objects.all()
+    render_dic['trimesters'] = ['Ene-Mar', 'Abr-Jul', 'Jul-Ago', 'Sep-Dic']
     return render(request, 'edit.html', render_dic)

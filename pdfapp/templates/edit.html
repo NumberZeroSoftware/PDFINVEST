@@ -45,48 +45,70 @@
         <tr>
             <td rowspan="1">
                 <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; margin: 1% 3% 3% 8%; overflow:scroll;">
-                    <h4>Departamento:</h4>
-                    <select>
-                        <option value="" disabled selected hidden>Seleccione Departamento</option>
-                        <option value="Departamento de Física">Departamento de Física</option>
-                        <option value="Departamento de Química">Departamento de Química</option>
-                        <option value="Departamento de Mecánica">Departamento de Mecánica</option>
-                        <option value="Departamento de Matemáticas Puras y Aplicadas">Departamento de Matemáticas Puras y Aplicadas</option>
-                        <option value="Departamento de Computación y Tecnología de la Información">Departamento de Computación y Tecnología de la Información</option>
-                        <option value="Departamento de Cómputo Científico y Estadística">Departamento de Cómputo Científico y Estadística</option>
-                        <option value="Departamento de Electrónica y Circuitos">Departamento de Electrónica y Circuitos</option>
-                        <option value="Departamento de Termodinámica y Fenómenos de Transferencia">Departamento de Termodinámica y Fenómenos de Transferencia</option>
-                        <option value="Departamento de Conversión y Transporte de Energía">Departamento de Conversión y Transporte de Energía</option>
-                        <option value="Departamento de Procesos y Sistemas">Departamento de Procesos y Sistemas</option>
-                        <option value="Departamento de Ciencias de los Materiales">Departamento de Ciencias de los Materiales</option>
-                        <option value="Departamento de Ciencias de la Tierra">Departamento de Ciencias de la Tierra</option>
-                    </select>
-                    <h4>Periodo de vigencia:</h4>
-                    <div style="display: inline">
-                        <select>
-                            <option value="" disabled selected hidden>Seleccione trimestre</option>
-                            <option value="Ene-Mar">Ene-Mar</option>
-                            <option value="Abr-Jul">Abr-Jul</option>
-                            <option value="Jul-Ago">Jul-Ago (Int)</option>
-                            <option value="Sep-Dic">Sep-Dic</option>
-                        </select>
-                        <select>
-                            <option value="" disabled selected hidden>Año</option>
-                            {% if years %}
-                            {% for year in years %}
-                            <option value="{{ year }}">{{ year }}</option>
-                            {% endfor %}
-                            {% else %}
-                            <option value="" disabled selected hidden>Error Loading Valid Years</option>
-                            {% endif %}
-                        </select>
-                    </div>
-                    <h4>Código:</h4>
-                    <textarea name="programCode" cols="50" rows="2"></textarea>
-                    <h4>Títulos:</h4>
-                    <textarea name="programTitle" cols="50" rows="3"></textarea>
-                    <h4>Objetivos:</h4>
-                    <textarea name="programObjectives" cols="50" rows="5"></textarea>
+                    
+                    <form action="{% url 'edit' filePath=filePath fileName=fileName %}" method="post">
+                    <!--{% csrf_token %}   -->
+                    
+                    <!--<h4>Departamento:</h4>-->
+                    <!--<select name="department">-->
+                    <!--    {% if program.department is not None %}-->
+                    <!--        <option selected hidden value="{{ program.department.pk }}">{{ program.department.name }}</option>-->
+                    <!--    {% endif %}-->
+                        
+                    <!--    {% if program.department is None %}-->
+                    <!--        <option value="" disabled selected hidden>Seleccione Departamento</option>-->
+                    <!--    {% endif %}-->
+                        
+                    <!--    {% for department in departments %}-->
+                    <!--      <option value="{{ department.pk }}">{{ department.name }}</option>  -->
+                    <!--    {% endfor %}-->
+                    <!--</select>-->
+                    
+                    <!--<h4>Periodo de vigencia:</h4>-->
+                    <!--<div style="display: inline">-->
+                    <!--    <select name="validity_trimester">-->
+                    <!--        {% if program.validity_trimester is not None %}-->
+                    <!--            <option selected hidden value="{{ program.validity_trimester }}">{{ program.validity_trimester }}</option>-->
+                    <!--        {% endif %}-->
+                            
+                    <!--        {% if program.validity_trimester is None %}-->
+                    <!--            <option value="" disabled selected hidden>Seleccione Trimestre</option>-->
+                    <!--        {% endif %}-->
+                            
+                    <!--        {% for trim in trimesters %}-->
+                    <!--            <option value='{{ trim }}'>{{ trim }}</option>-->
+                    <!--        {% endfor %}-->
+                    <!--    </select>-->
+                        
+                    <!--    <select name="validity_year">-->
+                    <!--        <option value="" disabled selected hidden>Año</option>-->
+                    <!--        <option selected>{{ program.validity_year }}</option>-->
+                    <!--        {% if years %}-->
+                    <!--            {% for year in years %}-->
+                    <!--            <option value="{{ year }}">{{ year }}</option>-->
+                    <!--            {% endfor %}-->
+                    <!--            {% else %}-->
+                    <!--            <option value="" disabled selected hidden>Error Loading Valid Years</option>-->
+                    <!--        {% endif %}-->
+                    <!--    </select>-->
+                    <!--</div>-->
+                    <!--<h4>Código:</h4> -->
+                    <!--<textarea name="code" cols="50" rows="2">{{ program.code }}</textarea>-->
+                    <!--<h4>Títulos:</h4>-->
+                    <!--<textarea name="programTitle" cols="50" rows="3"></textarea>-->
+                    <!--<h4>Objetivos:</h4>-->
+                    <!--<textarea name="objectives" cols="50" rows="5">{{ program.objectives }}</textarea>-->
+                    
+                    <!--</br></br>-->
+                    <!--<button type="submit" class="save btn btn-default">Save</button>-->
+                    <!--</form>-->
+                    
+                    <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}">
+                        {% csrf_token %}
+                        {{ program_form.as_p }}
+                        <button type="submit" class="save btn btn-default">Save</button>
+                    </form>
+                    
                 </div>
             </th>
         </tr>
