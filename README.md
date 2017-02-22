@@ -8,6 +8,7 @@ The Best Invest
 
 ## Manage.py Special Commands
 * emptyDocuments : Deletes everything from Documents. User with care
+* insertAcademic : Inserts the hierarchy from the USB. Kaboom if you don't follow the instructions
 
 ## Rules
 * Do NOT upload the DB to the repo
