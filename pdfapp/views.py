@@ -10,8 +10,10 @@ from .forms import UploadFileForm
 
 from datetime import date
 from pathlib import Path
+import re
 
 from utils.shell import call_main
+
 
 
 def upload_view(request):
@@ -20,6 +22,11 @@ def upload_view(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             newdoc = Document(docfile=request.FILES['docfile'])
+            newdoc.save()
+            # Lets get the filename and filepath
+            tokens = re.match(r'((?P<filePath>([^\.])+)/)*(?P<fileName>[^\.\s/]+)\.pdf', newdoc.docfile.path)
+            newdoc.file_name = tokens.group('fileName')
+            newdoc.file_path = tokens.group('filePath')
             newdoc.save()
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('upload'))
@@ -64,7 +71,7 @@ def edit_view(request, fileName, filePath=None,):
             doc.processing_html = True
             doc.ready_html = False
             doc.save()
-        html_file = call_main(doc.docfile.path) 
+        html_file = call_main(doc.file_path, doc.file_name) 
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
@@ -97,12 +104,14 @@ def edit_view(request, fileName, filePath=None,):
         else:
             doc.processing_html = False
             doc.save()
-            call_main(doc.docfile.path) 
+            call_main(doc.file_path, doc.file_name)
             doc.processing_html = True
             doc.save()
 
     print("---------------")
     print("Checking:", full_filePath+".pdf")
+    print("Folder:", doc.file_path)
+    print("Name:", doc.file_name)
     print("Processing:", doc.processing_html)
     print("Ready:", doc.ready_html)
     print("---------------")

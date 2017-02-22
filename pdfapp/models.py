@@ -8,6 +8,8 @@ class Document(models.Model):
     docfile = models.FileField(upload_to='documents/%Y/%m/%d', validators=[validate_pdf_extension])
     ready_html = models.BooleanField(default=False)
     processing_html = models.BooleanField(default=False)
+    file_name = models.TextField(default="Error: You Need to get the Filename", blank=True)
+    file_path = models.TextField(null=True, blank=True)
 
 class Division(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
@@ -21,7 +23,7 @@ class Deanery(models.Model):
 
 class Coordination(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
-    deanery = models.ForeignKey(Deanery, on_delete=models.CASCADE)
+    deanery = models.ManyToManyField(Deanery)
 
 class Program(models.Model):
     TRIMESTER = (
