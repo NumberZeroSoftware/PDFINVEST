@@ -21,7 +21,7 @@ class Deanery(models.Model):
 
 class Coordination(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
-    deanery = models.ForeignKey(Deanery, on_delete=models.CASCADE)
+    deanery = models.ManyToManyField(Deanery)
 
 class Program(models.Model):
     TRIMESTER = (
