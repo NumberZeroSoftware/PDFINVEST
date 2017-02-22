@@ -10,20 +10,37 @@ class Document(models.Model):
     processing_html = models.BooleanField(default=False)
     file_name = models.TextField(default="Error: You Need to get the Filename", blank=True)
     file_path = models.TextField(null=True, blank=True)
+    
 
 class Division(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Department(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
     division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Deanery(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Coordination(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
     deanery = models.ManyToManyField(Deanery)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Program(models.Model):
     TRIMESTER = (
@@ -33,19 +50,25 @@ class Program(models.Model):
         ('sep-dic', 'Septiembre-Diciembre'),
     )
     document = models.OneToOneField(Document)
-    code = models.CharField(max_length=10)
+    code = models.CharField(max_length=10, verbose_name='Codigo')
     denomination = models.CharField(max_length=60)
-    validity_year = models.IntegerField()
-    validity_trimester = models.CharField(max_length=7, choices=TRIMESTER)
+    validity_year = models.IntegerField(null=True, verbose_name='Año')
+    validity_trimester = models.CharField(
+        max_length=7, choices=TRIMESTER, verbose_name='Trimestre')
     theory_hours = models.IntegerField(blank=True, null=True)
     practice_hours = models.IntegerField(blank=True, null=True)
     laboratory_hours = models.IntegerField(blank=True, null=True)
     credits = models.IntegerField(blank=True, null=True)
     requirements = models.TextField(blank=True)
-    objectives = models.TextField(blank=True)
+    objectives = models.TextField(blank=True, verbose_name='Objetivos')
     synoptic_content = models.TextField(blank=True)
     methodological_strategies = models.TextField(blank=True)
     evaluation_strategies = models.TextField(blank=True)
     recommended_sources = models.TextField(blank=True)
-    department = models.OneToOneField(Department, on_delete=models.CASCADE, blank=True, null=True)
+    department = models.OneToOneField(
+        Department, on_delete=models.CASCADE, blank=True, null=True,
+        verbose_name='Departamento')
     coordination = models.ManyToManyField(Coordination, blank=True)
+    
+    def __str__(self): 
+        return '%s %s' % (self.pk, self.code)

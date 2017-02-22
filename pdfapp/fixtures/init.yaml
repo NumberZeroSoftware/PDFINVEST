@@ -1,0 +1,21 @@
+- model: pdfapp.division
+  pk: 1
+  fields:
+    name: Ciencia
+
+- model: pdfapp.division
+  pk: 2
+  fields:
+    name: Ingenieria
+
+- model: pdfapp.department
+  pk: 1
+  fields:
+    name: Departamento de Física
+    division: Ciencia
+
+- model: pdfapp.department
+  pk: 2
+  fields:
+    name: Departamento de Química
+    division: Ingenieria
