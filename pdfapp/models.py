@@ -50,25 +50,25 @@ class Program(models.Model):
         ('sep-dic', 'Septiembre-Diciembre'),
     )
     document = models.OneToOneField(Document)
-    code = models.CharField(max_length=10, verbose_name='Codigo')
-    denomination = models.CharField(max_length=60)
+    code = models.CharField(max_length=10, verbose_name='Código')
+    denomination = models.CharField(max_length=60, verbose_name='Denominación')
     validity_year = models.IntegerField(null=True, verbose_name='Año')
     validity_trimester = models.CharField(
         max_length=7, choices=TRIMESTER, verbose_name='Trimestre')
-    theory_hours = models.IntegerField(blank=True, null=True)
-    practice_hours = models.IntegerField(blank=True, null=True)
-    laboratory_hours = models.IntegerField(blank=True, null=True)
-    credits = models.IntegerField(blank=True, null=True)
-    requirements = models.TextField(blank=True)
+    theory_hours = models.IntegerField(blank=True, null=True, verbose_name='Horas de Teoría')
+    practice_hours = models.IntegerField(blank=True, null=True, verbose_name='Horas de Práctica')
+    laboratory_hours = models.IntegerField(blank=True, null=True, verbose_name='Horas de Laboratorio')
+    credits = models.IntegerField(blank=True, null=True, verbose_name='Unidad de Créditos')
+    requirements = models.TextField(blank=True, verbose_name='Requisitos')
     objectives = models.TextField(blank=True, verbose_name='Objetivos')
-    synoptic_content = models.TextField(blank=True)
-    methodological_strategies = models.TextField(blank=True)
-    evaluation_strategies = models.TextField(blank=True)
-    recommended_sources = models.TextField(blank=True)
+    synoptic_content = models.TextField(blank=True, verbose_name='Contenidos Sipnóticos')
+    methodological_strategies = models.TextField(blank=True, verbose_name='Estrategias Metodológicas')
+    evaluation_strategies = models.TextField(blank=True, verbose_name='Estrategias de Evaluación')
+    recommended_sources = models.TextField(blank=True, verbose_name='Fuentes de Información Recomendadas')
     department = models.OneToOneField(
         Department, on_delete=models.CASCADE, blank=True, null=True,
         verbose_name='Departamento')
-    coordination = models.ManyToManyField(Coordination, blank=True)
+    coordination = models.ManyToManyField(Coordination, blank=True, verbose_name='Coordinación')
     
     def __str__(self): 
         return '%s %s' % (self.pk, self.code)
