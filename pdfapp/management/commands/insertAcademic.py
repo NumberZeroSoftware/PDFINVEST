@@ -1,7 +1,7 @@
 """
 Command to insert the necessary academic units into the database.
 Made by Carlos Infante
-Last edit 02/21/2017
+Last edit 02/23/2017
 """
 from django.core.management.base import BaseCommand
 from django.db import models
@@ -10,11 +10,27 @@ from pdfapp.models import Deanery
 from pdfapp.models import Department
 from pdfapp.models import Coordination
 
+import sys
+
 class Command(BaseCommand):
-    help="Insert divisions, deaneries, departments and coordinations into the database."
+    help="Insert divisions, deaneries, departments and coordinations into the database"
     def handle(self, *args, **options):
-        print("Please ONLY run this one time, else you will be inserting them manually")
+        print("Please, ONLY run this one time. Else you will be inserting them manually")
+        print("Do you want to clean the tables before insertion?")
+        print("Be weary that duplicate data could be inserted otherwise")
+        print("WARNING: This will wipe all data inserted into divisions, deaneries, departments and coordinations tables")
+        print("Delete? (y/n): ", end="")
+        ans = input()
+        if (ans.lower() == "y"):
+            print("DELETING")
+            Division.objects.all().delete()
+            Deanery.objects.all().delete()
+            Department.objects.all().delete()
+            Coordination.objects.all().delete()
+            print("Done")
+
         # Create divisions
+        print("Adding data into the database...")
         fis_mat = Division.objects.create(name='División de Ciencias Físicas y Matemáticas')
         soc_hum = Division.objects.create(name='División de Ciencias Sociales y Humanidades')
         bio = Division.objects.create(name='División de Ciencias Biológicas')
@@ -113,3 +129,4 @@ class Command(BaseCommand):
         d.deanery.add(post)
         d = Coordination.objects.create(name='Ingeniería y Tecnología')
         d.deanery.add(post)
+        print("Done")

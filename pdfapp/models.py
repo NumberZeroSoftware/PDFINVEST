@@ -27,10 +27,10 @@ class Coordination(models.Model):
 
 class Program(models.Model):
     TRIMESTER = (
-        ('ene-mar', 'Enero-Marzo'),
-        ('abr-jul', 'Abril-Julio'),
-        ('jul-ago', 'Julio-Agosto (Intensivo)'),
-        ('sep-dic', 'Septiembre-Diciembre'),
+        ('1: ene-mar', 'Enero-Marzo'),
+        ('2: abr-jul', 'Abril-Julio'),
+        ('3: jul-ago', 'Julio-Agosto (Intensivo)'),
+        ('4: sep-dic', 'Septiembre-Diciembre'),
     )
     document = models.OneToOneField(Document)
     code = models.CharField(max_length=10)
