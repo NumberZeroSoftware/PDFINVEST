@@ -12,6 +12,7 @@ from datetime import datetime
 class Document(models.Model):
     date = models.DateTimeField(default=datetime.now, blank=True)
     docfile = models.FileField(upload_to='documents/%Y/%m/%d', validators=[validate_pdf_extension])
+    html_text_string = models.TextField(null=True, blank=True)
     ready_html = models.BooleanField(default=False)
     processing_html = models.BooleanField(default=False)
     file_name = models.TextField(default="Error: You Need to get the Filename", blank=True)
