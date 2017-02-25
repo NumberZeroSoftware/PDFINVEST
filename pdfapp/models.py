@@ -73,13 +73,13 @@ class Program(models.Model):
     validity_trimester = models.CharField(max_length=10,
                                           choices=TRIMESTER,
                                           verbose_name='Trimestre')
-    theory_hours = models.IntegerField(blank=True, null=True, 
+    theory_hours = models.PositiveIntegerField(blank=True, null=True, 
                                        verbose_name='Horas de Teoría',
                                        validators=[validate_positive_integer])
-    practice_hours = models.IntegerField(blank=True, null=True,
+    practice_hours = models.PositiveIntegerField(blank=True, null=True,
                                          verbose_name='Horas de Práctica',
                                          validators=[validate_positive_integer])
-    laboratory_hours = models.IntegerField(blank=True, null=True,
+    laboratory_hours = models.PositiveIntegerField(blank=True, null=True,
                                            verbose_name='Horas de Laboratorio',
                                            validators=[validate_positive_integer])
     credits = models.IntegerField(blank=True, null=True,
