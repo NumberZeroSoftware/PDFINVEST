@@ -29,5 +29,6 @@ def validate_credits(value):
 def validate_program_years(value):
     if value < 1969 or value > date.today().year + settings.FUTURE_YEARS:
         raise ValidationError(
-            _('El año %s debe estar entre 1969 y %s') % (value, date.today().year + 2)
+            _('El año %(value)s debe estar entre 1969 y %(year)s'),
+            params={'value': value, 'year': date.today().year + settings.FUTURE_YEARS},
         )

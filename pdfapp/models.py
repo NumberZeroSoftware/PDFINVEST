@@ -109,7 +109,7 @@ class Program(models.Model):
         if self.laboratory_hours is not None:
             hours_sum = hours_sum + self.laboratory_hours 
         if hours_sum <= 0 and not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
-            raise ValidationError('The sum of the total hours must be positive.')
+            raise ValidationError('The sum of the total hours must be positive. Or the three of them must not be set.')
 
     def save(self, *args, **kwargs):
         self.full_clean()
