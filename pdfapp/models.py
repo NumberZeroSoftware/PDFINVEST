@@ -68,7 +68,7 @@ class Program(models.Model):
     document = models.OneToOneField(Document, on_delete=models.CASCADE)
     code = models.CharField(max_length=10, verbose_name='Código')
     denomination = models.CharField(max_length=60, verbose_name='Denominación')
-    validity_year = models.IntegerField(null=True, verbose_name='Año',
+    validity_year = models.IntegerField(null=True, blank=True, verbose_name='Año',
                                         validators=[validate_program_years])
     validity_trimester = models.CharField(max_length=10,
                                           choices=TRIMESTER,
