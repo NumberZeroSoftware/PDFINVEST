@@ -38,7 +38,7 @@ class ProgramForm(forms.ModelForm):
                   'methodological_strategies', 'evaluation_strategies', 
                   'recommended_sources', )
         widgets = {
-            'validity_year': forms.Select(choices=zip(years(), years())), 
+            'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())), 
             'division': forms.ModelChoiceField(
                             label=u'División',
                             queryset=Division.objects.all(),
