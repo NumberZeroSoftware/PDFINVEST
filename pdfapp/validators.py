@@ -13,14 +13,14 @@ def validate_pdf_extension(value):
 def validate_positive_integer(value):
     if value < 0:
         raise ValidationError(
-            _('%(value)s Numero deberia ser mayor o igual que cero'),
+            _('Número, %(value)s, deberia ser mayor o igual que cero'),
             params={'value': value},
         )
 
 def validate_credits(value):
     if value < 0 or value > 16:
         raise ValidationError(
-            _('%(value)s Credidos deberian estar entre cero y dieciseis'),
+            _('%(value)s Creditos deberian estar entre cero y dieciseis'),
             params={'value': value},
         )
 

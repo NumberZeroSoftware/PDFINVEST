@@ -21,7 +21,7 @@ class Document(models.Model):
 
     def clean(self):
         if self.ready_html and self.processing_html:
-            raise django_excetions.ValidationError('You can\'t be ready when you\'re \
+            raise ValidationError('You can\'t be ready when you\'re \
                                                      processing the html.')
 
     def save(self, *args, **kwargs):
@@ -101,8 +101,15 @@ class Program(models.Model):
                                           verbose_name='Coordinación')
 
     def clean(self):
-        if self.theory_hours + self.practice_hours + self.practice_hours <= 0:
-            raise django_excetions.ValidationError('The sum of the total hours must be positive.')
+        hours_sum = 0
+        if self.theory_hours is not None:
+            hours_sum = hours_sum + self.theory_hours
+        if self.practice_hours is not None:
+            hours_sum = hours_sum + self.practice_hours
+        if self.laboratory_hours is not None:
+            hours_sum = hours_sum + self.laboratory_hours 
+        if hours_sum <= 0 and not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
+            raise ValidationError('The sum of the total hours must be positive.')
 
     def save(self, *args, **kwargs):
         self.full_clean()
