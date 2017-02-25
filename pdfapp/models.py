@@ -17,6 +17,7 @@ class Document(models.Model):
     processing_html = models.BooleanField(default=False)
     file_name = models.TextField(default="Error: You Need to get the Filename", blank=True)
     file_path = models.TextField(null=True, blank=True)
+    
 
     def clean(self):
         if self.ready_html and self.processing_html:
@@ -29,17 +30,33 @@ class Document(models.Model):
 
 class Division(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Department(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
     division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Deanery(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Coordination(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
     deanery = models.ManyToManyField(Deanery)
+    
+    def __str__(self):
+        return "{}".format(self.name)
+
 
 class Program(models.Model):
     TRIMESTER = (
@@ -49,22 +66,39 @@ class Program(models.Model):
         ('4: sep-dic', 'Septiembre-Diciembre'),
     )
     document = models.OneToOneField(Document, on_delete=models.CASCADE)
-    code = models.CharField(max_length=10)
-    denomination = models.CharField(max_length=60)
-    validity_year = models.IntegerField(validators=[validate_program_years])
-    validity_trimester = models.CharField(max_length=7, choices=TRIMESTER)
-    theory_hours = models.IntegerField(blank=True, null=True, validators=[validate_positive_integer])
-    practice_hours = models.IntegerField(blank=True, null=True, validators=[validate_positive_integer])
-    laboratory_hours = models.IntegerField(blank=True, null=True, validators=[validate_positive_integer])
-    credits = models.IntegerField(blank=True, null=True, validators=[validate_credits])
-    requirements = models.TextField(blank=True, null=True)
-    objectives = models.TextField(blank=True, null=True)
-    synoptic_content = models.TextField(blank=True, null=True)
-    methodological_strategies = models.TextField(blank=True, null=True)
-    evaluation_strategies = models.TextField(blank=True, null=True)
-    recommended_sources = models.TextField(blank=True, null=True)
-    department = models.OneToOneField(Department, on_delete=models.CASCADE, blank=True, null=True)
-    coordination = models.ManyToManyField(Coordination, blank=True)
+    code = models.CharField(max_length=10, verbose_name='Código')
+    denomination = models.CharField(max_length=60, verbose_name='Denominación')
+    validity_year = models.IntegerField(null=True, verbose_name='Año',
+                                        validators=[validate_program_years])
+    validity_trimester = models.CharField(max_length=7,
+                                          choices=TRIMESTER,
+                                          verbose_name='Trimestre')
+    theory_hours = models.IntegerField(blank=True, null=True, 
+                                       verbose_name='Horas de Teoría',
+                                       validators=[validate_positive_integer])
+    practice_hours = models.IntegerField(blank=True, null=True,
+                                         verbose_name='Horas de Práctica',
+                                         validators=[validate_positive_integer])
+    laboratory_hours = models.IntegerField(blank=True, null=True,
+                                           verbose_name='Horas de Laboratorio',
+                                           validators=[validate_positive_integer])
+    credits = models.IntegerField(blank=True, null=True,
+                                  verbose_name='Unidad de Créditos',
+                                  validators=[validate_credits])
+    requirements = models.TextField(blank=True, null=True, verbose_name='Requisitos')
+    objectives = models.TextField(blank=True, null=True, verbose_name='Objetivos')
+    synoptic_content = models.TextField(blank=True, null=True,
+                                        verbose_name='Contenidos Sipnóticos')
+    methodological_strategies = models.TextField(blank=True, null=True,
+                                                 verbose_name='Estrategias Metodológicas')
+    evaluation_strategies = models.TextField(blank=True, null=True,
+                                             verbose_name='Estrategias de Evaluación')
+    recommended_sources = models.TextField(blank=True, null=True,
+                                           verbose_name='Fuentes de Información Recomendadas')
+    department = models.OneToOneField(Department, on_delete=models.CASCADE,
+                                      blank=True, null=True, verbose_name='Departamento')
+    coordination = models.ManyToManyField(Coordination, blank=True,
+                                          verbose_name='Coordinación')
 
     def clean(self):
         if self.theory_hours + self.practice_hours + self.practice_hours <= 0:
@@ -73,3 +107,7 @@ class Program(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super(Program, self).save(*args, **kwargs)
+    
+    def __str__(self): 
+        return '%s %s' % (self.pk, self.code)
+    

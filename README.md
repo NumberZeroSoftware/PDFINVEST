@@ -5,6 +5,7 @@ The Best Invest
 * python3.6
 * Ocropy
 * Django for python3.6
+* django-extensions for Django for python3.6
 
 ## Manage.py Special Commands
 * emptyDocuments : Deletes everything from Documents. User with care
