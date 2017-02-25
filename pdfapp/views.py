@@ -131,9 +131,8 @@ def edit_view(request, fileName, filePath=None,):
     else:
         program_form_initial = {}
         if program.department is not None:
-            pass
-            #program_form_initial['division'] = Division.objects.filter(department__name=)
-        program_form = ProgramForm(instance=program)
+            program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+        program_form = ProgramForm(instance=program, initial=program_form_initial)
         if program_form.is_valid():
             print(program_form.cleaned_data['department'])
             # print(program_form.cleaned_data['division'])
