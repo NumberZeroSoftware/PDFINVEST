@@ -1,7 +1,13 @@
 from django.db import models
 from .validators import validate_pdf_extension
+from .validators import validate_positive_integer
+from .validators import validate_credits
+from .validators import validate_program_years
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from datetime import datetime
+
 
 class Document(models.Model):
     date = models.DateTimeField(default=datetime.now, blank=True)
@@ -10,6 +16,15 @@ class Document(models.Model):
     processing_html = models.BooleanField(default=False)
     file_name = models.TextField(default="Error: You Need to get the Filename", blank=True)
     file_path = models.TextField(null=True, blank=True)
+
+    def clean(self):
+        if self.ready_html and self.processing_html:
+            raise django_excetions.ValidationError('You can\'t be ready when you\'re \
+                                                     processing the html.')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(CommonMeasurement, self).save(*args, **kwargs)
 
 class Division(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
@@ -32,20 +47,28 @@ class Program(models.Model):
         ('3: jul-ago', 'Julio-Agosto (Intensivo)'),
         ('4: sep-dic', 'Septiembre-Diciembre'),
     )
-    document = models.OneToOneField(Document)
+    document = models.OneToOneField(Document, on_delete=models.CASCADE)
     code = models.CharField(max_length=10)
     denomination = models.CharField(max_length=60)
-    validity_year = models.IntegerField()
+    validity_year = models.IntegerField(validators=[validate_program_years])
     validity_trimester = models.CharField(max_length=7, choices=TRIMESTER)
-    theory_hours = models.IntegerField(blank=True, null=True)
-    practice_hours = models.IntegerField(blank=True, null=True)
-    laboratory_hours = models.IntegerField(blank=True, null=True)
-    credits = models.IntegerField(blank=True, null=True)
-    requirements = models.TextField(blank=True)
-    objectives = models.TextField(blank=True)
-    synoptic_content = models.TextField(blank=True)
-    methodological_strategies = models.TextField(blank=True)
-    evaluation_strategies = models.TextField(blank=True)
-    recommended_sources = models.TextField(blank=True)
+    theory_hours = models.IntegerField(blank=True, null=True, validators=[validate_positive_integer])
+    practice_hours = models.IntegerField(blank=True, null=True, validators=[validate_positive_integer])
+    laboratory_hours = models.IntegerField(blank=True, null=True, validators=[validate_positive_integer])
+    credits = models.IntegerField(blank=True, null=True, validators=[validate_credits])
+    requirements = models.TextField(blank=True, null=True)
+    objectives = models.TextField(blank=True, null=True)
+    synoptic_content = models.TextField(blank=True, null=True)
+    methodological_strategies = models.TextField(blank=True, null=True)
+    evaluation_strategies = models.TextField(blank=True, null=True)
+    recommended_sources = models.TextField(blank=True, null=True)
     department = models.OneToOneField(Department, on_delete=models.CASCADE, blank=True, null=True)
     coordination = models.ManyToManyField(Coordination, blank=True)
+
+    def clean(self):
+        if self.theory_hours + self.practice_hours + self.practice_hours <= 0:
+            raise django_excetions.ValidationError('The sum of the total hours must be positive.')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(CommonMeasurement, self).save(*args, **kwargs)
