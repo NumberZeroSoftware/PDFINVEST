@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+
 import os
 
 from datetime import datetime,date
@@ -25,7 +27,7 @@ def validate_credits(value):
         )
 
 def validate_program_years(value):
-    if value < 1969 or value > date.today().year + 2:
+    if value < 1969 or value > date.today().year + settings.FUTURE_YEARS:
         raise ValidationError(
             _('El año %s debe estar entre 1969 y %s') % (value, date.today().year + 2)
         )

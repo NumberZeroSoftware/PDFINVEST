@@ -1,5 +1,8 @@
 from django import forms
+from django.conf import settings
+
 from .models import Document, Program
+
 from datetime import date
 
 
@@ -14,7 +17,7 @@ class ProgramForm(forms.ModelForm):
     
     class Meta:
         def years():
-            return [i for i in range(date.today().year, 1968, -1)]
+            return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
 
         model = Program
         fields = ('department', 'coordination', 'validity_trimester', 

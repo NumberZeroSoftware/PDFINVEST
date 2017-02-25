@@ -70,7 +70,7 @@ class Program(models.Model):
     denomination = models.CharField(max_length=60, verbose_name='Denominación')
     validity_year = models.IntegerField(null=True, verbose_name='Año',
                                         validators=[validate_program_years])
-    validity_trimester = models.CharField(max_length=7,
+    validity_trimester = models.CharField(max_length=10,
                                           choices=TRIMESTER,
                                           verbose_name='Trimestre')
     theory_hours = models.IntegerField(blank=True, null=True, 
