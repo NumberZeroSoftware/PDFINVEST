@@ -66,12 +66,16 @@ class Program(models.Model):
         ('4: sep-dic', 'Septiembre-Diciembre'),
     )
     document = models.OneToOneField(Document, on_delete=models.CASCADE)
-    code = models.CharField(max_length=10, verbose_name='Código')
-    denomination = models.CharField(max_length=60, verbose_name='Denominación')
-    validity_year = models.IntegerField(null=True, verbose_name='Año',
+    code = models.CharField(blank=True, 
+                            max_length=10, verbose_name='Código')
+    denomination = models.CharField(blank=True, 
+                                    max_length=60, verbose_name='Denominación')
+    validity_year = models.IntegerField(null=True, blank=True, verbose_name='Año',
                                         validators=[validate_program_years])
     validity_trimester = models.CharField(max_length=10,
                                           choices=TRIMESTER,
+                                          blank=True, 
+                                          null=True,
                                           verbose_name='Trimestre')
     theory_hours = models.PositiveIntegerField(blank=True, null=True, 
                                        verbose_name='Horas de Teoría',
@@ -95,7 +99,7 @@ class Program(models.Model):
                                              verbose_name='Estrategias de Evaluación')
     recommended_sources = models.TextField(blank=True, null=True,
                                            verbose_name='Fuentes de Información Recomendadas')
-    department = models.OneToOneField(Department, on_delete=models.CASCADE,
+    department = models.ForeignKey(Department, on_delete=models.CASCADE,
                                       blank=True, null=True, verbose_name='Departamento')
     coordination = models.ManyToManyField(Coordination, blank=True,
                                           verbose_name='Coordinación')
