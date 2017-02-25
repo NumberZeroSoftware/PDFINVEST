@@ -143,6 +143,6 @@ def edit_view(request, fileName, filePath=None,):
         program_form = ProgramForm(instance=program)
 
     render_dic['program_form'] = program_form
-    render_dic['departments'] = Department.objects.all()
-    render_dic['trimesters'] = ['Ene-Mar', 'Abr-Jul', 'Jul-Ago', 'Sep-Dic']
+    #render_dic['departments'] = Department.objects.all()
+    #render_dic['trimesters'] = ['Ene-Mar', 'Abr-Jul', 'Jul-Ago', 'Sep-Dic']
     return render(request, 'edit.html', render_dic)
