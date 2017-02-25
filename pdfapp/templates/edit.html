@@ -10,12 +10,14 @@
     <!-- No Wabbit -->
     <title>Edit PDF's: Sorry. File Not Found :(</title>
     {% endif %}
+    <!-- Jquery and Chained Selection-->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
 </head>
 <body style="width: 100%; height: 100%;">
     {% if reload %}
     <!-- Reload page every 60s to check if the file is ready -->
-    <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>
-    
+    <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>    
     {% endif %}
     <table style="width: 100%; height: 100%; max-width: 100%; min-width: 100%; max-height: 100%; table-layout: fixed;">
         <tr>
@@ -45,71 +47,14 @@
         <tr>
             <td rowspan="1">
                 <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; margin: 9% 3% 3% 8%; overflow:scroll;">
-                    
                     <form action="{% url 'edit' filePath=filePath fileName=fileName %}" method="post">
-                    <!--{% csrf_token %}   -->
-                    
-                    <!--<h4>Departamento:</h4>-->
-                    <!--<select name="department">-->
-                    <!--    {% if program.department is not None %}-->
-                    <!--        <option selected hidden value="{{ program.department.pk }}">{{ program.department.name }}</option>-->
-                    <!--    {% endif %}-->
-                        
-                    <!--    {% if program.department is None %}-->
-                    <!--        <option value="" disabled selected hidden>Seleccione Departamento</option>-->
-                    <!--    {% endif %}-->
-                        
-                    <!--    {% for department in departments %}-->
-                    <!--      <option value="{{ department.pk }}">{{ department.name }}</option>  -->
-                    <!--    {% endfor %}-->
-                    <!--</select>-->
-                    
-                    <!--<h4>Periodo de vigencia:</h4>-->
-                    <!--<div style="display: inline">-->
-                    <!--    <select name="validity_trimester">-->
-                    <!--        {% if program.validity_trimester is not None %}-->
-                    <!--            <option selected hidden value="{{ program.validity_trimester }}">{{ program.validity_trimester }}</option>-->
-                    <!--        {% endif %}-->
-                            
-                    <!--        {% if program.validity_trimester is None %}-->
-                    <!--            <option value="" disabled selected hidden>Seleccione Trimestre</option>-->
-                    <!--        {% endif %}-->
-                            
-                    <!--        {% for trim in trimesters %}-->
-                    <!--            <option value='{{ trim }}'>{{ trim }}</option>-->
-                    <!--        {% endfor %}-->
-                    <!--    </select>-->
-                        
-                    <!--    <select name="validity_year">-->
-                    <!--        <option value="" disabled selected hidden>Año</option>-->
-                    <!--        <option selected>{{ program.validity_year }}</option>-->
-                    <!--        {% if years %}-->
-                    <!--            {% for year in years %}-->
-                    <!--            <option value="{{ year }}">{{ year }}</option>-->
-                    <!--            {% endfor %}-->
-                    <!--            {% else %}-->
-                    <!--            <option value="" disabled selected hidden>Error Loading Valid Years</option>-->
-                    <!--        {% endif %}-->
-                    <!--    </select>-->
-                    <!--</div>-->
-                    <!--<h4>Código:</h4> -->
-                    <!--<textarea name="code" cols="50" rows="2">{{ program.code }}</textarea>-->
-                    <!--<h4>Títulos:</h4>-->
-                    <!--<textarea name="programTitle" cols="50" rows="3"></textarea>-->
-                    <!--<h4>Objetivos:</h4>-->
-                    <!--<textarea name="objectives" cols="50" rows="5">{{ program.objectives }}</textarea>-->
-                    
-                    <!--</br></br>-->
-                    <!--<button type="submit" class="save btn btn-default">Save</button>-->
-                    <!--</form>-->
-                    
                     <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}">
                         {% csrf_token %}
                         {{ program_form.as_p }}
                         </br>
                         <button type="submit" class="save btn btn-default">Salvar Cambios</button>
                     </form>
-                    
+                    <script>$("#id_department").chained("#id_division");</script>
                 </div>
             </th>
         </tr>
