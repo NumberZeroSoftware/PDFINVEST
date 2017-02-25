@@ -99,7 +99,7 @@ class Program(models.Model):
                                              verbose_name='Estrategias de Evaluación')
     recommended_sources = models.TextField(blank=True, null=True,
                                            verbose_name='Fuentes de Información Recomendadas')
-    department = models.OneToOneField(Department, on_delete=models.CASCADE,
+    department = models.ForeignKey(Department, on_delete=models.CASCADE,
                                       blank=True, null=True, verbose_name='Departamento')
     coordination = models.ManyToManyField(Coordination, blank=True,
                                           verbose_name='Coordinación')
