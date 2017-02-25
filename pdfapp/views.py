@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .models import Document, Program, Department
+from .models import Document, Program, Department, Division
 from .forms import UploadFileForm, ProgramForm
 
 from datetime import date
@@ -118,31 +118,26 @@ def edit_view(request, fileName, filePath=None,):
     print("Ready:", doc.ready_html)
     print("---------------")
 
-    program = Program.objects.get_or_create(document=doc)[0]
+    # Lets find the program information
+    program, _ = Program.objects.get_or_create(document=doc)
 
-    # if request.method == "POST":
-    #     program.department = Department.objects.get(pk=request.POST['department'])
-    #     program.code = request.POST['code']
-    #     program.validity_trimester = request.POST['validity_trimester']
-    #     program.validity_year = int(request.POST['validity_year'])
-    #     program.objectives = request.POST['objectives']
-    #     program.save()
-
-    # render_dic['program'] = program
-    # render_dic['departments'] = Department.objects.all()
-    # render_dic['trimesters'] = ['Ene-Mar', 'Abr-Jul', 'Jul-Ago', 'Sep-Dic']
-    # return render(request, 'edit.html', render_dic)
+    
 
     if request.method == "POST":
         program_form = ProgramForm(request.POST, instance=program)
         
         if program_form.is_valid():
             program = program_form.save(commit=True)
-        #else:
     else:
+        program_form_initial = {}
+        if program.department is not None:
+            pass
+            #program_form_initial['division'] = Division.objects.filter(department__name=)
         program_form = ProgramForm(instance=program)
+        if program_form.is_valid():
+            print(program_form.cleaned_data['department'])
+            # print(program_form.cleaned_data['division'])
 
     render_dic['program_form'] = program_form
-    #render_dic['departments'] = Department.objects.all()
-    #render_dic['trimesters'] = ['Ene-Mar', 'Abr-Jul', 'Jul-Ago', 'Sep-Dic']
+
     return render(request, 'edit.html', render_dic)
