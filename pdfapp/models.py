@@ -24,7 +24,7 @@ class Document(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        return super(CommonMeasurement, self).save(*args, **kwargs)
+        return super(Document, self).save(*args, **kwargs)
 
 class Division(models.Model):
     name = models.CharField(max_length=60, primary_key=True)
@@ -71,4 +71,4 @@ class Program(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        return super(CommonMeasurement, self).save(*args, **kwargs)
+        return super(Program, self).save(*args, **kwargs)
