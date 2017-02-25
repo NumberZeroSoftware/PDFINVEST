@@ -121,8 +121,7 @@ def edit_view(request, fileName, filePath=None,):
     # Lets find the program information
     program, _ = Program.objects.get_or_create(document=doc)
 
-    
-
+    # Lets see if they are sending the information or requesting it
     if request.method == "POST":
         program_form = ProgramForm(request.POST, instance=program)
         
@@ -130,12 +129,10 @@ def edit_view(request, fileName, filePath=None,):
             program = program_form.save(commit=True)
     else:
         program_form_initial = {}
+        # Lets select the right division if a department was chosen
         if program.department is not None:
             program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
         program_form = ProgramForm(instance=program, initial=program_form_initial)
-        if program_form.is_valid():
-            print(program_form.cleaned_data['department'])
-            # print(program_form.cleaned_data['division'])
 
     render_dic['program_form'] = program_form
 
