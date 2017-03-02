@@ -143,10 +143,12 @@ class Program(models.Model):
         ('4: sep-dic', 'Septiembre-Diciembre'),
     )
 
-    # A program should have a Document associated.
+    # PDF document associated to the program.
     document = models.OneToOneField(
         Document,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     # The code of the assignature.
