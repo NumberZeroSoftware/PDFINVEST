@@ -6,12 +6,14 @@ import os
 
 from datetime import datetime,date
 
+# Validates that a file given has PDF extension.
 def validate_pdf_extension(value):
     extension = os.path.splitext(value.name)[1]  # [0] returns path+filename
     valid_extensions = ['.pdf']
     if not extension.lower() in valid_extensions:
         raise ValidationError(u'Tipo de archivo no soportado.')
 
+# Validates that a given integer is positive or zero.
 def validate_positive_integer(value):
     if value < 0:
         raise ValidationError(
@@ -19,6 +21,7 @@ def validate_positive_integer(value):
             params={'value': value},
         )
 
+# Validates that an integer given is between 0 and 16.
 def validate_credits(value):
     if value < 0 or value > 16:
         raise ValidationError(
@@ -26,6 +29,7 @@ def validate_credits(value):
             params={'value': value},
         )
 
+# Validates that an integer given is between 1969 and the actual year.
 def validate_program_years(value):
     if value < 1969 or value > date.today().year + settings.FUTURE_YEARS:
         raise ValidationError(
