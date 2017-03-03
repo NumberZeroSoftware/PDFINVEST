@@ -48,6 +48,11 @@ class UploadFileForm(forms.ModelForm):
         model = Document
         exclude = []
 
+class TextStringForm(forms.ModelForm):
+    
+    class Meta:
+        model = Document
+        exclude = ('date', 'docfile', 'ready_html', 'processing_html', 'file_name', 'file_path',)
 
 class ProgramForm(forms.ModelForm):
     division = forms.ModelChoiceField(
