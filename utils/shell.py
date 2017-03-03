@@ -4,23 +4,21 @@ import re
 
 
 # Execute ocropy to the desired pdf
-# filePath : full path to the target pdf to be converted to textString
+# filePath : full path to the folder containing the target pdf to be converted to textString
+# fileName : name the target pdf to be converted to textString. Without the extension
 # Returns the name of the file containing the textString if it is ready or None if is being processed
-def call_main(filePath):
-    tokens = re.match(r'((?P<filePath>([^\.])+)/)*(?P<fileName>[^\.\s/]+)\.pdf', filePath)
-    file_name = tokens.group('fileName')
-    path = tokens.group('filePath')
+def call_main(filePath, fileName):
 
-    if path is None:
-        exists = Path(file_name+".html").is_file() 
-        path = " "
+    if filePath is None:
+        exists = Path(fileName+".html").is_file() 
+        filePath = " "
     else:
-        exists = Path(path+"/"+file_name+".html").is_file()
+        exists = Path(filePath+"/"+fileName+".html").is_file()
 
     # We are not going to recalculate file
     if exists:
-        return path+"/"+file_name+".html"
+        return filePath+"/"+fileName+".html"
     
-    Process=Popen('utils/run_ocropy.sh \"%s\" \"%s\"' % (str(file_name),str(path),), shell=True)
+    Process=Popen('utils/run_ocropy.sh \"%s\" \"%s\"' % (str(fileName),str(filePath),), shell=True)
 
     return None

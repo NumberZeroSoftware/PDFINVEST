@@ -26,9 +26,9 @@ echo "Starting Processing: $FULL_PATH.pdf"
 cd "$FULL_PATH"
 	convert -density 300 "$FULL_PATH".pdf "$FILE_NAME".png
 	ls | grep "$FILE_NAME" > images.txt
-	ocropus-nlbin $(cat images.txt) -o temp
-	ocropus-gpageseg 'temp/????.bin.png'
-	ocropus-rpred -n 'temp/????/??????.bin.png'
+	ocropus-nlbin -n $(cat images.txt) -o temp
+	ocropus-gpageseg -n 'temp/????.bin.png'
+	ocropus-rpred -m PDFINVEST6.pyrnn.gz -n 'temp/????/??????.bin.png'
 	ocropus-hocr 'temp/????.bin.png' -o temp.html
 	cp temp.html ../"$FILE_NAME".html
 cd ..
