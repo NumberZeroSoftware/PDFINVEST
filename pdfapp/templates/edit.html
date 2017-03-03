@@ -68,13 +68,13 @@
                                 <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
                                     {% csrf_token %}
                                     {{ program_form.as_p }}
-                                    <div style="display: inline;">{{ textstring_form.as_p }}</div>
+                                    <div style="display: none;">{{ textstring_form.as_p }}</div>
                                     </br>
                                     <button type="submit" class="save btn btn-default">Salvar Cambios</button>
                                 </form>
                                 </form>
-                                <script>$("#id_department").chained("#id_division");</script>
                                 <script src="{% static "textStringHandler.js" %}"></script>
+                                <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
