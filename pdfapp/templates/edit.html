@@ -38,10 +38,14 @@
             </td>
             <td rowspan="1">
                 <div style=" width: 100%; height: 91%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+                    {{ error }}
+                    {% if error %}
+                    <p>Sorry. File Not Found :(</p>
+                    {% else %}
                     <div style="height: 5%; text-align: left; margin: 1% 3% 3% 8%; "><button id="showOther">Show HTML</button></div>
                     <textarea class="input" id="textStringHTML" style="width: 100%; height: 95%; text-align: left; margin: 1% 3% 3% 8%;" value=":C"></textarea>
-                    <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; ">{% autoescape off %}{{ html_string }}{% endautoescape %}</div>
-                    <script src="{% static "textStringHandler.js" %}"></script>
+                    <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; "></div>
+                    {% endif %}
                 </div>
                 <div><hr style="height: 9%;  color:gray; width:95%; size:1; margin-top:5%"></div>  
             </td>
@@ -49,14 +53,26 @@
         <tr>
             <td rowspan="1">
                 <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; margin: 9% 3% 3% 8%; overflow:scroll;">
-                    <form action="{% url 'edit' filePath=filePath fileName=fileName %}" method="post">
-                    <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}">
-                        {% csrf_token %}
-                        {{ program_form.as_p }}
-                        </br>
-                        <button type="submit" class="save btn btn-default">Salvar Cambios</button>
-                    </form>
-                    <script>$("#id_department").chained("#id_division");</script>
+                    {{ error }}
+                    {% if fileName %}
+                        {% if program_form %}
+                            {% if textstring_form %}
+                            <form action="{% url 'edit' filePath=filePath fileName=fileName %}" method="post">
+                            <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
+                                {% csrf_token %}
+                                {{ program_form.as_p }}
+                                <div style="display: inline;">{{ textstring_form.as_p }}</div>
+                                </br>
+                                <button type="submit" class="save btn btn-default">Salvar Cambios</button>
+                            </form>
+                            </form>
+                            <script>$("#id_department").chained("#id_division");</script>
+                            <script src="{% static "textStringHandler.js" %}"></script>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                    <p>Sorry. File Not Found :(</p>
+                    {% endif %}
                 </div>
             </th>
         </tr>
