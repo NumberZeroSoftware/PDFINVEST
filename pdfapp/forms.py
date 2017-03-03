@@ -67,12 +67,13 @@ class ProgramForm(forms.ModelForm):
             return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
 
         model = Program
-        fields = ('division', 'department', 'coordination', 'validity_trimester', 
-                  'validity_year', 'denomination', 'code', 'credits', 
-                  'requirements', 'theory_hours', 'practice_hours', 
-                  'laboratory_hours', 'objectives', 'synoptic_content', 
-                  'methodological_strategies', 'evaluation_strategies', 
-                  'recommended_sources', )
+        fields = ('code', 'denomination', 'validity_trimester', 'validity_year',
+                  'theory_hours', 'practice_hours', 'laboratory_hours', 
+                  'credits', 'requirements', 'objectives', 'synoptic_content',
+                  'methodological_strategies', 'evaluation_strategies',
+                  'recommended_sources',
+                  'division', 'department', 'coordination', 
+                   )
         widgets = {
             'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())), 
             'division': forms.ModelChoiceField(

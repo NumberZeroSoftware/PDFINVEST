@@ -81,17 +81,26 @@ def edit_view(request, fileName, filePath=None,):
     
     # Lets see if the html file is ready
     if html_file is not None:
-        # Lets see if it really exists
-        if Path(html_file).is_file():
-            with open(html_file, 'r') as f:
-                render_dic['html_string'] = f.read()
+        # We are still waiting for the textstring
+        if doc.html_text_string is None:
+            # Lets see if it really exists
+            if Path(html_file).is_file():
+                with open(html_file, 'r') as f:
+                    doc.html_text_string = f.read()
+                render_dic['html_string'] = doc.html_text_string
+                doc.processing_html = False
+                doc.ready_html = True
+                doc.save()
+            else:
+                render_dic['html_string'] = 'File is being created. Please be patient.'
+                render_dic['reload'] = True
+                doc.ready_html = False
+                doc.save()
+        # We already got it
+        else:
+            render_dic['html_string'] = doc.html_text_string
             doc.processing_html = False
             doc.ready_html = True
-            doc.save()
-        else:
-            render_dic['html_string'] = 'File is being created. Please be patient.'
-            render_dic['reload'] = True
-            doc.ready_html = False
             doc.save()
     else:
         render_dic['reload'] = True
@@ -116,6 +125,7 @@ def edit_view(request, fileName, filePath=None,):
     print("Name:", doc.file_name)
     print("Processing:", doc.processing_html)
     print("Ready:", doc.ready_html)
+    print("TextString on DB:", doc.html_text_string is not None)
     print("---------------")
 
     # Lets find the program information
