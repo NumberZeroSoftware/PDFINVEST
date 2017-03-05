@@ -143,10 +143,12 @@ class Program(models.Model):
         ('4: sep-dic', 'Septiembre-Diciembre'),
     )
 
-    # A program should have a Document associated.
+    # PDF document associated to the program.
     document = models.OneToOneField(
         Document,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     # The code of the assignature.
@@ -279,8 +281,10 @@ class Program(models.Model):
             hours_sum = hours_sum + self.practice_hours
         if self.laboratory_hours is not None:
             hours_sum = hours_sum + self.laboratory_hours 
-        if hours_sum <= 0 and not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
-            raise ValidationError('The sum of the total hours must be positive. Or the three of them must not be set.')
+        if (hours_sum <= 0 or hours_sum > 40) and \
+            not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
+            raise ValidationError('The sum of the total hours must be less or equal to fourty and positive or equal to zero. \
+                Or the three of them must not be set.')
 
     # Saves Program objects into the database.
     def save(self, *args, **kwargs):
