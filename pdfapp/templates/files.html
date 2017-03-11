@@ -35,76 +35,116 @@
         </div>
     </nav>
 
-    
-    <table style="width: auto; height: auto;">
-        
-        <tr>
-            <!-- List of uploaded documents -->
-            {% if documents %}
-                <p>Documentos: </p>
-                <p>
-                <ul>
-                    {% for document in documents %}
-                        <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a>   
-                        <input   id="{{ document.docfile.name|add:"_edit_btn" }}"
+    <div style="padding: 3% 5% 3% 5%;">
+    <table class="highlight" style="width: auto; height: auto;">
+        <tbody>
+            <tr>
+                <!-- List of uploaded documents -->
+                {% if documents %}
+                    <h4>Documentos: </h4>
+                    <p>
+                    <ul>
+                        {% for document in documents %}
+                            <tr>
+                                <td>
+                                    <a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a>   
+                                </td>
+                                <td style="padding-left:5%">
+                                    <a class="btn-floating btn-small waves-effect waves-light black" id="{{ document.docfile.name|add:"_edit_btn" }}"
+                                                            type="button"
+                                                            value="Editar" 
+                                                            onClick="window.open('../edit/{{ document.docfile.name }}', '_blank'); return false;">
+                                        <i class="material-icons left">mode_edit</i>
+                                    </a>
+                                </td>
+                                
+                                <!-- delete button -->
+                                <td style="padding-left:5%">
+                                    <a class="btn-floating btn-small waves-effect waves-light black">
+                                        <i class="material-icons left">delete_forever</i>
+                                    </a>
+                                </td>
+                                
+                                <!-- view button -->
+                                <td style="padding-left:5%">
+                                    <a class="btn-floating btn-small waves-effect waves-light black">
+                                        <i class="material-icons left">open_in_new</i>
+                                    </a>
+                                </td>
+                                
+                                
+                                
+                                
+                                
+                                
+                                <td>
+                                    <p><input   id="{{ document.docfile.name|add:"_btn" }}"
                                                 type="button"
-                                                value="Editar" 
-                                                onClick="window.open('../edit/{{ document.docfile.name }}', '_blank'); return false;"
-                        /></li>
-                        <script type="text/javascript">documents.push("{{ document.docfile.name }}");</script>
-                        
-                    {% endfor %}
-                </ul>
-                </p>
-            {% else %}
-                <p>No documents to Show.</p>
-            {% endif %}
-        </tr>
-        
-        <tr>
-            {% if documents %}
-            <th style="text-align: left; vertical-align: text-top;">
-                {% for document in documents %}
-                <p><input   id="{{ document.docfile.name|add:"_btn" }}"
-                            type="button"
-                            value="Show " 
-                            onClick="showStuff('{{ document.docfile.name }}', this); resize(documents); return false;"
-                /></p>
-                <script type="text/javascript">
-                    document.getElementById('{{ document.docfile.name|add:"_btn" }}').name = getDocumentName("{{ document.docfile.name }}"); 
-                    document.getElementById('{{ document.docfile.name|add:"_btn" }}').value = document.getElementById('{{ document.docfile.name|add:"_btn" }}'). value + document.getElementById('{{ document.docfile.name|add:"_btn" }}').name;
-                </script>
-                {% endfor %}
-            </th>
-            <th>
-            <table style="  margin-left: left;
-                            margin-right: auto;
-                            width: 100%;
-                            height: auto;">
-                <tr>
+                                                value="Show " 
+                                                onClick="showStuff('{{ document.docfile.name }}', this); resize(documents); return false;"
+                                    /></p>
+                                    <script type="text/javascript">
+                                        document.getElementById('{{ document.docfile.name|add:"_btn" }}').name = getDocumentName("{{ document.docfile.name }}"); 
+                                        document.getElementById('{{ document.docfile.name|add:"_btn" }}').value = document.getElementById('{{ document.docfile.name|add:"_btn" }}'). value + document.getElementById('{{ document.docfile.name|add:"_btn" }}').name;
+                                    </script>                                    
+                                </td>
+                                
+                                
+                                <td>
+                                    <th id="{{ document.docfile.name }}" style="display: none;">
+                                        <div style="border: 2px solid;
+                                               padding: 10px;
+                                               width: auto;
+                                               height: auto;
+                                               resize: both;
+                                               overflow: auto;">
+                                            <embed  src= "{{ document.docfile.url }}" 
+                                                    style="     margin-left: auto;
+                                                                margin-right: auto;
+                                                                width: 100%;
+                                                                    height: 100%;"
+                                                />
+                                        </div>
+                                    </th>
+                                </td>
+                                
+                                
+                            </tr>
+                            <script type="text/javascript">documents.push("{{ document.docfile.name }}");</script>
+                            
+                        {% endfor %}
+                    </ul>
+                    </p>
+                {% else %}
+                    <p>No documents to Show.</p>
+                {% endif %}
+            </tr>
+            
+            <tr>
+                {% if documents %}
+                <th style="text-align: left; vertical-align: text-top;">
                     {% for document in documents %}
-                        <th id="{{ document.docfile.name }}" style="display: none;">
-                            <div style="border: 2px solid;
-                                   padding: 10px;
-                                   width: auto;
-                                   height: auto;
-                                   resize: both;
-                                   overflow: auto;">
-                                <embed  src= "{{ document.docfile.url }}" 
-                                        style="     margin-left: auto;
-                                                    margin-right: auto;
-                                                    width: 100%;
-                                                    height: 100%;"
-                                />
-                            </div>
-                        </th>
+
                     {% endfor %}
-                </tr>
-            </table>
-            </th>
-        {% endif %}
-        </tr>
+                </th>
+                <th>
+                <table style="  margin-left: left;
+                                margin-right: auto;
+                                width: 100%;
+                                height: auto;">
+                    <tr>
+                        {% for document in documents %}
+
+                        {% endfor %}
+                    </tr>
+                </table>
+                </th>
+            {% endif %}
+            </tr>
+        </tbody>
     </table>
+    </div>
+    
     
     </body>
 
