@@ -16,7 +16,6 @@ from pdb import set_trace
 from utils.shell import call_main
 
 
-
 def upload_view(request):
     # Handle file upload
     if request.method == 'POST':
@@ -45,6 +44,7 @@ def upload_view(request):
         'upload.html',
         {'documents': documents, 'form': form}
     )
+    #Ver de que habria que hacer render entonces
 
 # Get the edit view of a file
 # request is the django request handle
@@ -151,3 +151,15 @@ def edit_view(request, fileName, filePath=None,):
     render_dic['textstring_form'] = textstring_form
 
     return render(request, 'edit.html', render_dic)
+
+
+def show_files(request):
+    # Load documents for the list page
+    documents = Document.objects.all()
+
+    # Render list page with the documents and the form
+    return render(
+        request,
+        'files.html',
+        {'documents': documents}
+    )
