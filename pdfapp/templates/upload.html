@@ -30,8 +30,7 @@
         <div class="nav-wrapper  red darken-3">
             <a href="#" class="brand-logo">&ensp; Conversor de PDF a HTML</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <!--<li><a href="sass.html">Archivos</a></li>-->
-                <li><a href="#">Archivos</a></li>
+                <li><a href="/pdfapp/files/">Archivos</a></li>
             </ul>
         </div>
     </nav>
@@ -43,36 +42,33 @@
         <tr>
             
             <div class="container" style="margin-top: 7%; height: 370px; width:85%;  background-position: center center; background-size: cover; background-image: url(/static/images/coffee.jpg);">        
-                    
-                    <div  style="width:70%; height: 30px; margin: auto; padding-top:6%">
-                        <div class="card horizontal">
-                            <div class="card-image" style="margin: auto">
-                                <i class="material-icons" style="font-size: 200px;">picture_as_pdf</i>  
-                                
-                                </div>
-                                <div class="card-stacked">
-                                    <div class="card-content" style="text-indent: 1em;">
-                                        <h3>&ensp; Subir Archivo</h3>
-                                        <!-- Upload form. Note enctype attribute! -->
-                                        <form action="{% url "upload" %}" method="post" enctype="multipart/form-data">
-                                            {% csrf_token %}
-                                            <p>{{ form.non_field_errors }}</p>
-                                            
-                                            <p>{{ form.docfile.help_text }}</p>
-                                            
-                                            <p>
-                                                {{ form.docfile.errors }}
-                                                {{ form.docfile }}
-                                            </p>
-                                            </br>
-                                            <p><input class="red darken-2 btn" type="submit" value="Subir"/></p>
-                                        </form>
+                <div  style="width:70%; height: 30px; margin: auto; padding-top:5%">
+                    <div class="card horizontal">
+                        <div class="card-image" style="margin: auto">
+                            <i class="material-icons" style="font-size: 200px;">picture_as_pdf</i>  
+                        </div>
+                        
+                        <div class="card-stacked">
+                            <div class="card-content" style="text-indent: 1em; padding-top: 1%">
+                                <h3>&ensp; Subir Archivo</h3>
+                                <!-- Upload form. Note enctype attribute! -->
+                                <form action="{% url "upload" %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <p >{{ form.non_field_errors }}</p>
                                     
+                                    <p>{{ form.docfile.help_text }}</p>
                                     
-                                </div>
+                                    <p>
+                                        {{ form.docfile.errors }}
+                                        {{ form.docfile }}
+                                    </p>
+                                    </br>
+                                    <p style="text-align:right; padding-right:9%"><input class="red darken-2 btn" type="submit" value="Subir"/></p>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
             
             
