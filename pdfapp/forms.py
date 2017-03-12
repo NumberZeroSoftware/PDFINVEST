@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.forms.widgets import TextInput
 
 from .models import Document, Program, Division, Department
 
@@ -87,4 +88,20 @@ class ProgramForm(forms.ModelForm):
                             required=False
                             ),
             'department': DepartmentChainedSelectWidget(),
+            'code': TextInput(attrs={'class':'input-field  col s3'}),
+            'denomination': TextInput(attrs={'class':'materialize-textarea'}),
+            #'validity_year': TextInput(attrs={'class':'input-field'}),
+            #'validity_trimester': TextInput(attrs={'class':'input-field'}),
+            'theory_hours': TextInput(attrs={'class':'input-field'}),
+            'practice_hours': TextInput(attrs={'class':'input-field'}),
+            'laboratory_hours': TextInput(attrs={'class':'input-field'}),
+            'credits': TextInput(attrs={'class':'input-field'}),
+            'requirements': TextInput(attrs={'class':'input-field'}),
+            'objectives': TextInput(attrs={'class':'input-field'}),
+            'synoptic_content': TextInput(attrs={'class':'input-field'}),
+            'methodological_strategies': TextInput(attrs={'class':'input-field'}),
+            'evaluation_strategies': TextInput(attrs={'class':'input-field'}),
+            'recommended_sources': TextInput(attrs={'class':'input-field'}),
+            #'department': TextInput(attrs={'class':'input-field'}),
+            'coordination': TextInput(attrs={'class':'input-field'}),
         }
