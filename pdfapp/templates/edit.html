@@ -1,14 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html style="width: 100%; height: 100%;">
-
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
-    
-    <!-- Compiled and minified JavaScript -->
-    <script src="{% static "js/materialize.min.js" %}"></script>    
-    
-    <script src="{% static "textStringHandler.js" %}"></script>
         
     <head>
         <meta charset="utf-8">
@@ -22,6 +14,12 @@
         <!-- Jquery and Chained Selection-->
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
+
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
+        
+        <!-- Compiled and minified JavaScript -->
+        <script src="{% static "js/materialize.min.js" %}"></script>    
     </head>
     
     <body style="width: 100%; height: 100%;">
@@ -92,7 +90,7 @@
                                         </br>
                                         <button type="submit" class="save btn btn-default">Salvar Cambios</button>
                                     </form>
-                                    
+                                    <script src="{% static "textStringHandler.js" %}"></script>
                                     <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script>
                                     {% endif %}
                                 {% endif %}
