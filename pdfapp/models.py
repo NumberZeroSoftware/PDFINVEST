@@ -269,6 +269,8 @@ class Program(models.Model):
     code = models.ForeignKey(
         Code,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     number = models.CharField(
         max_length=4,
