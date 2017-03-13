@@ -93,9 +93,9 @@
                                         {{ program_form.non_field_errors }}
                                         {% for field in program_form %}
                                                 <div class="input-field">
-                                                    {{ field.errors }}
                                                     {{ field }}
                                                     {{ field.label_tag }} 
+                                                    {{ field.errors }}
                                                 </div>
                                         {% endfor %}
                                         </div>

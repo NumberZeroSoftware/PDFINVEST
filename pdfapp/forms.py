@@ -16,7 +16,7 @@ class DivErrorList(ErrorList):
          return self.as_divs()
      def as_divs(self):
          if not self: return ''
-         return '<div class="errorlist">%s</div>' % ''.join(['<div class="error">%s</div>' % e for e in self])
+         return format_html('<div class="errorlist">%s</div>' % ''.join(['<div class="error red-text">%s</div>' % e for e in self]))
 
 
 # Custom widgets

@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from .models import Document, Program, Department, Division
-from .forms import UploadFileForm, ProgramForm, TextStringForm
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList
 
 from datetime import date
 from pathlib import Path
@@ -133,8 +133,8 @@ def edit_view(request, fileName, filePath=None,):
 
     # Lets see if they are sending the information or requesting it
     if request.method == "POST": 
-        program_form = ProgramForm(request.POST, instance=program, prefix="program")
-        textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring")
+        program_form = ProgramForm(request.POST, instance=program, prefix="program", error_class=DivErrorList)
+        textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring", error_class=DivErrorList)
         
         if program_form.is_valid() and textstring_form.is_valid():
             program = program_form.save(commit=True)
@@ -144,8 +144,8 @@ def edit_view(request, fileName, filePath=None,):
         # Lets select the right division if a department was chosen
         if program.department is not None:
             program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
-        program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program")
-        textstring_form = TextStringForm(instance=doc, prefix="textstring")
+        program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
+        textstring_form = TextStringForm(instance=doc, prefix="textstring", error_class=DivErrorList)
 
     render_dic['program_form'] = program_form
     render_dic['textstring_form'] = textstring_form
