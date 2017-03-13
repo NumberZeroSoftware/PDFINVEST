@@ -12,7 +12,7 @@
         <title>Edit PDF's: Sorry. File Not Found :(</title>
         {% endif %}
         <!-- Jquery and Chained Selection-->
-        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
 
         <!-- Compiled and minified CSS -->
@@ -26,7 +26,7 @@
         
         <nav>
             <div class="nav-wrapper  red darken-3">
-                <a href="#" class="brand-logo">&ensp; Conversor de PDF a HTML</a>
+                <a href="/pdfapp/upload/" class="brand-logo">&ensp; Conversor de PDF a HTML</a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li><a href="/pdfapp/files/">Archivos</a></li>
                 </ul>
@@ -63,7 +63,9 @@
                             {% if reload %}
                                 <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
                             {% else %}
-                                <div style="height: 5%; text-align: left; margin: 1% 3% 3% 8%; "><button id="showOther">Show HTML</button></div>
+                                <div style="height: 5%; text-align: left; margin: 1% 3% 3% 8%; ">
+                                    <button class="waves-effect red darken-3 btn" id="showOther">Mostrar HTML</button>
+                                </div>
                                 <textarea class="input" id="textStringHTML" style="width: 100%; height: 95%; text-align: left; margin: 1% 3% 3% 8%;" value=":C"></textarea>
                                 <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; "></div>
                             {% endif %}
@@ -74,7 +76,7 @@
             </tr>
             <tr>
                 <td rowspan="1">
-                    <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; overflow:scroll;">
+                    <div class="row" style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; overflow:scroll;">
                         {{ error }}
                         {% if fileName %}
                             {% if reload %}
@@ -82,13 +84,12 @@
                             {% else %}
                                 {% if program_form %}
                                     {% if textstring_form %}
-                                    
-                                    <form class="col s6" method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
+                                    <form class="col s12" method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
                                         {% csrf_token %}
-                                        <div class="container" style="margin-left:3%;">{{ program_form.as_p }}</div>
+                                        <div style="margin-left:3%;">{{ program_form.as_p }}</div>
                                         <div style="display: none;">{{ textstring_form.as_p }}</div>
                                         </br>
-                                        <button type="submit" class="save btn btn-default">Salvar Cambios</button>
+                                        <button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button>
                                     </form>
                                     <script src="{% static "textStringHandler.js" %}"></script>
                                     <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script>
@@ -103,4 +104,4 @@
             </tr>
         </table>
     </body>
-    </html>
+</html>
