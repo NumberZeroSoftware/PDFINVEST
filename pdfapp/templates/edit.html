@@ -23,6 +23,8 @@
 
         <!-- text String Handler Script -->
         <script src="{% static "programHandler.js" %}"></script> 
+        <!-- Custom Css -->
+        <script rel="stylesheet" type="text/css" src="{% static "edit.css" %}"></script> 
     </head>
     
     <body style="width: 100%; height: 100%;">
@@ -79,7 +81,7 @@
             </tr>
             <tr>
                 <td rowspan="1">
-                    <div class="row" style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; overflow:scroll;">
+                    <div class="row" style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; ">
                         {{ error }}
                         {% if fileName %}
                             {% if reload %}
@@ -89,7 +91,7 @@
                                     {% if textstring_form %}
                                     <form class="col s12" method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
                                         {% csrf_token %}
-                                        <div class="container" style="margin-left:3%;">
+                                        <div class="container" style="margin-left:3%; ">
                                         {{ program_form.non_field_errors }}
                                         {% for field in program_form %}
                                                 <div class="input-field">
