@@ -19,7 +19,10 @@
         <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
         
         <!-- Compiled and minified JavaScript -->
-        <script src="{% static "js/materialize.min.js" %}"></script>    
+        <script src="{% static "js/materialize.min.js" %}"></script>  
+
+        <!-- text String Handler Script -->
+        <script src="{% static "programHandler.js" %}"></script> 
     </head>
     
     <body style="width: 100%; height: 100%;">
@@ -85,13 +88,24 @@
                                     
                                     <form class="col s6" method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
                                         {% csrf_token %}
-                                        <div class="container" style="margin-left:3%;">{{ program_form.as_p }}</div>
+                                        <div class="container" style="margin-left:3%;">
+                                        {{ program_form.non_field_errors }}
+                                        {% for field in program_form %}
+                                                <div class="input-field">
+                                                    {{ field.errors }}
+                                                    {{ field }}
+                                                    {{ field.label_tag }} 
+                                                </div>
+                                        {% endfor %}
+                                        </div>
                                         <div style="display: none;">{{ textstring_form.as_p }}</div>
                                         </br>
                                         <button type="submit" class="save btn btn-default">Salvar Cambios</button>
                                     </form>
+                                    <!-- text String Handler Script -->
                                     <script src="{% static "textStringHandler.js" %}"></script>
-                                    <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script>
+                                    <!-- Chained Script -->
+                                    <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script> 
                                     {% endif %}
                                 {% endif %}
                             {% endif %}

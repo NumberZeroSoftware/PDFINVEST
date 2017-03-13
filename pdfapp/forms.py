@@ -4,10 +4,20 @@ from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.forms.widgets import TextInput
+from django.forms.utils import ErrorList
 
 from .models import Document, Program, Division, Department
 
 from datetime import date
+
+# Custom Errors
+class DivErrorList(ErrorList):
+     def __str__(self):  
+         return self.as_divs()
+     def as_divs(self):
+         if not self: return ''
+         return '<div class="errorlist">%s</div>' % ''.join(['<div class="error">%s</div>' % e for e in self])
+
 
 # Custom widgets
 
