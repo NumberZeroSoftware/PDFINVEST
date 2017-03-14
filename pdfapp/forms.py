@@ -91,7 +91,7 @@ class SelectMultipleMaterialize(SelectMultiple):
         final_attrs = self.build_attrs(attrs, name=name)
         output = [format_html('<select multiple{}>', flatatt(final_attrs))]
         options = self.render_options(value)
-        output.append(format_html("<option value="" disabled selected>Choose your option</option>"))
+        output.append('<option value="" disabled selected>--------</option>')
         if options:
             output.append(options)
         output.append('</select>')
