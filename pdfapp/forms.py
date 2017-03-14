@@ -3,8 +3,8 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.forms.widgets import TextInput, Textarea
-from django.forms.utils import ErrorList
+from django.forms.widgets import TextInput, Textarea, Input
+from django.forms.utils import ErrorList, flatatt
 
 from .models import Document, Program, Division, Department
 
@@ -50,6 +50,37 @@ class DepartmentChainedSelectWidget(forms.Select):
                            department_reference,
                            force_text(option_label))
 
+# Materialize Range Field
+# To understand how to overload go to:
+# https://code.djangoproject.com/ticket/20674
+# https://docs.djangoproject.com/en/1.10/_modules/django/forms/widgets/#Input (Look for Input, TextInput, NumberInput)
+class NumberRangeFieldInput(Input):
+    input_type = 'range'
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        if value != '':
+            # Only add the 'value' attribute if a value is non-empty.
+            final_attrs['value'] = force_text(self.format_value(value))
+        return format_html('<p class="range-field"><input{} /></p>', flatatt(final_attrs))
+
+    def __init__(self, range_min=0, range_max=100, step=1, attrs=None):
+        if attrs is not None:
+            self.input_type = attrs.pop('type', self.input_type)
+        else:
+            attrs = {}
+
+        if not 'min' in attrs:
+            attrs['min'] = str(range_min)
+
+        if not 'max' in attrs:
+            attrs['max'] = str(range_max)
+
+        if not 'step' in attrs:
+            attrs['step'] = str(step)
+
+        super(NumberRangeFieldInput, self).__init__(attrs)
 
 # Forms
 
@@ -102,9 +133,9 @@ class ProgramForm(forms.ModelForm):
             # 'denomination': TextInput(attrs={'class':'materialize-textarea'}),
             # 'validity_year': TextInput(attrs={'class':'input-field'}),
             # 'validity_trimester': TextInput(attrs={'class':'input-field'}),
-            # 'theory_hours': TextInput(attrs={'class':'input-field'}),
-            # 'practice_hours': TextInput(attrs={'class':'input-field'}),
-            # 'laboratory_hours': TextInput(attrs={'class':'input-field'}),
+            'theory_hours': NumberRangeFieldInput(range_max=40),
+            'practice_hours': NumberRangeFieldInput(range_max=40),
+            'laboratory_hours': NumberRangeFieldInput(range_max=40),
             # 'credits': TextInput(attrs={'class':'input-field'}),
             'requirements': Textarea(attrs={'class':'materialize-textarea'}),
             'objectives': Textarea(attrs={'class':'materialize-textarea'}),
