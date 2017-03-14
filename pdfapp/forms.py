@@ -3,15 +3,11 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-<<<<<<< HEAD
-from django.forms.widgets import TextInput, SelectMultiple
-from django.forms.utils import ErrorList
-=======
-from django.forms.widgets import TextInput, Textarea, Input
+from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple
 from django.forms.utils import ErrorList, flatatt
->>>>>>> ee646dad1e342cebc4933338751b3686f9159da4
 
-from .models import Document, Program, Division, Department
+
+from .models import Document, Program, Division, Department, Coordination
 
 from datetime import date
 
@@ -87,6 +83,33 @@ class NumberRangeFieldInput(Input):
 
         super(NumberRangeFieldInput, self).__init__(attrs)
 
+# Materialize Multiple Select
+class SelectMultipleMaterialize(SelectMultiple):
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = []
+        final_attrs = self.build_attrs(attrs, name=name)
+        output = [format_html('<select multiple{}>', flatatt(final_attrs))]
+        options = self.render_options(value)
+        output.append(format_html("<option value="" disabled selected>Choose your option</option>"))
+        if options:
+            output.append(options)
+        output.append('</select>')
+        return mark_safe('\n'.join(output))
+
+    def render_option(self, selected_choices, option_value, option_label):
+        if option_value is None:
+            option_value = ''
+        option_value = force_text(option_value)
+        if option_value in selected_choices:
+            selected_html = mark_safe(' selected')
+            if not self.allow_multiple_selected:
+                # Only allow for a single selection.
+                selected_choices.remove(option_value)
+        else:
+            selected_html = ''
+        return format_html('<option value="{}"{}>{}</option>', option_value, selected_html, force_text(option_label))
+
 # Forms
 
 class UploadFileForm(forms.ModelForm):
@@ -149,5 +172,5 @@ class ProgramForm(forms.ModelForm):
             'evaluation_strategies': Textarea(attrs={'class':'materialize-textarea'}),
             'recommended_sources': Textarea(attrs={'class':'materialize-textarea'}),
             # 'department': TextInput(attrs={'class':'input-field'}),
-            # 'coordination': TextInput(attrs={'class':'input-field'}),
+            'coordination': SelectMultipleMaterialize(choices=Coordination.objects.all()),
         }
