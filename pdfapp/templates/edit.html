@@ -12,7 +12,7 @@
         <title>Edit PDF's: Sorry. File Not Found :(</title>
         {% endif %}
         <!-- Jquery and Chained Selection-->
-        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="{% static "/js/jquery-1.10.2.min.js" %}"></script>
         <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
 
         <!-- Compiled and minified CSS -->
@@ -106,7 +106,6 @@
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
                                         </div>  
-                                        </br>
                                         <button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button>
                                     </form>
                                     <!-- text String Handler Script -->
