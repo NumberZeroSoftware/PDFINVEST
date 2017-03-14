@@ -6,6 +6,7 @@ from .validators import validate_program_years
 from .validators import validate_non_zero
 from .validators import validate_days_month
 from .validators import validate_years
+from .validators import validate_max_hours
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
@@ -19,6 +20,12 @@ class Document(models.Model):
     # The date of the upload.
     date = models.DateTimeField(
         default=datetime.now,
+        blank=True,
+    )
+
+    # Chosen name of the document.
+    name = models.CharField(
+        max_length=60,
         blank=True,
     )
 
@@ -333,7 +340,7 @@ class Program(models.Model):
         blank=True,
         null=True, 
         verbose_name='Horas de Teoría',
-        validators=[validate_positive_integer],
+        validators=[validate_positive_integer, validate_max_hours],
     )
 
     # Number of hours of practice in the assignature.
@@ -341,7 +348,7 @@ class Program(models.Model):
         blank=True,
         null=True,
         verbose_name='Horas de Práctica',
-        validators=[validate_positive_integer],
+        validators=[validate_positive_integer, validate_max_hours],
     )
 
     # Number of hours of laboratory in the assignature.
@@ -349,7 +356,7 @@ class Program(models.Model):
         blank=True,
         null=True,
         verbose_name='Horas de Laboratorio',
-        validators=[validate_positive_integer],
+        validators=[validate_positive_integer, validate_max_hours],
     )
 
     # Number of crédits in the assignature. Must be a number between 0 and 16.
@@ -444,9 +451,9 @@ class Program(models.Model):
             hours_sum = hours_sum + self.practice_hours
         if self.laboratory_hours is not None:
             hours_sum = hours_sum + self.laboratory_hours 
-        if (hours_sum <= 0 or hours_sum > 40) and \
+        if (hours_sum < 0 or hours_sum > 40) and \
             not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
-            raise ValidationError('La suma de las horas debe ser mayor que cero y menor que cuarenta.')
+            raise ValidationError('La suma de las horas debe ser no negativa y menor que cuarenta.')
 
     # Saves Program objects into the database.
     def save(self, *args, **kwargs):

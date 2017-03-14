@@ -29,6 +29,13 @@ def validate_non_zero(value):
             params={'value': value},
         )
 
+# Validates that a given integer is less or equal than 40.
+def validate_max_hours(value):
+    if value > 40:
+        raise ValidationError(
+            _('Número, %(value)s, deberia ser menos o igual que 40'),
+            params={'value': value},
+        )
 
 # Validates that an integer given is between 0 and 16.
 def validate_credits(value):
