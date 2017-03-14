@@ -103,6 +103,23 @@
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
                                         </div>  
+                                            <div style="display: none;">{{ textstring_form.as_p }}</div>
+                                            </br>
+                                        </div>  
+=======
+                                        {% csrf_token %}
+                                        <div class="container" style="margin-left:3%; ">
+                                        {{ program_form.non_field_errors }}
+                                        {% for field in program_form %}
+                                                <div class="input-field">
+                                                    {{ field }}
+                                                    {{ field.label_tag }} 
+                                                    {{ field.errors }}
+                                                </div>
+                                        {% endfor %}
+                                        </div>
+                                        <div style="display: none;">{{ textstring_form.as_p }}</div>
+>>>>>>> ee646dad1e342cebc4933338751b3686f9159da4
                                         </br>
                                         <button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button>
                                     </form>

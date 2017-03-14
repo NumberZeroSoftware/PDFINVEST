@@ -3,8 +3,13 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+<<<<<<< HEAD
 from django.forms.widgets import TextInput, SelectMultiple
 from django.forms.utils import ErrorList
+=======
+from django.forms.widgets import TextInput, Textarea, Input
+from django.forms.utils import ErrorList, flatatt
+>>>>>>> ee646dad1e342cebc4933338751b3686f9159da4
 
 from .models import Document, Program, Division, Department
 
@@ -16,7 +21,7 @@ class DivErrorList(ErrorList):
          return self.as_divs()
      def as_divs(self):
          if not self: return ''
-         return format_html('<div class="errorlist">%s</div>' % ''.join(['<div class="error red-text">%s</div>' % e for e in self]))
+         return format_html('<div class="errorlist longText">%s</div>' % ''.join(['<div class="error red-text longText">%s</div>' % e for e in self]))
 
 
 # Custom widgets
@@ -50,6 +55,37 @@ class DepartmentChainedSelectWidget(forms.Select):
                            department_reference,
                            force_text(option_label))
 
+# Materialize Range Field
+# To understand how to overload go to:
+# https://code.djangoproject.com/ticket/20674
+# https://docs.djangoproject.com/en/1.10/_modules/django/forms/widgets/#Input (Look for Input, TextInput, NumberInput)
+class NumberRangeFieldInput(Input):
+    input_type = 'range'
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        if value != '':
+            # Only add the 'value' attribute if a value is non-empty.
+            final_attrs['value'] = force_text(self.format_value(value))
+        return format_html('<p class="range-field"><input{} /></p>', flatatt(final_attrs))
+
+    def __init__(self, range_min=0, range_max=100, step=1, attrs=None):
+        if attrs is not None:
+            self.input_type = attrs.pop('type', self.input_type)
+        else:
+            attrs = {}
+
+        if not 'min' in attrs:
+            attrs['min'] = str(range_min)
+
+        if not 'max' in attrs:
+            attrs['max'] = str(range_max)
+
+        if not 'step' in attrs:
+            attrs['step'] = str(step)
+
+        super(NumberRangeFieldInput, self).__init__(attrs)
 
 # Forms
 
@@ -98,22 +134,20 @@ class ProgramForm(forms.ModelForm):
                             required=False
                             ),
             'department': DepartmentChainedSelectWidget(),
-            'code': TextInput(attrs={'class':'input-field  col s3'}),
-            'denomination': TextInput(attrs={'class':'materialize-textarea'}),
-            #'validity_year': TextInput(attrs={'class':'input-field'}),
-            #'validity_trimester': TextInput(attrs={'class':'input-field'}),
-            'theory_hours': TextInput(attrs={'class':'input-field'}),
-            'practice_hours': TextInput(attrs={'class':'input-field'}),
-            'laboratory_hours': TextInput(attrs={'class':'input-field'}),
-            'credits': TextInput(attrs={'class':'input-field'}),
-            
-            'requirements': TextInput(attrs={'class':'materialize-textarea'}),
-            'objectives': TextInput(attrs={'class':'materialize-textarea'}),
-            'synoptic_content': TextInput(attrs={'class':'materialize-textarea'}),
-            'methodological_strategies': TextInput(attrs={'class':'materialize-textarea'}),
-            'evaluation_strategies': TextInput(attrs={'class':'materialize-textarea'}),
-            'recommended_sources': TextInput(attrs={'class':'materialize-textarea'}),
-            
-            #'department': TextInput(attrs={'class':'input-field'}),
-            #'coordination': TextInput(attrs={'style': 'height: 100px'}),
+            # 'code': TextInput(attrs={'class':'input-field  col s3'}),
+            # 'denomination': TextInput(attrs={'class':'materialize-textarea'}),
+            # 'validity_year': TextInput(attrs={'class':'input-field'}),
+            # 'validity_trimester': TextInput(attrs={'class':'input-field'}),
+            'theory_hours': NumberRangeFieldInput(range_max=40),
+            'practice_hours': NumberRangeFieldInput(range_max=40),
+            'laboratory_hours': NumberRangeFieldInput(range_max=40),
+            # 'credits': TextInput(attrs={'class':'input-field'}),
+            'requirements': Textarea(attrs={'class':'materialize-textarea'}),
+            'objectives': Textarea(attrs={'class':'materialize-textarea'}),
+            'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),
+            'methodological_strategies': Textarea(attrs={'class':'materialize-textarea'}),
+            'evaluation_strategies': Textarea(attrs={'class':'materialize-textarea'}),
+            'recommended_sources': Textarea(attrs={'class':'materialize-textarea'}),
+            # 'department': TextInput(attrs={'class':'input-field'}),
+            # 'coordination': TextInput(attrs={'class':'input-field'}),
         }
