@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.forms.widgets import TextInput
+from django.forms.widgets import TextInput, SelectMultiple
 from django.forms.utils import ErrorList
 
 from .models import Document, Program, Division, Department
@@ -85,10 +85,10 @@ class ProgramForm(forms.ModelForm):
         model = Program
         fields = ('code', 'denomination', 'validity_trimester', 'validity_year',
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
-                  'credits', 'requirements', 'objectives', 'synoptic_content',
+                  'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
-                  'recommended_sources',
-                  'division', 'department', 'coordination', 
+                  'recommended_sources', 
+                  'division', 'department', 'coordination',
                    )
         widgets = {
             'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())), 
@@ -106,12 +106,14 @@ class ProgramForm(forms.ModelForm):
             'practice_hours': TextInput(attrs={'class':'input-field'}),
             'laboratory_hours': TextInput(attrs={'class':'input-field'}),
             'credits': TextInput(attrs={'class':'input-field'}),
-            'requirements': TextInput(attrs={'class':'input-field'}),
-            'objectives': TextInput(attrs={'class':'input-field'}),
-            'synoptic_content': TextInput(attrs={'class':'input-field'}),
-            'methodological_strategies': TextInput(attrs={'class':'input-field'}),
-            'evaluation_strategies': TextInput(attrs={'class':'input-field'}),
-            'recommended_sources': TextInput(attrs={'class':'input-field'}),
+            
+            'requirements': TextInput(attrs={'class':'materialize-textarea'}),
+            'objectives': TextInput(attrs={'class':'materialize-textarea'}),
+            'synoptic_content': TextInput(attrs={'class':'materialize-textarea'}),
+            'methodological_strategies': TextInput(attrs={'class':'materialize-textarea'}),
+            'evaluation_strategies': TextInput(attrs={'class':'materialize-textarea'}),
+            'recommended_sources': TextInput(attrs={'class':'materialize-textarea'}),
+            
             #'department': TextInput(attrs={'class':'input-field'}),
-            'coordination': TextInput(attrs={'class':'input-field'}),
+            #'coordination': TextInput(attrs={'style': 'height: 100px'}),
         }
