@@ -3,11 +3,11 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple
+from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Select
 from django.forms.utils import ErrorList, flatatt
 
 
-from .models import Document, Program, Division, Department, Coordination
+from .models import Document, Program, Division, Department, Coordination, Code
 
 from datetime import date
 
@@ -110,6 +110,33 @@ class SelectMultipleMaterialize(SelectMultiple):
             selected_html = ''
         return format_html('<option value="{}"{}>{}</option>', option_value, selected_html, force_text(option_label))
 
+# Materialize Select
+class SelectMaterialize(Select):
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = []
+        final_attrs = self.build_attrs(attrs, name=name)
+        output = [format_html('<select {}>', flatatt(final_attrs))]
+        options = self.render_options(value)
+        output.append('<option value="" disabled selected>--------</option>')
+        if options:
+            output.append(options)
+        output.append('</select>')
+        return mark_safe('\n'.join(output))
+
+    def render_option(self, selected_choices, option_value, option_label):
+        if option_value is None:
+            option_value = ''
+        option_value = force_text(option_value)
+        if option_value in selected_choices:
+            selected_html = mark_safe(' selected')
+            if not self.allow_multiple_selected:
+                # Only allow for a single selection.
+                selected_choices.remove(option_value)
+        else:
+            selected_html = ''
+        return format_html('<option value="{}"{}>{}</option>', option_value, selected_html, force_text(option_label))
+
 # Forms
 
 class UploadFileForm(forms.ModelForm):
@@ -130,9 +157,9 @@ class ProgramForm(forms.ModelForm):
         queryset=Division.objects.all(),
         required=False
     )
-    code = forms.CharField(min_length=1, max_length=10, 
-                            strip=True, required=True,
-                            label=Program._meta.get_field('code').verbose_name)
+    #code = forms.CharField(min_length=1, max_length=10, 
+    #                        strip=True, required=True,
+    #                        label=Program._meta.get_field('code').verbose_name)
     denomination = forms.CharField(min_length=1, max_length=60, 
                                 strip=True, required=True,
                                 label=Program._meta.get_field('denomination').verbose_name)
@@ -142,7 +169,7 @@ class ProgramForm(forms.ModelForm):
             return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
 
         model = Program
-        fields = ('code', 'denomination', 'validity_trimester', 'validity_year',
+        fields = ('code', 'number', 'denomination', 'validity_trimester', 'validity_year',
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
@@ -150,6 +177,7 @@ class ProgramForm(forms.ModelForm):
                   'division', 'department', 'coordination',
                    )
         widgets = {
+            'code': SelectMaterialize(choices=Code.objects.all()),
             'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())), 
             'division': forms.ModelChoiceField(
                             label=u'División',

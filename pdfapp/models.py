@@ -171,12 +171,16 @@ class Code(models.Model):
     code = models.CharField(
         max_length=3,
         primary_key=True,
+        verbose_name='Código',
     )
     # A department is responsible for many codes.
     department = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return "{}".format(self.code)
 
 # Autors of recommended sources.
 class Author(models.Model):
@@ -278,12 +282,14 @@ class Program(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
+        verbose_name='Código Departamento',
     )
     number = models.CharField(
         max_length=4,
         blank=True,
         validators=[RegexValidator(regex='^\d{3,4}$',
                     message='Debe estar formado por 3 o 4 dígitos.')],
+        verbose_name='Código Número',
     )
 
     # The suggested code is approved.
