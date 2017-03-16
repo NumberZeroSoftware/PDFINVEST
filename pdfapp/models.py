@@ -250,10 +250,10 @@ class Program(models.Model):
 
     # All posible trimesters, including the summer intensive.
     TRIMESTER = (
-        ('1: ene-mar', 'Enero-Marzo'),
-        ('2: abr-jul', 'Abril-Julio'),
-        ('3: jul-ago', 'Julio-Agosto (Intensivo)'),
-        ('4: sep-dic', 'Septiembre-Diciembre'),
+        ('Ene-Mar', 'Enero-Marzo'),
+        ('Abr-Jul', 'Abril-Julio'),
+        ('Jul-Ago', 'Julio-Agosto (Intensivo)'),
+        ('Sep-Dic', 'Septiembre-Diciembre'),
     )
     MONTH = (
         (1, 'Enero'),

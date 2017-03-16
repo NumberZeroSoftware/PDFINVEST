@@ -173,11 +173,10 @@ class ProgramForm(forms.ModelForm):
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
-                  'recommended_sources', 
+                  #'recommended_sources', 
                   'division', 'department', 'coordination',
                    )
         widgets = {
-            'code': SelectMaterialize(choices=Code.objects.all()),
             'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())), 
             'division': forms.ModelChoiceField(
                             label=u'División',

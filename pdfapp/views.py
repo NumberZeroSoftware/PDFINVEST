@@ -26,6 +26,7 @@ def upload_view(request):
             # Lets get the filename and filepath
             tokens = re.match(r'((?P<filePath>([^\.])+)/)*(?P<fileName>[^\.\s/]+)\.pdf', newdoc.docfile.path)
             newdoc.file_name = tokens.group('fileName')
+            newdoc.name = newdoc.file_name.upper()
             newdoc.file_path = tokens.group('filePath')
             newdoc.save()
             # Redirect to the document list after POST
@@ -139,6 +140,15 @@ def edit_view(request, fileName, filePath=None,):
         if program_form.is_valid() and textstring_form.is_valid():
             program = program_form.save(commit=True)
             textstring_form.save(commit=True)
+            if program_form.cleaned_data['code'] is not None \
+                and program_form.cleaned_data['number'] is not None:
+                doc.name = str(program_form.cleaned_data['code']).upper() + str(program_form.cleaned_data['number'])
+                if program_form.cleaned_data['validity_year'] is not None\
+                and program_form.cleaned_data['validity_trimester'] is not None:
+                    doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
+                        + '-' + str(program_form.cleaned_data['validity_trimester']).upper()
+                 
+                doc.save()
     else:
         program_form_initial = {}
         # Lets select the right division if a department was chosen
