@@ -177,6 +177,8 @@ class Code(models.Model):
     department = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
