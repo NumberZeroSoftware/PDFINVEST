@@ -11,17 +11,23 @@ from django.core.exceptions import ValidationError
 
 class TestProgram(TestCase):
 
-    def setUp(self):
-        self.program = Program.objects.create()
-
-    # Prueba de esquina: Código muy largo.
-    def test_code_long(self):
+    # Prueba de esquina: Código numérico muy largo.
+    def test_number_long(self):
         with self.assertRaises(Exception):
-            Program.objects.create(code="CIHDIUHDH81")
+            Program.objects.create(number="12345")
 
-    # Prueba de borde: Tamaño máximo del código.
-    def test_code_max(self):
-            Program.objects.create(code="0123456789")
+    # Prueba de borde: Tamaño máximo del código numérico.
+    def test_number_max(self):
+            Program.objects.create(number="1234")
+
+    # Prueba de esquina: Código numérico muy corto.
+    def test_number_short(self):
+        with self.assertRaises(Exception):
+            Program.objects.create(number="12")
+
+    # Prueba de borde: Tamaño mínimo del código numérico.
+    def test_number_min(self):
+            Program.objects.create(number="123")
 
     # Prueba de esquina: Créditos negativos.
     def test_credits_neg(self):

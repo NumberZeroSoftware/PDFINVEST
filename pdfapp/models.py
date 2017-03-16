@@ -444,7 +444,9 @@ class Program(models.Model):
     )
 
     #Checks day, month, year to see if they form a valid date.
-    def valid_date(d, m, y):
+    def valid_date(self, d, m, y):
+        if (m == None or y == None):
+            return True
         try:
             d = datetime.date(y, m, d)
             return True
@@ -463,7 +465,7 @@ class Program(models.Model):
         if (hours_sum < 0 or hours_sum > 40) and \
             not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
             raise ValidationError('La suma de las horas debe ser no negativa y menor que cuarenta.')
-        if not valid_date(self.validity_date_d, self.validity_date_m, self.validity_date_y):
+        if not self.valid_date(self.validity_date_d, self.validity_date_m, self.validity_date_y):
             raise ValidationError('La fecha de validación del programa no es una fecha válida.')
 
     # Saves Program objects into the database.
