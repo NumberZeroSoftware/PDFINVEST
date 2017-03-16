@@ -60,18 +60,55 @@ class TestProgram(TestCase):
         with self.assertRaises(Exception):
             Program.objects.create(laboratory_hours=-1)
 
-    # Prueba de esquina: Horas totales en cero.
-    def test_zero_hours(self):
-        with self.assertRaises(Exception):
-            Program.objects.create(theory_hours=0, 
-                                    practice_hours=0, 
-                                    laboratory_hours=0)
-
-    # Prueba de borde: Alguna hora en cero.
+    # Prueba de borde: Horas en cero.
     def test_nonzero_hours(self):
-        Program.objects.create(theory_hours=1, 
+        Program.objects.create(theory_hours=0, 
                                 practice_hours=0, 
                                 laboratory_hours=0)
+
+    # Prueba de borde: Máximo número de horas totales.
+    def test_max_hours(self):
+        Program.objects.create(theory_hours=20,
+                                practice_hours=16,
+                                laboratory_hours=4)
+
+    # Prueba de esquina: Demasiadas horas totales.
+    def test_excess_hours(self):
+        with self.assertRaises(Exception):
+            Program.objects.create(theory_hours=20,
+                                    practice_hours=16,
+                                    laboratory_hours=5)
+
+    # Prueba de borde: Máximo número de horas individualmente.
+    def test_max_theory(self):
+        Program.objects.create(theory_hours=40,
+                                practice_hours=0,
+                                laboratory_hours=0)
+    def test_max_practice(self):
+        Program.objects.create(theory_hours=0,
+                                practice_hours=40,
+                                laboratory_hours=0)
+    def test_max_laboratory(self):
+        Program.objects.create(theory_hours=0,
+                                practice_hours=0,
+                                laboratory_hours=40)
+
+    # Prueba de esquina: Excedido el número de horas individualmente.
+    def test_excess_theory(self):
+        with self.assertRaises(Exception):
+            Program.objects.create(theory_hours=41,
+                                    practice_hours=0,
+                                    laboratory_hours=0)
+    def test_excess_practice(self):
+        with self.assertRaises(Exception):
+            Program.objects.create(theory_hours=0,
+                                    practice_hours=41,
+                                    laboratory_hours=0)
+    def test_excess_laboratory(self):
+        with self.assertRaises(Exception):
+            Program.objects.create(theory_hours=0,
+                                    practice_hours=0,
+                                    laboratory_hours=41)
 
     # Prueba de esquina: Año pequeño.
     def test_small_year(self):
@@ -85,4 +122,9 @@ class TestProgram(TestCase):
     # Prueba: Año actual.
     def test_year_max(self):
         Program.objects.create(validity_year=2017)
+
+
+    # Prueba de borde: Fecha de validez mínima.
+    def test_validation_date(self):
+        Program.objects.create(validity_date_m=1, validity_date_y=1969)
 

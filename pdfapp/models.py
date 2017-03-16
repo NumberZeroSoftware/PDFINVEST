@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Document(models.Model):
@@ -448,7 +448,7 @@ class Program(models.Model):
         if (m == None or y == None):
             return True
         try:
-            d = datetime.date(y, m, d)
+            d = date(y, m, d)
             return True
         except ValueError:
             return False
