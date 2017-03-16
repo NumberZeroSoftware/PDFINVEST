@@ -57,8 +57,6 @@ def edit_view(request, fileName, filePath=None,):
     full_filePath = fileName
     if filePath is not None:
         full_filePath = filePath + "/" + fileName
-    #Calculate the number of years between 1969 and the present
-    render_dic['years'] = [i for i in range(date.today().year, 1968, -1)]
     #Save fileName
     render_dic['fileName'] = fileName
     render_dic['filePath'] = filePath
@@ -120,6 +118,7 @@ def edit_view(request, fileName, filePath=None,):
             doc.processing_html = True
             doc.save()
 
+    render_dic['Name'] = doc.name
     print("---------------")
     print("Checking:", full_filePath+".pdf")
     print("Folder:", doc.file_path)
@@ -138,7 +137,7 @@ def edit_view(request, fileName, filePath=None,):
         textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring", error_class=DivErrorList)
         
         if program_form.is_valid() and textstring_form.is_valid():
-            program = program_form.save(commit=True)
+            program_form.save(commit=True)
             textstring_form.save(commit=True)
             # Lets put a fancy name
             if program_form.cleaned_data['code'] is not None \
@@ -147,9 +146,27 @@ def edit_view(request, fileName, filePath=None,):
                 if program_form.cleaned_data['validity_year'] is not None\
                 and program_form.cleaned_data['validity_trimester'] is not None:
                     doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
-                        + '-' + str(program_form.cleaned_data['validity_trimester']).upper()
-                 
+                        + '-' + str(program_form.cleaned_data['validity_trimester']).upper() 
                 doc.save()
+            # Lets Check If a Date Changed
+            if program_form.has_changed():
+                if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data:
+                    month = int(program_form.cleaned_data['validity_date_m'])
+                    day = int(program_form.cleaned_data['validity_date_d'])
+                    if month == 1:
+                        program.validity_trimester = Program.TRIMESTER[0][0]
+                    elif month == 2 or month == 3 or (month == 4 and day <= 15):
+                        program.validity_trimester = Program.TRIMESTER[1][0]
+                    elif (month == 4 and 15 < day) or (4 < month and month <= 9):
+                        program.validity_trimester = Program.TRIMESTER[3][0]
+                    elif 9 < month and month <= 12:
+                        program.validity_trimester = Program.TRIMESTER[0][0]
+                    program.save()
+                    program_form_initial = {}
+                    # Lets select the right division if a department was chosen
+                    if program.department is not None:
+                        program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+                    program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
     else:
         program_form_initial = {}
         # Lets select the right division if a department was chosen

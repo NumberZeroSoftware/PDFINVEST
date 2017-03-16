@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         {{ error }}
         {% if fileName %}
-        <title>Edit PDF's: {{ fileName }}</title>
+        <title>Edit PDF's: {{ Name }}</title>
         {% else %}
         <!-- No Wabbit -->
         <title>Edit PDF's: Sorry. File Not Found :(</title>
@@ -103,11 +103,26 @@
                                                 {{ program_form.number.label_tag }} 
                                                 {{ program_form.number.errors }}
                                             </div>
+                                            <div class="input-field">
+                                                {{ program_form.denomination }}
+                                                {{ program_form.denomination.label_tag }} 
+                                                {{ program_form.denomination.errors }}
+                                            </div>
                                             <h4>Fecha</h4>
                                             <div class="input-field">
                                                 {{ program_form.validity_year }}
                                                 {{ program_form.validity_year.label_tag }} 
                                                 {{ program_form.validity_year.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.validity_date_m }}
+                                                {{ program_form.validity_date_m.label_tag }} 
+                                                {{ program_form.validity_date_m.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.validity_date_d.label_tag }}
+                                                {{ program_form.validity_date_d }}
+                                                {{ program_form.validity_date_d.errors }}
                                             </div>
                                             <div class="input-field">
                                                 {{ program_form.validity_trimester }}
@@ -184,6 +199,7 @@
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
                                         </div>  
+                                        </div> 
                                         <button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button>
                                     </form>
                                     <!-- text String Handler Script -->

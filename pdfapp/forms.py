@@ -157,9 +157,7 @@ class ProgramForm(forms.ModelForm):
         queryset=Division.objects.all(),
         required=False
     )
-    #code = forms.CharField(min_length=1, max_length=10, 
-    #                        strip=True, required=True,
-    #                        label=Program._meta.get_field('code').verbose_name)
+
     denomination = forms.CharField(min_length=1, max_length=60, 
                                 strip=True, required=True,
                                 label=Program._meta.get_field('denomination').verbose_name)
@@ -170,23 +168,22 @@ class ProgramForm(forms.ModelForm):
 
         model = Program
         fields = ('code', 'number', 'denomination', 'validity_trimester', 'validity_year',
+                  'validity_date_m', 'validity_date_d',
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
                   'division', 'department', 'coordination',
                    )
         widgets = {
-            'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())), 
+            'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())),
+            'validity_date_m': Select(),
+            'validity_date_d': NumberRangeFieldInput(range_min=1, range_max=31),
             'division': forms.ModelChoiceField(
                             label=u'División',
                             queryset=Division.objects.all(),
                             required=False
                             ),
             'department': DepartmentChainedSelectWidget(),
-            # 'code': TextInput(attrs={'class':'input-field  col s3'}),
-            # 'denomination': TextInput(attrs={'class':'materialize-textarea'}),
-            # 'validity_year': TextInput(attrs={'class':'input-field'}),
-            # 'validity_trimester': TextInput(attrs={'class':'input-field'}),
             'theory_hours': NumberRangeFieldInput(range_max=40),
             'practice_hours': NumberRangeFieldInput(range_max=40),
             'laboratory_hours': NumberRangeFieldInput(range_max=40),
@@ -196,7 +193,5 @@ class ProgramForm(forms.ModelForm):
             'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),
             'methodological_strategies': Textarea(attrs={'class':'materialize-textarea'}),
             'evaluation_strategies': Textarea(attrs={'class':'materialize-textarea'}),
-            'recommended_sources': Textarea(attrs={'class':'materialize-textarea'}),
-            # 'department': TextInput(attrs={'class':'input-field'}),
             'coordination': SelectMultipleMaterialize(choices=Coordination.objects.all()),
         }
