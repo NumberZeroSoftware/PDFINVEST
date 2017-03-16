@@ -140,6 +140,7 @@ def edit_view(request, fileName, filePath=None,):
         if program_form.is_valid() and textstring_form.is_valid():
             program = program_form.save(commit=True)
             textstring_form.save(commit=True)
+            # Lets put a fancy name
             if program_form.cleaned_data['code'] is not None \
                 and program_form.cleaned_data['number'] is not None:
                 doc.name = str(program_form.cleaned_data['code']).upper() + str(program_form.cleaned_data['number'])

@@ -173,7 +173,6 @@ class ProgramForm(forms.ModelForm):
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
-                  #'recommended_sources', 
                   'division', 'department', 'coordination',
                    )
         widgets = {
@@ -191,7 +190,7 @@ class ProgramForm(forms.ModelForm):
             'theory_hours': NumberRangeFieldInput(range_max=40),
             'practice_hours': NumberRangeFieldInput(range_max=40),
             'laboratory_hours': NumberRangeFieldInput(range_max=40),
-            # 'credits': TextInput(attrs={'class':'input-field'}),
+            'credits': NumberRangeFieldInput(range_max=16),
             'requirements': Textarea(attrs={'class':'materialize-textarea'}),
             'objectives': Textarea(attrs={'class':'materialize-textarea'}),
             'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),

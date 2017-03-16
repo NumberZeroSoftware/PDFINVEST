@@ -92,13 +92,91 @@
                                             {% csrf_token %}
                                             <div class="container" style="margin-left:3%;">
                                             {{ program_form.non_field_errors }}
-                                            {% for field in program_form %}
-                                                    <div class="input-field">
-                                                        {{ field }}
-                                                        {{ field.label_tag }} 
-                                                        {{ field.errors }}
-                                                    </div>
-                                            {% endfor %}
+                                            <h4>Identificación</h4>
+                                            <div class="input-field">
+                                                {{ program_form.code }}
+                                                {{ program_form.code.label_tag }} 
+                                                {{ program_form.code.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.number }}
+                                                {{ program_form.number.label_tag }} 
+                                                {{ program_form.number.errors }}
+                                            </div>
+                                            <h4>Fecha</h4>
+                                            <div class="input-field">
+                                                {{ program_form.validity_year }}
+                                                {{ program_form.validity_year.label_tag }} 
+                                                {{ program_form.validity_year.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.validity_trimester }}
+                                                {{ program_form.validity_trimester.label_tag }} 
+                                                {{ program_form.validity_trimester.errors }}
+                                            </div>
+                                            <h4>Horas</h4>
+                                            <div class="">
+                                                {{ program_form.theory_hours.label_tag }} 
+                                                {{ program_form.theory_hours }}
+                                                {{ program_form.theory_hours.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.practice_hours.label_tag }} 
+                                                {{ program_form.practice_hours }}
+                                                {{ program_form.practice_hours.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.laboratory_hours.label_tag }} 
+                                                {{ program_form.laboratory_hours }}
+                                                {{ program_form.laboratory_hours.errors }}
+                                            </div>
+                                            <h4>Adicional</h4>
+                                            <div class="">
+                                                {{ program_form.credits.label_tag }} 
+                                                {{ program_form.credits }}
+                                                {{ program_form.credits.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.requirements }}
+                                                {{ program_form.requirements.label_tag }} 
+                                                {{ program_form.requirements.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.objectives }}
+                                                {{ program_form.objectives.label_tag }} 
+                                                {{ program_form.objectives.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.synoptic_content }}
+                                                {{ program_form.synoptic_content.label_tag }} 
+                                                {{ program_form.synoptic_content.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.methodological_strategies }}
+                                                {{ program_form.methodological_strategies.label_tag }} 
+                                                {{ program_form.methodological_strategies.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.evaluation_strategies }}
+                                                {{ program_form.evaluation_strategies.label_tag }} 
+                                                {{ program_form.evaluation_strategies.errors }}
+                                            </div>
+                                            <h4>Encargado del Programa</h4>
+                                            <div class="input-field">
+                                                {{ program_form.division }}
+                                                {{ program_form.division.label_tag }} 
+                                                {{ program_form.division.errors }}
+                                            </div>
+                                            </h4>
+                                            <div class="input-field">
+                                                {{ program_form.department }}
+                                                {{ program_form.department.label_tag }} 
+                                                {{ program_form.department.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.coordination }}
+                                                {{ program_form.coordination.label_tag }} 
+                                                {{ program_form.coordination.errors }}
                                             </div>
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
