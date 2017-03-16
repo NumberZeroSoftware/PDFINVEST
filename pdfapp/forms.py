@@ -184,20 +184,15 @@ class ProgramForm(forms.ModelForm):
                             required=False
                             ),
             'department': DepartmentChainedSelectWidget(),
-            # 'code': TextInput(attrs={'class':'input-field  col s3'}),
-            # 'denomination': TextInput(attrs={'class':'materialize-textarea'}),
-            # 'validity_year': TextInput(attrs={'class':'input-field'}),
-            # 'validity_trimester': TextInput(attrs={'class':'input-field'}),
             'theory_hours': NumberRangeFieldInput(range_max=40),
             'practice_hours': NumberRangeFieldInput(range_max=40),
             'laboratory_hours': NumberRangeFieldInput(range_max=40),
-            # 'credits': TextInput(attrs={'class':'input-field'}),
             'requirements': Textarea(attrs={'class':'materialize-textarea'}),
             'objectives': Textarea(attrs={'class':'materialize-textarea'}),
             'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),
             'methodological_strategies': Textarea(attrs={'class':'materialize-textarea'}),
             'evaluation_strategies': Textarea(attrs={'class':'materialize-textarea'}),
             'recommended_sources': Textarea(attrs={'class':'materialize-textarea'}),
-            # 'department': TextInput(attrs={'class':'input-field'}),
+            # commit this line when makemigrations and migrate first time
             'coordination': SelectMultipleMaterialize(choices=Coordination.objects.all()),
         }
