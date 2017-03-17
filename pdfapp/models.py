@@ -362,7 +362,7 @@ class Program(models.Model):
 
     # Number of hours of theory in the assignature.
     theory_hours = models.PositiveIntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True, 
         verbose_name='Horas de Teoría',
@@ -371,7 +371,7 @@ class Program(models.Model):
 
     # Number of hours of practice in the assignature.
     practice_hours = models.PositiveIntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Práctica',
@@ -380,7 +380,7 @@ class Program(models.Model):
 
     # Number of hours of laboratory in the assignature.
     laboratory_hours = models.PositiveIntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Laboratorio',
@@ -389,7 +389,7 @@ class Program(models.Model):
 
     # Number of crédits in the assignature. Must be a number between 0 and 16.
     credits = models.IntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True,
         verbose_name='Unidad de Créditos',
@@ -532,7 +532,8 @@ class Programa(models.Model):
     )
 
     codigo = models.CharField(
-	    max_length=6,
+        max_length=6,
+        verbose_name='Código',
     )
 
 
@@ -541,7 +542,7 @@ class Programa(models.Model):
         blank=True,
         verbose_name='Denominación',
     )
-	
+    
 
     # Cantidad de créditos de la asignatura.
     creditos = models.PositiveIntegerField(
@@ -653,6 +654,22 @@ class Programa(models.Model):
     # Returns the primary key for the program and the code.
     def __str__(self): 
         return '%s %s %s %s' % (self.pk, self.codigo,self.fecha_vigAno,self.fecha_vigTrim)
+
+    # Get Every field name and value
+    def __iter__(self):
+        for field in self._meta.fields:
+            if field.verbose_name == "ID":
+                continue
+            elif field.verbose_name == "Fecha Vigencia Trimestre":
+                out = False
+                for choice in Programa.TRIMESTRE:
+                    if field.value_to_string(self) == choice[0]:
+                        yield (field.verbose_name, choice[1])
+                        out = True
+                if not out:
+                    yield (field.verbose_name, field.value_to_string(self))
+            else:
+                yield (field.verbose_name, field.value_to_string(self))
 
 class Solicitud(models.Model):
 
