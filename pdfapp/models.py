@@ -481,6 +481,16 @@ class Program(models.Model):
         except ValueError:
             return False
 
+    #Checks if complete.
+    def completed(self):
+        return (self.code and self.number and self.denomination and \
+                self.validity_year and self.validity_trimester and \
+                (self.theory_hours or self.practice_hours or \
+                self.laboratory_hours) and self.credits and \
+                self.requirements and self.objectives and \
+                self.synoptic_content and  self.methodological_strategies and \
+                self.evaluation_strategies and self.recommended_sources)
+
     # Checks the that the sum of the hours is positive.
     def clean(self):
         hours_sum = 0
@@ -495,6 +505,8 @@ class Program(models.Model):
             raise ValidationError('La suma de las horas debe ser no negativa y menor que cuarenta.')
         if not self.valid_date(self.validity_date_d, self.validity_date_m, self.validity_date_y):
             raise ValidationError('La fecha de validación del programa no es una fecha válida.')
+        if self.passes and not self.completed():
+            raise ValidationError('Faltan campos por ser llenados para pasar el programa.')
 
     # Saves Program objects into the database.
     def save(self, *args, **kwargs):
