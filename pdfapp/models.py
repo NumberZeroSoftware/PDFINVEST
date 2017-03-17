@@ -265,10 +265,10 @@ class Program(models.Model):
 
     # All posible trimesters, including the summer intensive.
     TRIMESTER = (
-        ('Ene-Mar', 'Enero-Marzo'),
-        ('Abr-Jul', 'Abril-Julio'),
-        ('Jul-Ago', 'Julio-Agosto (Intensivo)'),
-        ('Sep-Dic', 'Septiembre-Diciembre'),
+        ('0Ene-Mar', 'Enero-Marzo'),
+        ('1Abr-Jul', 'Abril-Julio'),
+        ('2Jul-Ago', 'Julio-Agosto (Intensivo)'),
+        ('3Sep-Dic', 'Septiembre-Diciembre'),
     )
     MONTH = (
         (1, 'Enero'),
@@ -532,9 +532,24 @@ class Programa(models.Model):
     )
 
     codigo = models.CharField(
-	max_length=6,
+	    max_length=6,
+    )
+
+
+    #Nombre de la asignatura
+    denominacion = models.TextField(
+        blank=True,
+        verbose_name='Denominación',
     )
 	
+
+    # Cantidad de créditos de la asignatura.
+    creditos = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name='Créditos'
+    )
+
     # Numero de horas de teoria de una asignatura.
     
     h_teoria = models.PositiveIntegerField(
@@ -613,12 +628,6 @@ class Programa(models.Model):
         verbose_name='Estrategias evaluativas',
     )
 
-    # Estrategias evaluativas de la asignatura.
-    estrat_eval = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name='Estrategias evaluativas',
-    )
 
     # Fuentes de la asignatura. 
     fuentes = models.TextField(
@@ -627,7 +636,7 @@ class Programa(models.Model):
         verbose_name='Fuentes',
     )
 
-    # Fuentes de la asignatura. 
+    # Cronograma de la asignatura. 
     cronograma = models.TextField(
         blank=True,
         null=True,
