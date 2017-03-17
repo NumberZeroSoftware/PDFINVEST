@@ -12,10 +12,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
 from datetime import datetime
+import re
 
 
 class Document(models.Model):
     # Document in PDF format to be uploaded to the page.
+    
+    RE_COURSE_CODE_A = '[A-Z]{2}[ \-]?[0-9]{4}'
+    RE_COURSE_CODE_B = '[A-Z]{3}[ \-]?[0-9]{3}'
     
     # The date of the upload.
     date = models.DateTimeField(
@@ -62,6 +66,16 @@ class Document(models.Model):
         null=True,
         blank=True,
     )
+    
+    # Returns a set of courses codes from an html file
+    @staticmethod
+    def course_codes(filename):
+        html_file = open(filename, 'r')
+        file_contents = html_file.read()
+        possible_codes_a = re.findall(Document.RE_COURSE_CODE_A ,file_contents)
+        possible_codes_b = re.findall(Document.RE_COURSE_CODE_B ,file_contents)
+        possible_codes = set(possible_codes_a + possible_codes_b)
+        return possible_codes
     
     # Avoids to mark the trancription as ready and processing at the same time.
     def clean(self):
