@@ -98,8 +98,8 @@
                                             
                                             <div>Codigos sugeridos:
                                                 <ol>
-                                                {% for course in possible_codes %}
-                                                    <li> {{ course }} </li>
+                                                {% for course_code, tup in course_dept_dict.items %}
+                                                    <li> {{ course_code }}  : {{ tup.0 }} : {{ tup.1 }} </li>
                                                 {% endfor %}
                                                 </ol>
                                             </div>
