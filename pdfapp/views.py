@@ -10,7 +10,7 @@ from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList
 
 from datetime import date
 from pathlib import Path
-import re
+import re, pdb
 from pdb import set_trace
 
 from utils.shell import call_main
@@ -73,6 +73,9 @@ def edit_view(request, fileName, filePath=None,):
             doc.ready_html = False
             doc.save()
         html_file = call_main(doc.file_path, doc.file_name) 
+        if html_file is not None:
+            render_dic['possible_codes'] = Document.course_codes(html_file)
+            
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
@@ -169,9 +172,11 @@ def edit_view(request, fileName, filePath=None,):
                     program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
     else:
         program_form_initial = {}
+        
         # Lets select the right division if a department was chosen
         if program.department is not None:
             program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+        
         program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(instance=doc, prefix="textstring", error_class=DivErrorList)
 
