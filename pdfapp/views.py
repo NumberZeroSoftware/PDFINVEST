@@ -6,7 +6,8 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from .models import Document, Program, Department, Division, Code
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm
+
 
 from datetime import date
 from pathlib import Path
@@ -220,8 +221,17 @@ def show_files(request):
 
 
 def sigpae(request):
+    render_dic = {}
+
+    if request.method == "POST":
+        pass
+    else:
+        search_form = SigpaeSearchForm(error_class=DivErrorList)
+
+    render_dic['search_form'] = search_form
+
     return render(
         request,
         'sigpae.html',
-        {}
+        render_dic
     )
