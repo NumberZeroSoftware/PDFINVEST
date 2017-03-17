@@ -1,0 +1,45 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <script src="{% static "hide.js" %}" type="text/javascript"></script>
+    <script src="{% static "cookies.js" %}" type="text/javascript"></script>
+
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
+    
+    <!-- Compiled and minified JavaScript -->
+    <script src="{% static "js/materialize.min.js" %}"></script>
+
+    <!-- Materialize icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <head>
+        <meta charset="utf-8">
+        <title>PDFINVEST The Best Invest</title>
+    </head>
+
+    <body>
+
+    <nav>
+        <div class="nav-wrapper red darken-3">
+            <a href="#" class="brand-logo">&ensp; Conversor de PDF a HTML</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="/pdfapp/files/">Archivos</a></li>
+                <li><a href="/pdfapp/sigpae/">SIGPAE</a></li>
+            </ul>
+        </div>
+    </nav>
+    {{ search_form.non_field_errors }}
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td><div class="input-field">{{ search_form.code }} {{ search_form.code.label_tag }} {{ search_form.code.errors }}</div></td>
+                <td><div class="input-field">{{ search_form.year }} {{ search_form.year.label_tag }} {{ search_form.year.errors }}</div></td>
+                <td><div class="input-field">{{ search_form.trimester }} {{ search_form.trimester.year }} {{ search_form.trimester.errors }}</div></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    </body>
+</html> 

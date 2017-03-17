@@ -196,3 +196,12 @@ class ProgramForm(forms.ModelForm):
             # commit this line when makemigrations and migrate first time
             'coordination': SelectMultipleMaterialize(choices=Coordination.objects.all()),
         }
+
+# Sigpae Search
+
+class SigpaeSearchForm(forms.Form):
+    def years():
+        return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
+    code = forms.CharField(label=u'Código de Materia',required=True, max_length=8)
+    year = forms.ChoiceField(label=u'Año', choices=zip([""]+years(), ["------"]+years()))
+    trimester = forms.ChoiceField(label=u'Trimestre', choices=Program.TRIMESTER)
