@@ -87,8 +87,7 @@ def edit_view(request, fileName, filePath=None,):
                 except Code.DoesNotExist:
                     course_dept_dict[course_code] = (dept_code, '')
                     # if this one is the case, then dept = ''
-                
-
+                    
             print(course_dept_dict)
             render_dic['course_dept_dict'] = course_dept_dict
 
