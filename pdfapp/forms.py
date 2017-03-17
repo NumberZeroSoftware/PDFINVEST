@@ -7,7 +7,7 @@ from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Sel
 from django.forms.utils import ErrorList, flatatt
 
 
-from .models import Document, Program, Division, Department, Coordination, Code
+from .models import Document, Program, Division, Department, Coordination, Code, Programa
 
 from datetime import date
 
@@ -202,6 +202,20 @@ class ProgramForm(forms.ModelForm):
 class SigpaeSearchForm(forms.Form):
     def years():
         return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
-    code = forms.CharField(label=u'Código de Materia',required=True, max_length=8)
-    year = forms.ChoiceField(label=u'Año', choices=zip([""]+years(), ["------"]+years()))
-    trimester = forms.ChoiceField(label=u'Trimestre', choices=Program.TRIMESTER)
+    code = forms.CharField(
+        label=u'Código de Materia',
+        required=True, 
+        max_length=6
+        )
+    year = forms.ChoiceField(
+        label=u'Año', 
+        choices=zip([""]+years(), ["------"]+years()),
+        required=False
+        )
+    trimester = forms.ChoiceField(
+        label=u'Trimestre', 
+        choices=Programa.TRIMESTRE,
+        required=False, 
+        widget=SelectMaterialize(choices=Programa.TRIMESTRE)
+        )
+

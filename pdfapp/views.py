@@ -5,9 +5,9 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .models import Document, Program, Department, Division, Code
+from .models import Document, Program, Department, Division, Code, Programa
 from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm
-
+from .queries_sigpae import queries_sigpae, if_in_sigpae 
 
 from datetime import date
 from pathlib import Path
@@ -183,7 +183,7 @@ def edit_view(request, fileName, filePath=None,):
                         if program_form.cleaned_data['validity_year'] is not None\
                         and program_form.cleaned_data['validity_trimester'] is not None:
                             doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
-                                + '-' + str(program_form.cleaned_data['validity_trimester']).upper() 
+                                + '-' + str(program.get_validity_trimester_display())
                         doc.save()
 
                 program_form_initial = {}
@@ -222,16 +222,36 @@ def show_files(request):
 
 def sigpae(request):
     render_dic = {}
-
+    results = []
     if request.method == "POST":
-        pass
+        search_form = SigpaeSearchForm(request.POST, error_class=DivErrorList)
+        if search_form.is_valid():
+            results = queries_sigpae(search_form.cleaned_data['code'].upper(), search_form.cleaned_data['trimester'], search_form.cleaned_data['year'])
+            if len(results) == 0:
+                search_form.add_error(None, "No se encontraron programas asociados en la búsqueda de " + search_form.cleaned_data['code'].upper())
     else:
         search_form = SigpaeSearchForm(error_class=DivErrorList)
 
+
     render_dic['search_form'] = search_form
+    render_dic['results'] = results
 
     return render(
         request,
         'sigpae.html',
+        render_dic
+    )
+
+
+def sigpae_show(request, pk):
+    search = Programa.objects.filter(pk=pk)
+    if len(search) != 0:
+        render_dic = {'program' :  search[0]}
+    else:
+        render_dic = {'error' : 'Programa no encontrado'}
+    
+    return render(
+        request,
+        'sigpae_show.html',
         render_dic
     )
