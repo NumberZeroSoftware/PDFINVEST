@@ -133,4 +133,9 @@ class TestProgram(TestCase):
         with self.assertRaises(ValidationError):
             Program.objects.create(validity_date_d=29, validity_date_m=2, validity_date_y=1969)
 
+    # Prueba: Programa no pasa sin campos mínimos.
+    def test_no_pass(self):
+        with self.assertRaises(ValidationError):
+            Program.objects.create(passes=True)
+
 
