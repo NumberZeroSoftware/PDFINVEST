@@ -23,6 +23,7 @@
 
         <!-- text String Handler Script -->
         <script src="{% static "programHandler.js" %}"></script> 
+        
     </head>
     
     <body style="width: 100%; height: 100%;">
@@ -92,8 +93,17 @@
                                             {% csrf_token %}
                                             <div class="container" style="margin-left:3%;">
                                             {{ program_form.non_field_errors }}
-                                            <h4>Identificación</h4>
-                                            <div class="input-field">
+                                            <h4>Identificación</h4> 
+                                            
+                                            <div>Codigos sugeridos:
+                                                <ol>
+                                                {% for course in possible_codes %}
+                                                    <li> {{ course }} </li>
+                                                {% endfor %}
+                                                </ol>
+                                            </div>
+                                            
+                                            <div id="code_select" class="input-field">
                                                 {{ program_form.code }}
                                                 {{ program_form.code.label_tag }} 
                                                 {{ program_form.code.errors }}
@@ -205,7 +215,9 @@
                                     <!-- text String Handler Script -->
                                     <script src="{% static "textStringHandler.js" %}"></script>
                                     <!-- Chained Script -->
-                                    <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script> 
+                                    <script type="text/javascript">
+                                        $("#id_program-department").chained("#id_program-division");
+                                    </script> 
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
