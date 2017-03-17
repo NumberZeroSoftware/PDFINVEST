@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .models import Document, Program, Department, Division
+from .models import Document, Program, Department, Division, Code
 from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList
 
 from datetime import date
@@ -73,9 +73,25 @@ def edit_view(request, fileName, filePath=None,):
             doc.ready_html = False
             doc.save()
         html_file = call_main(doc.file_path, doc.file_name) 
+        
         if html_file is not None:
-            render_dic['possible_codes'] = Document.course_codes(html_file)
-            
+            possible_course_codes = Document.course_codes(html_file)
+            course_dept_dict = {}
+            for course_code in possible_course_codes:
+                dept_code = course_code[0:3] if course_code[2].isalpha() else course_code[0:2]
+                try:
+                    course_dept_dict[course_code] = (dept_code, Code.objects.get(code=dept_code).department)
+                    # if this succeded, then there are two options: 
+                    #    department = None and department = some real department
+                except Code.DoesNotExist:
+                    course_dept_dict[course_code] = (dept_code, '')
+                    # if this one is the case, then dept = ''
+                
+
+            print(course_dept_dict)
+            render_dic['course_dept_dict'] = course_dept_dict
+
+
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
