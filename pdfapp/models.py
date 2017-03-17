@@ -12,10 +12,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
 from datetime import datetime, date
+import re
+
 
 
 class Document(models.Model):
     # Document in PDF format to be uploaded to the page.
+    
+    RE_COURSE_CODE_A = '[A-Z]{2}[ \-]?[0-9]{4}'
+    RE_COURSE_CODE_B = '[A-Z]{3}[ \-]?[0-9]{3}'
     
     # The date of the upload.
     date = models.DateTimeField(
@@ -62,6 +67,16 @@ class Document(models.Model):
         null=True,
         blank=True,
     )
+    
+    # Returns a set of courses codes from an html file
+    @staticmethod
+    def course_codes(filename):
+        html_file = open(filename, 'r')
+        file_contents = html_file.read()
+        possible_codes_a = re.findall(Document.RE_COURSE_CODE_A ,file_contents)
+        possible_codes_b = re.findall(Document.RE_COURSE_CODE_B ,file_contents)
+        possible_codes = set(possible_codes_a + possible_codes_b)
+        return possible_codes
     
     # Avoids to mark the trancription as ready and processing at the same time.
     def clean(self):
@@ -171,6 +186,7 @@ class Code(models.Model):
     code = models.CharField(
         max_length=3,
         primary_key=True,
+        verbose_name='Código',
     )
     # A department is responsible for many codes.
     department = models.ForeignKey(
@@ -179,6 +195,9 @@ class Code(models.Model):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return "{}".format(self.code)
 
 # Autors of recommended sources.
 class Author(models.Model):
@@ -246,10 +265,10 @@ class Program(models.Model):
 
     # All posible trimesters, including the summer intensive.
     TRIMESTER = (
-        ('1: ene-mar', 'Enero-Marzo'),
-        ('2: abr-jul', 'Abril-Julio'),
-        ('3: jul-ago', 'Julio-Agosto (Intensivo)'),
-        ('4: sep-dic', 'Septiembre-Diciembre'),
+        ('Ene-Mar', 'Enero-Marzo'),
+        ('Abr-Jul', 'Abril-Julio'),
+        ('Jul-Ago', 'Julio-Agosto (Intensivo)'),
+        ('Sep-Dic', 'Septiembre-Diciembre'),
     )
     MONTH = (
         (1, 'Enero'),
@@ -280,12 +299,14 @@ class Program(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
+        verbose_name='Código Departamento',
     )
     number = models.CharField(
         max_length=4,
         blank=True,
         validators=[RegexValidator(regex='^\d{3,4}$',
                     message='Debe estar formado por 3 o 4 dígitos.')],
+        verbose_name='Código Número',
     )
 
     # The suggested code is approved.
@@ -301,26 +322,29 @@ class Program(models.Model):
     )
 
     # Date of validity.
-    validity_date_y = models.IntegerField(
+    validity_date_y = models.PositiveIntegerField(
         null=True,
         blank=True,
         verbose_name='Año',
         validators=[validate_program_years]
     )
-    validity_date_m = models.IntegerField(
+    validity_date_m = models.PositiveIntegerField(
         choices=MONTH,
         blank=True,
         null=True,
         verbose_name='Mes',
     )
-    validity_date_d = models.IntegerField(
+
+    validity_date_d = models.PositiveIntegerField(
         default=1,
+        blank=True,
+        null=True,
         verbose_name='Día',
         validators=[validate_days_month],
     )
 
     # Proposed year of validity of the program.
-    validity_year = models.IntegerField(
+    validity_year = models.PositiveIntegerField(
         null=True,
         blank=True,
         verbose_name='Año propuesto',
@@ -338,6 +362,7 @@ class Program(models.Model):
 
     # Number of hours of theory in the assignature.
     theory_hours = models.PositiveIntegerField(
+    	default=0,
         blank=True,
         null=True, 
         verbose_name='Horas de Teoría',
@@ -346,6 +371,7 @@ class Program(models.Model):
 
     # Number of hours of practice in the assignature.
     practice_hours = models.PositiveIntegerField(
+    	default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Práctica',
@@ -354,6 +380,7 @@ class Program(models.Model):
 
     # Number of hours of laboratory in the assignature.
     laboratory_hours = models.PositiveIntegerField(
+    	default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Laboratorio',
@@ -362,6 +389,7 @@ class Program(models.Model):
 
     # Number of crédits in the assignature. Must be a number between 0 and 16.
     credits = models.IntegerField(
+    	default=0,
         blank=True,
         null=True,
         verbose_name='Unidad de Créditos',

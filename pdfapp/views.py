@@ -6,15 +6,14 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from .models import Document, Program, Department, Division
-from .forms import UploadFileForm, ProgramForm, TextStringForm
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList
 
 from datetime import date
 from pathlib import Path
-import re
+import re, pdb
 from pdb import set_trace
 
 from utils.shell import call_main
-
 
 
 def upload_view(request):
@@ -27,6 +26,7 @@ def upload_view(request):
             # Lets get the filename and filepath
             tokens = re.match(r'((?P<filePath>([^\.])+)/)*(?P<fileName>[^\.\s/]+)\.pdf', newdoc.docfile.path)
             newdoc.file_name = tokens.group('fileName')
+            newdoc.name = newdoc.file_name.upper()
             newdoc.file_path = tokens.group('filePath')
             newdoc.save()
             # Redirect to the document list after POST
@@ -45,6 +45,7 @@ def upload_view(request):
         'upload.html',
         {'documents': documents, 'form': form}
     )
+    #Ver de que habria que hacer render entonces
 
 # Get the edit view of a file
 # request is the django request handle
@@ -56,8 +57,6 @@ def edit_view(request, fileName, filePath=None,):
     full_filePath = fileName
     if filePath is not None:
         full_filePath = filePath + "/" + fileName
-    #Calculate the number of years between 1969 and the present
-    render_dic['years'] = [i for i in range(date.today().year, 1968, -1)]
     #Save fileName
     render_dic['fileName'] = fileName
     render_dic['filePath'] = filePath
@@ -74,6 +73,9 @@ def edit_view(request, fileName, filePath=None,):
             doc.ready_html = False
             doc.save()
         html_file = call_main(doc.file_path, doc.file_name) 
+        if html_file is not None:
+            render_dic['possible_codes'] = Document.course_codes(html_file)
+            
     except StopIteration:
         render_dic['error'] = 'Error: File not found.'
         render_dic['html_string'] = 'Error: File not found.'
@@ -119,6 +121,7 @@ def edit_view(request, fileName, filePath=None,):
             doc.processing_html = True
             doc.save()
 
+    render_dic['Name'] = doc.name
     print("---------------")
     print("Checking:", full_filePath+".pdf")
     print("Folder:", doc.file_path)
@@ -133,21 +136,63 @@ def edit_view(request, fileName, filePath=None,):
 
     # Lets see if they are sending the information or requesting it
     if request.method == "POST": 
-        program_form = ProgramForm(request.POST, instance=program, prefix="program")
-        textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring")
+        program_form = ProgramForm(request.POST, instance=program, prefix="program", error_class=DivErrorList)
+        textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring", error_class=DivErrorList)
         
         if program_form.is_valid() and textstring_form.is_valid():
-            program = program_form.save(commit=True)
+            program_form.save(commit=True)
             textstring_form.save(commit=True)
+            # Lets put a fancy name
+            if program_form.cleaned_data['code'] is not None \
+                and program_form.cleaned_data['number'] is not None:
+                doc.name = str(program_form.cleaned_data['code']).upper() + str(program_form.cleaned_data['number'])
+                if program_form.cleaned_data['validity_year'] is not None\
+                and program_form.cleaned_data['validity_trimester'] is not None:
+                    doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
+                        + '-' + str(program_form.cleaned_data['validity_trimester']).upper() 
+                doc.save()
+            # Lets Check If a Date Changed
+            if program_form.has_changed():
+                if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data:
+                    month = int(program_form.cleaned_data['validity_date_m'])
+                    day = int(program_form.cleaned_data['validity_date_d'])
+                    if month == 1:
+                        program.validity_trimester = Program.TRIMESTER[0][0]
+                    elif month == 2 or month == 3 or (month == 4 and day <= 15):
+                        program.validity_trimester = Program.TRIMESTER[1][0]
+                    elif (month == 4 and 15 < day) or (4 < month and month <= 9):
+                        program.validity_trimester = Program.TRIMESTER[3][0]
+                    elif 9 < month and month <= 12:
+                        program.validity_trimester = Program.TRIMESTER[0][0]
+                    program.save()
+                    program_form_initial = {}
+                    # Lets select the right division if a department was chosen
+                    if program.department is not None:
+                        program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+                    program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
     else:
         program_form_initial = {}
+        
         # Lets select the right division if a department was chosen
         if program.department is not None:
             program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
-        program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program")
-        textstring_form = TextStringForm(instance=doc, prefix="textstring")
+        
+        program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
+        textstring_form = TextStringForm(instance=doc, prefix="textstring", error_class=DivErrorList)
 
     render_dic['program_form'] = program_form
     render_dic['textstring_form'] = textstring_form
 
     return render(request, 'edit.html', render_dic)
+
+
+def show_files(request):
+    # Load documents for the list page
+    documents = Document.objects.all()
+
+    # Render list page with the documents and the form
+    return render(
+        request,
+        'files.html',
+        {'documents': documents}
+    )

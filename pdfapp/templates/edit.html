@@ -1,89 +1,232 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html style="width: 100%; height: 100%;">
-<head>
-    <meta charset="utf-8">
-    {{ error }}
-    {% if fileName %}
-    <title>Edit PDF's: {{ fileName }}</title>
-    {% else %}
-    <!-- No Wabbit -->
-    <title>Edit PDF's: Sorry. File Not Found :(</title>
-    {% endif %}
-    <!-- Jquery and Chained Selection-->
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
-</head>
-<body style="width: 100%; height: 100%;">
-    {% if reload %}
-    <!-- Reload page every 60s to check if the file is ready -->
-    <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>    
-    {% endif %}
-    <table style="width: 100%; height: 100%; max-width: 100%; min-width: 100%; max-height: 100%; table-layout: fixed;">
-        <tr>
-            <td rowspan="2">
-                <div style=" width: 100%; height: 100%;">
-                    <!-- Doc to Edit-->
-                    {% if doc %}
-                    <!-- Wabbit -->
-                    <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: hidden; white-space: nowrap;">
-                        <embed src="{{ doc.docfile.url }}" style="width: 100%; height: 100%;"/>
-                    </div>
-                    {% else %}
-                    <!-- No Wabbit -->
-                    Sorry. File Not Found :(
-                    {% endif %}
-                </div>
+        
+    <head>
+        <meta charset="utf-8">
+        {{ error }}
+        {% if fileName %}
+        <title>Edit PDF's: {{ Name }}</title>
+        {% else %}
+        <!-- No Wabbit -->
+        <title>Edit PDF's: Sorry. File Not Found :(</title>
+        {% endif %}
+        <!-- Jquery and Chained Selection-->
+        <script src="{% static "/js/jquery-1.10.2.min.js" %}"></script>
+        <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
 
-            </td>
-            <td rowspan="1">
-                <div style=" width: 100%; height: 91%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
-                    {{ error }}
-                    {% if error %}
-                        <p>Sorry. File Not Found :(</p>
-                    {% else %}
-                        {% if reload %}
-                            <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
+        
+        <!-- Compiled and minified JavaScript -->
+        <script src="{% static "js/materialize.min.js" %}"></script>  
+
+        <!-- text String Handler Script -->
+        <script src="{% static "programHandler.js" %}"></script> 
+        
+    </head>
+    
+    <body style="width: 100%; height: 100%;">
+        
+        <nav>
+            <div class="nav-wrapper  red darken-3">
+                <a href="/pdfapp/upload/" class="brand-logo">&ensp; Conversor de PDF a HTML</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="/pdfapp/files/">Archivos</a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        {% if reload %}
+        <!-- Reload page every 60s to check if the file is ready -->
+        <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>    
+        {% endif %}
+        <table style="width: 100%; height: 100%; max-width: 100%; min-width: 100%; max-height: 100%; table-layout: fixed;">
+            <tr>
+                <td rowspan="2">
+                    <div style=" width: 100%; height: 100%;">
+                        <!-- Doc to Edit-->
+                        {% if doc %}
+                        <!-- Wabbit -->
+                        <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: hidden; white-space: nowrap;">
+                            <embed src="{{ doc.docfile.url }}" style="width: 100%; height: 100%;"/>
+                        </div>
                         {% else %}
-                            <div style="height: 5%; text-align: left; margin: 1% 3% 3% 8%; "><button id="showOther">Show HTML</button></div>
-                            <textarea class="input" id="textStringHTML" style="width: 100%; height: 95%; text-align: left; margin: 1% 3% 3% 8%;" value=":C"></textarea>
-                            <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; "></div>
+                        <!-- No Wabbit -->
+                        Sorry. File Not Found :(
                         {% endif %}
-                    {% endif %}
-                </div>
-                <div><hr style="height: 9%;  color:gray; width:95%; size:1; margin-top:5%"></div>  
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="1">
-                <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; margin: 9% 3% 3% 8%; overflow:scroll;">
-                    {{ error }}
-                    {% if fileName %}
-                        {% if reload %}
-                            <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+                    </div>
+    
+                </td>
+                <td rowspan="1">
+                    <div style=" width: 100%; height: 91%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+                        {{ error }}
+                        {% if error %}
+                            <p>Sorry. File Not Found :(</p>
                         {% else %}
-                            {% if program_form %}
-                                {% if textstring_form %}
-                                <form action="{% url 'edit' filePath=filePath fileName=fileName %}" method="post">
-                                <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
-                                    {% csrf_token %}
-                                    {{ program_form.as_p }}
-                                    <div style="display: inline;">{{ textstring_form.as_p }}</div>
-                                    </br>
-                                    <button type="submit" class="save btn btn-default">Salvar Cambios</button>
-                                </form>
-                                </form>
-                                <script>$("#id_department").chained("#id_division");</script>
-                                <script src="{% static "textStringHandler.js" %}"></script>
-                                {% endif %}
+                            {% if reload %}
+                                <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+                            {% else %}
+                                <div style="height: 5%; text-align: left; margin: 1% 3% 3% 8%; ">
+                                    <button class="waves-effect red darken-3 btn" id="showOther">Mostrar HTML</button>
+                                </div>
+                                <textarea class="input" id="textStringHTML" style="width: 100%; height: 95%; text-align: left; margin: 1% 3% 3% 8%;" value=":C"></textarea>
+                                <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; "></div>
                             {% endif %}
                         {% endif %}
-                    {% else %}
-                    <p>Sorry. File Not Found :(</p>
-                    {% endif %}
-                </div>
-            </th>
-        </tr>
-    </table>
-</body>
+                    </div>
+                    <div><hr style="height: 9%;  color:gray; width:95%; size:1; margin-top:5%"></div>  
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="1">
+                    <div class="row" style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; overflow:scroll;">
+                        {{ error }}
+                        {% if fileName %}
+                            {% if reload %}
+                                <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+                            {% else %}
+                                {% if program_form %}
+                                    {% if textstring_form %}
+                                    <form class="col s12" method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
+                                        <div>
+                                            {% csrf_token %}
+                                            <div class="container" style="margin-left:3%;">
+                                            {{ program_form.non_field_errors }}
+                                            <h4>Identificación</h4> 
+                                            
+                                            <div>Codigos sugeridos:
+                                                <ol>
+                                                {% for course in possible_codes %}
+                                                    <li> {{ course }} </li>
+                                                {% endfor %}
+                                                </ol>
+                                            </div>
+                                            
+                                            <div id="code_select" class="input-field">
+                                                {{ program_form.code }}
+                                                {{ program_form.code.label_tag }} 
+                                                {{ program_form.code.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.number }}
+                                                {{ program_form.number.label_tag }} 
+                                                {{ program_form.number.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.denomination }}
+                                                {{ program_form.denomination.label_tag }} 
+                                                {{ program_form.denomination.errors }}
+                                            </div>
+                                            <h4>Fecha</h4>
+                                            <div class="input-field">
+                                                {{ program_form.validity_year }}
+                                                {{ program_form.validity_year.label_tag }} 
+                                                {{ program_form.validity_year.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.validity_date_m }}
+                                                {{ program_form.validity_date_m.label_tag }} 
+                                                {{ program_form.validity_date_m.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.validity_date_d.label_tag }}
+                                                {{ program_form.validity_date_d }}
+                                                {{ program_form.validity_date_d.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.validity_trimester }}
+                                                {{ program_form.validity_trimester.label_tag }} 
+                                                {{ program_form.validity_trimester.errors }}
+                                            </div>
+                                            <h4>Horas</h4>
+                                            <div class="">
+                                                {{ program_form.theory_hours.label_tag }} 
+                                                {{ program_form.theory_hours }}
+                                                {{ program_form.theory_hours.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.practice_hours.label_tag }} 
+                                                {{ program_form.practice_hours }}
+                                                {{ program_form.practice_hours.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.laboratory_hours.label_tag }} 
+                                                {{ program_form.laboratory_hours }}
+                                                {{ program_form.laboratory_hours.errors }}
+                                            </div>
+                                            <h4>Adicional</h4>
+                                            <div class="">
+                                                {{ program_form.credits.label_tag }} 
+                                                {{ program_form.credits }}
+                                                {{ program_form.credits.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.requirements }}
+                                                {{ program_form.requirements.label_tag }} 
+                                                {{ program_form.requirements.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.objectives }}
+                                                {{ program_form.objectives.label_tag }} 
+                                                {{ program_form.objectives.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.synoptic_content }}
+                                                {{ program_form.synoptic_content.label_tag }} 
+                                                {{ program_form.synoptic_content.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.methodological_strategies }}
+                                                {{ program_form.methodological_strategies.label_tag }} 
+                                                {{ program_form.methodological_strategies.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.evaluation_strategies }}
+                                                {{ program_form.evaluation_strategies.label_tag }} 
+                                                {{ program_form.evaluation_strategies.errors }}
+                                            </div>
+                                            <h4>Encargado del Programa</h4>
+                                            <div class="input-field">
+                                                {{ program_form.division }}
+                                                {{ program_form.division.label_tag }} 
+                                                {{ program_form.division.errors }}
+                                            </div>
+                                            </h4>
+                                            <div class="input-field">
+                                                {{ program_form.department }}
+                                                {{ program_form.department.label_tag }} 
+                                                {{ program_form.department.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.coordination }}
+                                                {{ program_form.coordination.label_tag }} 
+                                                {{ program_form.coordination.errors }}
+                                            </div>
+                                            <div style="display: none;">{{ textstring_form.as_p }}</div>
+                                            </br>
+                                        </div>  
+                                            <div style="display: none;">{{ textstring_form.as_p }}</div>
+                                            </br>
+                                        </div>  
+                                        </div> 
+                                        <button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button>
+                                    </form>
+                                    <!-- text String Handler Script -->
+                                    <script src="{% static "textStringHandler.js" %}"></script>
+                                    <!-- Chained Script -->
+                                    <script type="text/javascript">
+                                        $("#id_program-department").chained("#id_program-division");
+                                    </script> 
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <p>Sorry. File Not Found :(</p>
+                        {% endif %}
+                    </div>
+                </th>
+            </tr>
+        </table>
+    </body>
 </html>
