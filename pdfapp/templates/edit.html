@@ -190,10 +190,16 @@
                                                 {{ program_form.requirements.label_tag }} 
                                                 {{ program_form.requirements.errors }}
                                             </div>
+                                            <button type="button" class="waves-effect red darken-3 btn" id="objectives">Mostrar Objetivos Específicos</button>
                                             <div class="input-field">
                                                 {{ program_form.objectives }}
                                                 {{ program_form.objectives.label_tag }} 
                                                 {{ program_form.objectives.errors }}
+                                            </div>
+                                            <div class="input-field" id="specific_objectives">
+                                                {{ program_form.specific_objectives }}
+                                                {{ program_form.specific_objectives.label_tag }} 
+                                                {{ program_form.specific_objectives.errors }}
                                             </div>
                                             <div class="input-field">
                                                 {{ program_form.synoptic_content }}
@@ -234,7 +240,19 @@
                                             </br>
                                         </div>  
                                         </div> 
-                                        <button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button>
+                                        <table>
+                                            <tbody>
+                                                <tr>                                                    
+                                                    <td>
+                                                        <div class="">{{ program_form.passes }}{{ program_form.passes.label_tag }}{{ program_form.passes.errors }}
+                                                        </div>
+                                                    </td>
+                                                    <td><button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        
+                                        
                                     </form>
                                     <!-- text String Handler Script -->
                                     <script src="{% static "textStringHandler.js" %}"></script>

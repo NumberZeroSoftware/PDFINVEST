@@ -466,6 +466,7 @@ class Program(models.Model):
     # True if the document is ready.
     passes = models.BooleanField(
         default=False,
+        verbose_name='Enviar para aprobar',
     )
 
     # Additional fields.

@@ -1,6 +1,8 @@
 // Made by Christian Oliveros ( oliveroschristian.wordpress.com )
 // Last edit 12/03/2017
 
+var showingObjectives = false;
+
 $(document).ready(function() {
     $('#id_program-validity_year').material_select();
     $('#id_program-validity_date_m').material_select();
@@ -36,6 +38,37 @@ $(document).ready(function() {
     	}
     }
 
+
+    if ($('#id_program-specific_objectives').val() == "") {
+        $('#specific_objectives').hide();
+        showingObjectives = false;
+        $('#objectives').text('Agregar Objetivos Específicos');
+    }
+    else {
+        showingObjectives = true;
+        $('#objectives').text('Quitar Objetivos Específicos');
+    }
+
+    $('#objectives').on('click', function(){
+        if (showingObjectives) {
+            $('#specific_objectives').hide();
+            showingObjectives = false;
+            $('#objectives').text('Agregar Objetivos Específicos');
+            var aux = $('#id_program-objectives').val();
+            if ($('#id_program-specific_objectives').val() != "") {
+                aux = aux + "\n"+ $('#id_program-specific_objectives').val(); 
+            }          
+            $('#id_program-objectives').val(aux);
+            $('#id_program-specific_objectives').val("");
+
+        }
+        else
+        {
+            $('#specific_objectives').show();
+            showingObjectives = true;
+            $('#objectives').text('Quitar Objetivos Específicos');
+        }
+    });
   });
 
 
