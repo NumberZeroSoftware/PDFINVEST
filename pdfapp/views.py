@@ -158,16 +158,7 @@ def edit_view(request, fileName, filePath=None,):
         if program_form.is_valid() and textstring_form.is_valid():
             program_form.save(commit=True)
             textstring_form.save(commit=True)
-            # Lets put a fancy name
-            if program_form.cleaned_data['code'] is not None \
-                and program_form.cleaned_data['number'] is not None:
-                doc.name = str(program_form.cleaned_data['code']).upper() + str(program_form.cleaned_data['number'])
-                if program_form.cleaned_data['validity_year'] is not None\
-                and program_form.cleaned_data['validity_trimester'] is not None:
-                    doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
-                        + '-' + str(program_form.cleaned_data['validity_trimester']).upper() 
-                doc.save()
-            # Lets Check If a Date Changed
+            # Lets Check If a something Changed
             if program_form.has_changed():
                 if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data:
                     month = int(program_form.cleaned_data['validity_date_m'])
@@ -181,11 +172,25 @@ def edit_view(request, fileName, filePath=None,):
                     elif 9 < month and month <= 12:
                         program.validity_trimester = Program.TRIMESTER[0][0]
                     program.save()
-                    program_form_initial = {}
-                    # Lets select the right division if a department was chosen
-                    if program.department is not None:
-                        program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
-                    program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
+
+                # Lets put a fancy name
+                if 'code' in program_form.changed_data or 'number' in program_form.changed_data \
+                    or 'validity_year' in program_form.changed_data or 'validity_trimester' in program_form.changed_data:
+                    if program_form.cleaned_data['code'] is not None \
+                        and program_form.cleaned_data['number'] is not None:
+                        doc.name = str(program_form.cleaned_data['code']).upper() + str(program_form.cleaned_data['number'])
+                        if program_form.cleaned_data['validity_year'] is not None\
+                        and program_form.cleaned_data['validity_trimester'] is not None:
+                            doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
+                                + '-' + str(program_form.cleaned_data['validity_trimester']).upper() 
+                        doc.save()
+
+                program_form_initial = {}
+                # Lets select the right division if a department was chosen
+                if program.department is not None:
+                    program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+                program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
+
     else:
         program_form_initial = {}
         
@@ -211,4 +216,12 @@ def show_files(request):
         request,
         'files.html',
         {'documents': documents}
+    )
+
+
+def sigpae(request):
+    return render(
+        request,
+        'sigpae.html',
+        {}
     )

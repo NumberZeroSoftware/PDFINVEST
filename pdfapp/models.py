@@ -11,8 +11,9 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 
-from datetime import datetime
+from datetime import datetime, date
 import re
+
 
 
 class Document(models.Model):
@@ -333,7 +334,9 @@ class Program(models.Model):
         null=True,
         verbose_name='Mes',
     )
+
     validity_date_d = models.PositiveIntegerField(
+        default=1,
         blank=True,
         null=True,
         verbose_name='Día',
@@ -468,6 +471,16 @@ class Program(models.Model):
         blank=True,
     )
 
+    #Checks day, month, year to see if they form a valid date.
+    def valid_date(self, d, m, y):
+        if (m == None or y == None):
+            return True
+        try:
+            d = date(y, m, d)
+            return True
+        except ValueError:
+            return False
+
     # Checks the that the sum of the hours is positive.
     def clean(self):
         hours_sum = 0
@@ -480,6 +493,8 @@ class Program(models.Model):
         if (hours_sum < 0 or hours_sum > 40) and \
             not (self.theory_hours is None and self.practice_hours is None and self.laboratory_hours is None):
             raise ValidationError('La suma de las horas debe ser no negativa y menor que cuarenta.')
+        if not self.valid_date(self.validity_date_d, self.validity_date_m, self.validity_date_y):
+            raise ValidationError('La fecha de validación del programa no es una fecha válida.')
 
     # Saves Program objects into the database.
     def save(self, *args, **kwargs):
@@ -489,4 +504,253 @@ class Program(models.Model):
     # Returns the primary key for the program and the code.
     def __str__(self): 
         return '%s %s' % (self.pk, self.code)
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+
+
+
+# Base de datos del repositorio SIGPAE.
+
+
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+
+class Programa(models.Model):
+    # Crea una tabla con el programa completo asociado.
+    
+    TRIMESTRE = (
+        ('0Ene-Mar', 'Enero-Marzo'),
+        ('1Abr-Jul', 'Abril-Julio'),
+        ('2Jul-Ago', 'Julio-Agosto (Intensivo)'),
+        ('3Sep-Dic', 'Septiembre-Diciembre'),
+    )
+
+    codigo = models.CharField(
+	max_length=6,
+    )
+	
+    # Numero de horas de teoria de una asignatura.
+    
+    h_teoria = models.PositiveIntegerField(
+        blank=True,
+        null=True, 
+        verbose_name='Horas de Teoría',
+    )
+
+    # Numero de horas de practica de una asignatura.
+
+    h_prac = models.PositiveIntegerField(
+        blank=True,
+        null=True, 
+        verbose_name='Horas de Práctica',
+    )
+
+    # Numero de horas de laboratorio de una asignatura. 
+
+    h_lab = models.PositiveIntegerField(
+        blank=True,
+        null=True, 
+        verbose_name='Horas de Laboratorio',
+    )
+
+    # Year of validity of the program.
+
+    fecha_vigAno = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Año',
+    )
+
+
+    # Fecha de vigencia de un trimestre
+
+    fecha_vigTrim = models.CharField(
+        blank=True,
+        null=True,
+        choices=TRIMESTRE,
+        max_length=8,
+        verbose_name='Fecha Vigencia Trimestre',
+    )
+
+    # Objetivo general de la asignatura.
+    obj_g = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Objetivo general',
+    )
+
+    # Objetivos especificos de la asignatura.
+    obj_e = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Objetivo específico',
+    )
+
+    # Contenidos de la asignatura.
+    contenidos = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Contenidos',
+    )
+
+    # Estrategias de la asignatura.
+    estrategias = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Estrategias',
+    )
+
+    # Estrategias evaluativas de la asignatura.
+    estrat_eval = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Estrategias evaluativas',
+    )
+
+    # Estrategias evaluativas de la asignatura.
+    estrat_eval = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Estrategias evaluativas',
+    )
+
+    # Fuentes de la asignatura. 
+    fuentes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Fuentes',
+    )
+
+    # Fuentes de la asignatura. 
+    cronograma = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Cronograma',
+    )
+
+    # Contenido Sinoptico de la asignatura. 
+    sinoptico = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Contenidos Sipnóticos',
+    )
+
+    # Returns the primary key for the program and the code.
+    def __str__(self): 
+        return '%s %s %s %s' % (self.pk, self.codigo,self.fecha_vigAno,self.fecha_vigTrim)
+
+class Solicitud(models.Model):
+
+    # Crea una solicitud de un programa (entidad debil).
+
+    # Nombre de la coordinacion asociada.
+    nomcoord = models.CharField(
+        max_length=50,
+        verbose_name='Nombre Coordinacion',
+    )
+
+    # Programa por Asignar un profesor.
+    porasignar = models.BooleanField(
+        default=True,
+    )
+
+    # Programa por validar departamento.
+    porvalidarD = models.BooleanField(
+        default=True,
+    )
+
+    # Programa rechazado por coordinacion.
+    rechazadoC = models.BooleanField(
+        default=False,
+    )
+
+    # Programa validado por Coordinacion.
+    validadoC = models.BooleanField(
+        default=False,
+    )
+
+    # Programa enviado a Dace.
+
+    enviadoD = models.BooleanField(
+        default=False,
+    )
+
+    # Programa devuelto a Dace.
+    devueltoDace = models.BooleanField(
+        default=False,
+    )
+
+    # Fecha de elaboracion de la solicitud
+    fechaelab = models.DateTimeField(
+        default=datetime.now,
+    )
+
+    # Creditos del programa
+    credits = models.BooleanField(
+        verbose_name='Unidad de Créditos',
+    )
+
+    # Horas de teoria de una asignatura.
+    
+    h_teoria = models.BooleanField(
+        default=False,
+        verbose_name='Horas de Teoría',
+    )
+
+    # Hras de practica de una asignatura.
+
+    h_prac = models.BooleanField(
+        default=False,
+        verbose_name='Horas de Práctica',
+    )
+
+    #Horas de laboratorio de una asignatura. 
+
+    h_lab = models.BooleanField(
+        default=False,
+        verbose_name='Horas de Teoría',
+    )
+
+    # Trimestre del programa.
+    trime = models.CharField(
+        max_length=8,
+        verbose_name='Trimestre',
+    )
+
+    # Ano del programa.
+    ano = models.CharField(
+        max_length=8,
+        verbose_name='Año',
+    )
+
+    # Creditos de requisito del programa.
+    requisito_cre = models.BooleanField(
+        default=False,
+        verbose_name='Requisitos',
+    )
+
+    # Permisos de la coordinacion del programa.
+    permiso_coord = models.BooleanField(
+        default=False,
+        verbose_name='Permisos',
+    )
+
+    # Tipo de las materias del programa.
+    tipo_materia = models.CharField(
+        max_length=20,
+        verbose_name='Tipo',
+    )
+
+    # Toda solicitud se relaciona con un programa.
+    programa = models.ForeignKey(
+        Programa,
+        on_delete=models.CASCADE,
+    )
+
     
