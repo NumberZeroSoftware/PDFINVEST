@@ -93,6 +93,7 @@
                                         <div>
                                             {% csrf_token %}
                                             <div class="container" style="margin-left:3%;">
+                                            {% if alert %} <p>{{ alert }}</p>{% endif%}
                                             {{ program_form.non_field_errors }}
                                             <h4>Identificación</h4> 
                                             

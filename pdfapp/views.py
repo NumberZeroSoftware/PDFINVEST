@@ -186,11 +186,15 @@ def edit_view(request, fileName, filePath=None,):
                                 + '-' + str(program.get_validity_trimester_display())
                         doc.save()
 
-                program_form_initial = {}
-                # Lets select the right division if a department was chosen
-                if program.department is not None:
-                    program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
-                program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
+                if if_in_sigpae((str(program.code)+str(program.number)), program.validity_trimester, str(program.validity_year)):
+                    render_dic['alert'] = "Advertencia: El Programa " + program.denomination + " " + str(program.code) + str(program.number) \
+                        + " " + str(program.validity_year) + " " + program.get_validity_trimester_display() + " ya se encuentra en SIGPAE"
+
+            program_form_initial = {}
+            # Lets select the right division if a department was chosen
+            if program.department is not None:
+                program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+            program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
 
     else:
         program_form_initial = {}
