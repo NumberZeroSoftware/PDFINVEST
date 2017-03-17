@@ -166,6 +166,9 @@ class AdditionalName(models.Model):
         unique=True,
     )
 
+    def __str__(self):
+        return "{}".format(self.name)
+
 class AdditionalField(models.Model):
     # Additional field text.
 

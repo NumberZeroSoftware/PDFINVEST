@@ -4,9 +4,10 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.forms import formset_factory
 
-from .models import Document, Program, Department, Division, Code, Programa
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm
+from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm
 from .queries_sigpae import queries_sigpae, if_in_sigpae 
 
 from datetime import date
@@ -151,10 +152,25 @@ def edit_view(request, fileName, filePath=None,):
     # Lets find the program information
     program, _ = Program.objects.get_or_create(document=doc)
 
+    # Let get the additional fields
+    initial_fields = []
+    for extraField in program.additional_fields.all():
+        initial_fields.append(
+            {
+            'pk' : extraField.pk, 
+            'name': extraField.name,
+            'new_name': "",
+            'description' : extraField.description
+            }
+        )
+
+    additionalFieldsFormset = formset_factory(AdditionalFieldForm, can_delete=True)
+
     # Lets see if they are sending the information or requesting it
     if request.method == "POST": 
         program_form = ProgramForm(request.POST, instance=program, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring", error_class=DivErrorList)
+        additionalFieldsForm = additionalFieldsFormset(request.POST, initial=initial_fields, error_class=DivErrorList)
         
         if program_form.is_valid() and textstring_form.is_valid():
             program_form.save(commit=True)
@@ -205,7 +221,10 @@ def edit_view(request, fileName, filePath=None,):
         
         program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(instance=doc, prefix="textstring", error_class=DivErrorList)
+        additionalFieldsForm = additionalFieldsFormset(initial=initial_fields, error_class=DivErrorList)
 
+
+    render_dic['additionalFieldsForm'] = additionalFieldsForm
     render_dic['program_form'] = program_form
     render_dic['textstring_form'] = textstring_form
 

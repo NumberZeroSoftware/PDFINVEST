@@ -3,11 +3,11 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Select
+from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Select, HiddenInput
 from django.forms.utils import ErrorList, flatatt
 
 
-from .models import Document, Program, Division, Department, Coordination, Code, Programa
+from .models import Document, Program, Division, Department, Coordination, Code, Programa, AdditionalName
 
 from datetime import date
 
@@ -219,3 +219,25 @@ class SigpaeSearchForm(forms.Form):
         widget=SelectMaterialize(choices=Programa.TRIMESTRE)
         )
 
+
+# AdditionalField
+
+class AdditionalFieldForm(forms.Form):
+    pk = forms.IntegerField(widget=HiddenInput())
+
+    name = forms.ChoiceField(
+        label=u'Nombre', 
+        choices=Programa.TRIMESTRE,
+        required=False, 
+        widget=SelectMaterialize(choices=AdditionalName.objects.all())
+        )
+
+    new_name = forms.CharField(
+        label=u'Nuevo Nombre',
+        max_length=30
+        )
+
+    description = forms.CharField(
+        label=u'Contenido',
+        widget=Textarea(attrs={'class':'materialize-textarea'})
+        )
