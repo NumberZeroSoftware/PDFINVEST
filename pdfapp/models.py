@@ -166,6 +166,9 @@ class AdditionalName(models.Model):
         unique=True,
     )
 
+    def __str__(self):
+        return "{}".format(self.name)
+
 class AdditionalField(models.Model):
     # Additional field text.
 
@@ -265,10 +268,10 @@ class Program(models.Model):
 
     # All posible trimesters, including the summer intensive.
     TRIMESTER = (
-        ('Ene-Mar', 'Enero-Marzo'),
-        ('Abr-Jul', 'Abril-Julio'),
-        ('Jul-Ago', 'Julio-Agosto (Intensivo)'),
-        ('Sep-Dic', 'Septiembre-Diciembre'),
+        ('0Ene-Mar', 'Enero-Marzo'),
+        ('1Abr-Jul', 'Abril-Julio'),
+        ('2Jul-Ago', 'Julio-Agosto (Intensivo)'),
+        ('3Sep-Dic', 'Septiembre-Diciembre'),
     )
     MONTH = (
         (1, 'Enero'),
@@ -362,7 +365,7 @@ class Program(models.Model):
 
     # Number of hours of theory in the assignature.
     theory_hours = models.PositiveIntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True, 
         verbose_name='Horas de Teoría',
@@ -371,7 +374,7 @@ class Program(models.Model):
 
     # Number of hours of practice in the assignature.
     practice_hours = models.PositiveIntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Práctica',
@@ -380,7 +383,7 @@ class Program(models.Model):
 
     # Number of hours of laboratory in the assignature.
     laboratory_hours = models.PositiveIntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Laboratorio',
@@ -389,7 +392,7 @@ class Program(models.Model):
 
     # Number of crédits in the assignature. Must be a number between 0 and 16.
     credits = models.IntegerField(
-    	default=0,
+        default=0,
         blank=True,
         null=True,
         verbose_name='Unidad de Créditos',
@@ -532,9 +535,25 @@ class Programa(models.Model):
     )
 
     codigo = models.CharField(
-	max_length=6,
+        max_length=6,
+        verbose_name='Código',
     )
-	
+
+
+    #Nombre de la asignatura
+    denominacion = models.TextField(
+        blank=True,
+        verbose_name='Denominación',
+    )
+    
+
+    # Cantidad de créditos de la asignatura.
+    creditos = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name='Créditos'
+    )
+
     # Numero de horas de teoria de una asignatura.
     
     h_teoria = models.PositiveIntegerField(
@@ -613,12 +632,6 @@ class Programa(models.Model):
         verbose_name='Estrategias evaluativas',
     )
 
-    # Estrategias evaluativas de la asignatura.
-    estrat_eval = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name='Estrategias evaluativas',
-    )
 
     # Fuentes de la asignatura. 
     fuentes = models.TextField(
@@ -627,7 +640,7 @@ class Programa(models.Model):
         verbose_name='Fuentes',
     )
 
-    # Fuentes de la asignatura. 
+    # Cronograma de la asignatura. 
     cronograma = models.TextField(
         blank=True,
         null=True,
@@ -644,6 +657,22 @@ class Programa(models.Model):
     # Returns the primary key for the program and the code.
     def __str__(self): 
         return '%s %s %s %s' % (self.pk, self.codigo,self.fecha_vigAno,self.fecha_vigTrim)
+
+    # Get Every field name and value
+    def __iter__(self):
+        for field in self._meta.fields:
+            if field.verbose_name == "ID":
+                continue
+            elif field.verbose_name == "Fecha Vigencia Trimestre":
+                out = False
+                for choice in Programa.TRIMESTRE:
+                    if field.value_to_string(self) == choice[0]:
+                        yield (field.verbose_name, choice[1])
+                        out = True
+                if not out:
+                    yield (field.verbose_name, field.value_to_string(self))
+            else:
+                yield (field.verbose_name, field.value_to_string(self))
 
 class Solicitud(models.Model):
 

@@ -4,10 +4,11 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.forms import formset_factory
 
-from .models import Document, Program, Department, Division, Code
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm
-
+from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm
+from .queries_sigpae import queries_sigpae, if_in_sigpae 
 
 from datetime import date
 from pathlib import Path
@@ -150,10 +151,25 @@ def edit_view(request, fileName, filePath=None,):
     # Lets find the program information
     program, _ = Program.objects.get_or_create(document=doc)
 
+    # Let get the additional fields
+    initial_fields = []
+    for extraField in program.additional_fields.all():
+        initial_fields.append(
+            {
+            'pk' : extraField.pk, 
+            'name': extraField.name,
+            'new_name': "",
+            'description' : extraField.description
+            }
+        )
+
+    additionalFieldsFormset = formset_factory(AdditionalFieldForm, can_delete=True)
+
     # Lets see if they are sending the information or requesting it
     if request.method == "POST": 
         program_form = ProgramForm(request.POST, instance=program, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring", error_class=DivErrorList)
+        additionalFieldsForm = additionalFieldsFormset(request.POST, initial=initial_fields, error_class=DivErrorList)
         
         if program_form.is_valid() and textstring_form.is_valid():
             program_form.save(commit=True)
@@ -182,14 +198,18 @@ def edit_view(request, fileName, filePath=None,):
                         if program_form.cleaned_data['validity_year'] is not None\
                         and program_form.cleaned_data['validity_trimester'] is not None:
                             doc.name = doc.name + '-' + str(program_form.cleaned_data['validity_year']).upper() \
-                                + '-' + str(program_form.cleaned_data['validity_trimester']).upper() 
+                                + '-' + str(program.get_validity_trimester_display())
                         doc.save()
 
-                program_form_initial = {}
-                # Lets select the right division if a department was chosen
-                if program.department is not None:
-                    program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
-                program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
+                if if_in_sigpae((str(program.code)+str(program.number)), program.validity_trimester, str(program.validity_year)):
+                    render_dic['alert'] = "Advertencia: El Programa " + program.denomination + " " + str(program.code) + str(program.number) \
+                        + " " + str(program.validity_year) + " " + program.get_validity_trimester_display() + " ya se encuentra en SIGPAE"
+
+            program_form_initial = {}
+            # Lets select the right division if a department was chosen
+            if program.department is not None:
+                program_form_initial['division'] = Division.objects.filter(department__name=program.department)[0]
+            program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
 
     else:
         program_form_initial = {}
@@ -200,7 +220,10 @@ def edit_view(request, fileName, filePath=None,):
         
         program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(instance=doc, prefix="textstring", error_class=DivErrorList)
+        additionalFieldsForm = additionalFieldsFormset(initial=initial_fields, error_class=DivErrorList)
 
+
+    render_dic['additionalFieldsForm'] = additionalFieldsForm
     render_dic['program_form'] = program_form
     render_dic['textstring_form'] = textstring_form
 
@@ -221,16 +244,36 @@ def show_files(request):
 
 def sigpae(request):
     render_dic = {}
-
+    results = []
     if request.method == "POST":
-        pass
+        search_form = SigpaeSearchForm(request.POST, error_class=DivErrorList)
+        if search_form.is_valid():
+            results = queries_sigpae(search_form.cleaned_data['code'].upper(), search_form.cleaned_data['trimester'], search_form.cleaned_data['year'])
+            if len(results) == 0:
+                search_form.add_error(None, "No se encontraron programas asociados en la búsqueda de " + search_form.cleaned_data['code'].upper())
     else:
         search_form = SigpaeSearchForm(error_class=DivErrorList)
 
+
     render_dic['search_form'] = search_form
+    render_dic['results'] = results
 
     return render(
         request,
         'sigpae.html',
+        render_dic
+    )
+
+
+def sigpae_show(request, pk):
+    search = Programa.objects.filter(pk=pk)
+    if len(search) != 0:
+        render_dic = {'program' :  search[0]}
+    else:
+        render_dic = {'error' : 'Programa no encontrado'}
+    
+    return render(
+        request,
+        'sigpae_show.html',
         render_dic
     )
