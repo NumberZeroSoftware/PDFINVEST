@@ -3,11 +3,11 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Select
+from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Select, HiddenInput
 from django.forms.utils import ErrorList, flatatt
 
 
-from .models import Document, Program, Division, Department, Coordination, Code
+from .models import Document, Program, Division, Department, Coordination, Code, Programa, AdditionalName
 
 from datetime import date
 
@@ -172,7 +172,7 @@ class ProgramForm(forms.ModelForm):
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
-                  'division', 'department', 'coordination',
+                  'division', 'department', 'coordination', 'passes', 'specific_objectives'
                    )
         widgets = {
             'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())),
@@ -193,6 +193,52 @@ class ProgramForm(forms.ModelForm):
             'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),
             'methodological_strategies': Textarea(attrs={'class':'materialize-textarea'}),
             'evaluation_strategies': Textarea(attrs={'class':'materialize-textarea'}),
+            'specific_objectives' : Textarea(attrs={'class':'materialize-textarea'}),
             # commit this line when makemigrations and migrate first time
             'coordination': SelectMultipleMaterialize(choices=Coordination.objects.all()),
         }
+
+# Sigpae Search
+
+class SigpaeSearchForm(forms.Form):
+    def years():
+        return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
+    code = forms.CharField(
+        label=u'Código de Materia',
+        required=True, 
+        max_length=6
+        )
+    year = forms.ChoiceField(
+        label=u'Año', 
+        choices=zip([""]+years(), ["------"]+years()),
+        required=False
+        )
+    trimester = forms.ChoiceField(
+        label=u'Trimestre', 
+        choices=Programa.TRIMESTRE,
+        required=False, 
+        widget=SelectMaterialize(choices=Programa.TRIMESTRE)
+        )
+
+
+# AdditionalField
+
+class AdditionalFieldForm(forms.Form):
+    pk = forms.IntegerField(widget=HiddenInput())
+
+    name = forms.ChoiceField(
+        label=u'Nombre', 
+        choices=Programa.TRIMESTRE,
+        required=False, 
+        widget=SelectMaterialize(choices=AdditionalName.objects.all())
+        )
+
+    new_name = forms.CharField(
+        label=u'Nuevo Nombre',
+        max_length=30
+        )
+
+    description = forms.CharField(
+        label=u'Contenido',
+        widget=Textarea(attrs={'class':'materialize-textarea'})
+        )

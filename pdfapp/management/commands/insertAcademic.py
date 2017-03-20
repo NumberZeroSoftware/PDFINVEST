@@ -10,6 +10,7 @@ from pdfapp.models import Deanery
 from pdfapp.models import Department
 from pdfapp.models import Coordination
 from pdfapp.models import Code
+from pdfapp.models import AdditionalName
 
 import sys
 
@@ -28,6 +29,7 @@ class Command(BaseCommand):
             Deanery.objects.all().delete()
             Department.objects.all().delete()
             Coordination.objects.all().delete()
+            Code.objects.all().delete()
             print("Done")
 
         # Create divisions
@@ -222,5 +224,8 @@ class Command(BaseCommand):
         d = Code.objects.create(code='TEG', department=teg)
         d = Code.objects.create(code='TG', department=tg)
         d = Code.objects.create(code='USB', department=usb)
+
+        # Create The Other Field
+        AdditionalName.objects.get_or_create(name="Otro")
 
         print("Done")
