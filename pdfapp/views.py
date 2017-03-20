@@ -177,17 +177,20 @@ def edit_view(request, fileName, filePath=None,):
             # Lets Check If a something Changed
             if program_form.has_changed():
                 if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data:
-                    month = int(program_form.cleaned_data['validity_date_m'])
-                    day = int(program_form.cleaned_data['validity_date_d'])
-                    if month == 1:
-                        program.validity_trimester = Program.TRIMESTER[0][0]
-                    elif month == 2 or month == 3 or (month == 4 and day <= 15):
-                        program.validity_trimester = Program.TRIMESTER[1][0]
-                    elif (month == 4 and 15 < day) or (4 < month and month <= 9):
-                        program.validity_trimester = Program.TRIMESTER[3][0]
-                    elif 9 < month and month <= 12:
-                        program.validity_trimester = Program.TRIMESTER[0][0]
-                    program.save()
+                    # Lets check we are not using null values
+                    if program_form.cleaned_data['validity_date_m'] is not None \
+                        and program_form.cleaned_data['validity_date_d'] is not None:
+                        month = int(program_form.cleaned_data['validity_date_m'])
+                        day = int(program_form.cleaned_data['validity_date_d'])
+                        if month == 1:
+                            program.validity_trimester = Program.TRIMESTER[0][0]
+                        elif month == 2 or month == 3 or (month == 4 and day <= 15):
+                            program.validity_trimester = Program.TRIMESTER[1][0]
+                        elif (month == 4 and 15 < day) or (4 < month and month <= 9):
+                            program.validity_trimester = Program.TRIMESTER[3][0]
+                        elif 9 < month and month <= 12:
+                            program.validity_trimester = Program.TRIMESTER[0][0]
+                        program.save()
 
                 # Lets put a fancy name
                 if 'code' in program_form.changed_data or 'number' in program_form.changed_data \
@@ -201,6 +204,7 @@ def edit_view(request, fileName, filePath=None,):
                                 + '-' + str(program.get_validity_trimester_display())
                         doc.save()
 
+                # Check if it is already in SIGPAE
                 if if_in_sigpae((str(program.code)+str(program.number)), program.validity_trimester, str(program.validity_year)):
                     render_dic['alert'] = "Advertencia: El Programa " + program.denomination + " " + str(program.code) + str(program.number) \
                         + " " + str(program.validity_year) + " " + program.get_validity_trimester_display() + " ya se encuentra en SIGPAE"

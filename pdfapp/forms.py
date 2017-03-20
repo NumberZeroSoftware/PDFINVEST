@@ -166,6 +166,12 @@ class ProgramForm(forms.ModelForm):
         def years():
             return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
 
+        def days():
+            return [i for i in range(1, 32)]
+
+        def credits():
+            return [i for i in range(1, 17)]
+
         model = Program
         fields = ('code', 'number', 'denomination', 'validity_trimester', 'validity_year',
                   'validity_date_m', 'validity_date_d',
@@ -230,6 +236,7 @@ class AdditionalFieldForm(forms.Form):
         label=u'Nombre', 
         choices=Programa.TRIMESTRE,
         required=False, 
+        # commit this line when makemigrations and migrate first time
         widget=SelectMaterialize(choices=AdditionalName.objects.all())
         )
 
