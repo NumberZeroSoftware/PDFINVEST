@@ -3,16 +3,19 @@
 
 var showingObjectives = false;
 
+var showingProposedDate = false;
+
 $(document).ready(function() {
     // Get Ready Materialize Selects
+    $('#id_program-validity_year').material_select();
     $('#id_program-theory_hours').material_select();
     $('#id_program-practice_hours').material_select();
     $('#id_program-laboratory_hours').material_select();
     $('#id_program-validity_date_d').material_select();
     $('#id_program-credits').material_select();
-    $('#id_program-validity_year').material_select();
+    $('#id_program-validity_date_y').material_select();
     $('#id_program-validity_date_m').material_select();
-    $('#id_program-validity_year').on('change', function() {
+    $('#id_program-validity_date_y').on('change', function() {
       handleYear( this );
     })
     $('#id_program-validity_date_m').on('change', function() {
@@ -25,12 +28,13 @@ $(document).ready(function() {
     $('#id_program-division').change(function(){$('#id_program-department').material_select();});
     $('#id_program-code').material_select();
 
-    if ( $('#id_program-validity_year').val() == "") {
+    if ( $('#id_program-validity_date_y').val() == "") {
         $('#id_program-validity_date_m').val("");
         $('#id_program-validity_date_m').attr('disabled','disabled');
         $('#id_program-validity_date_m').material_select();
         $('#id_program-validity_date_d').val("");
         $('#id_program-validity_date_d').attr('disabled','disabled');
+        $('#id_program-validity_date_d').material_select();
     }
     else {
         $('#id_program-validity_date_m').removeAttr('disabled');
@@ -81,8 +85,24 @@ $(document).ready(function() {
             }
         }
     });
-  });
 
+    showingProposedDate = $('#id_program-validity_date_y').val() == "" && $('#id_program-validity_date_y').val() != "";
+    if (showingProposedDate) {
+        $('#validity_date').hide();
+        $('#proposed_trimester').show();
+        $('#dates_btn').text('Mostrar Fecha De Aprobación');
+    }
+    else {
+        $('#validity_date').show();
+        $('#proposed_trimester').hide();
+        $('#dates_btn').text('Mostrar Trimestre De Entrada en Vigencia');
+    }
+
+    $('#dates_btn').on('click', function(){
+        handleProposedTrimester();
+    });
+
+  });
 
 function handleYear(sel)
 {
@@ -110,5 +130,21 @@ function handleMonth(sel)
     else {
         $('#id_program-validity_date_d').removeAttr('disabled');
         $('#id_program-validity_date_d').material_select();
+    }
+}
+
+function handleProposedTrimester()
+{
+    if (!showingProposedDate) {
+        $('#validity_date').hide();
+        $('#proposed_trimester').show();
+        $('#dates_btn').text('Mostrar Fecha De Aprobación');
+        showingProposedDate = true;
+    }
+    else {
+        $('#validity_date').show();
+        $('#proposed_trimester').hide();
+        $('#dates_btn').text('Mostrar Trimestre De Entrada en Vigencia');
+        showingProposedDate = false;
     }
 }

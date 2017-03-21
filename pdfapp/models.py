@@ -339,7 +339,6 @@ class Program(models.Model):
     )
 
     validity_date_d = models.PositiveIntegerField(
-        default=1,
         blank=True,
         null=True,
         verbose_name='Día',
@@ -365,7 +364,6 @@ class Program(models.Model):
 
     # Number of hours of theory in the assignature.
     theory_hours = models.PositiveIntegerField(
-        default=0,
         blank=True,
         null=True, 
         verbose_name='Horas de Teoría',
@@ -374,7 +372,6 @@ class Program(models.Model):
 
     # Number of hours of practice in the assignature.
     practice_hours = models.PositiveIntegerField(
-        default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Práctica',
@@ -383,7 +380,6 @@ class Program(models.Model):
 
     # Number of hours of laboratory in the assignature.
     laboratory_hours = models.PositiveIntegerField(
-        default=0,
         blank=True,
         null=True,
         verbose_name='Horas de Laboratorio',
@@ -392,7 +388,6 @@ class Program(models.Model):
 
     # Number of crédits in the assignature. Must be a number between 0 and 16.
     credits = models.IntegerField(
-        default=0,
         blank=True,
         null=True,
         verbose_name='Unidad de Créditos',

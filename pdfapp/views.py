@@ -175,10 +175,13 @@ def edit_view(request, fileName, filePath=None,):
             textstring_form.save(commit=True)
             # Lets Check If a something Changed
             if program_form.has_changed():
-                if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data:
+                if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data \
+                    or 'validity_date_y' in program_form.changed_data:
                     # Lets check we are not using null values
-                    if program_form.cleaned_data['validity_date_m'] is not None \
+                    if program_form.cleaned_data['validity_date_y'] is not None \
+                        and program_form.cleaned_data['validity_date_m'] is not None \
                         and program_form.cleaned_data['validity_date_d'] is not None:
+                        program.validity_year = int(program_form.cleaned_data['validity_date_y'])
                         month = int(program_form.cleaned_data['validity_date_m'])
                         day = int(program_form.cleaned_data['validity_date_d'])
                         if month == 1:
@@ -189,6 +192,7 @@ def edit_view(request, fileName, filePath=None,):
                             program.validity_trimester = Program.TRIMESTER[3][0]
                         elif 9 < month and month <= 12:
                             program.validity_trimester = Program.TRIMESTER[0][0]
+                            program.validity_year += 1
                         program.save()
 
                 # Lets put a fancy name

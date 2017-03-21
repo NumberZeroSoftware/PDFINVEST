@@ -177,14 +177,15 @@ class ProgramForm(forms.ModelForm):
 
         model = Program
         fields = ('code', 'number', 'denomination', 'validity_trimester', 'validity_year',
-                  'validity_date_m', 'validity_date_d',
+                  'validity_date_y', 'validity_date_m', 'validity_date_d',
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
                   'division', 'department', 'coordination', 'passes', 'specific_objectives'
                    )
         widgets = {
-            'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())),
+            'validity_year' : forms.Select(choices=zip([""]+years(), ["------"]+years())),
+            'validity_date_y': forms.Select(choices=zip([""]+years(), ["------"]+years())),
             'validity_date_m': Select(),
             'validity_date_d': NumberRangeFieldInput(range_min=1, range_max=31),
             'division': forms.ModelChoiceField(
