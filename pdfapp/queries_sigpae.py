@@ -1,14 +1,20 @@
 from .models import Programa
 
+# Checks if a str variable is none or empty
+def check_none(a):
+    return (a=="" or a is None)
+
 def if_in_sigpae(codigo,trimestre,anio):
+    if check_none(codigo) or check_none(trimestre) or check_none(anio):
+        return False
     query = Programa.objects.filter(codigo=codigo,fecha_vigAno=anio,fecha_vigTrim=trimestre).order_by('fecha_vigAno','fecha_vigTrim')
     return len(query) > 0
 
 
 def queries_sigpae(codigo,trimestre,anio):
     # Consulta para tratar de hallar el programa vigente para un trimestre.
-    trimestre_none = (trimestre=="" or trimestre is None)
-    anio_none = (anio=="" or anio is None)
+    trimestre_none = check_none(trimestre_none)
+    anio_none = check_none(anio_none)
 
     list_code = Programa.objects.filter(codigo=codigo)
 

@@ -170,7 +170,10 @@ class ProgramForm(forms.ModelForm):
             return [i for i in range(1, 32)]
 
         def credits():
-            return [i for i in range(1, 17)]
+            return [i for i in range(0, 17)]
+
+        def hours():
+            return [i for i in range(0, 41)]
 
         model = Program
         fields = ('code', 'number', 'denomination', 'validity_trimester', 'validity_year',
@@ -190,10 +193,11 @@ class ProgramForm(forms.ModelForm):
                             required=False
                             ),
             'department': DepartmentChainedSelectWidget(),
-            'theory_hours': NumberRangeFieldInput(range_max=40),
-            'practice_hours': NumberRangeFieldInput(range_max=40),
-            'laboratory_hours': NumberRangeFieldInput(range_max=40),
-            'credits': NumberRangeFieldInput(range_max=16),
+            'theory_hours': Select(choices=zip([""]+hours(), ["--"]+hours())),
+            'practice_hours': Select(choices=zip([""]+hours(), ["--"]+hours())),
+            'laboratory_hours': Select(choices=zip([""]+hours(), ["--"]+hours())),
+            'credits': Select(choices=zip([""]+credits(), ["--"]+credits())),
+            'validity_date_d': Select(choices=zip([""]+days(), ["--"]+days())),
             'requirements': Textarea(attrs={'class':'materialize-textarea'}),
             'objectives': Textarea(attrs={'class':'materialize-textarea'}),
             'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),

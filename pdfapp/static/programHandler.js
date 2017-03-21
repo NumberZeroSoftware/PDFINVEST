@@ -1,9 +1,15 @@
 // Made by Christian Oliveros ( oliveroschristian.wordpress.com )
-// Last edit 12/03/2017
+// Last edit 20/03/2017
 
 var showingObjectives = false;
 
 $(document).ready(function() {
+    // Get Ready Materialize Selects
+    $('#id_program-theory_hours').material_select();
+    $('#id_program-practice_hours').material_select();
+    $('#id_program-laboratory_hours').material_select();
+    $('#id_program-validity_date_d').material_select();
+    $('#id_program-credits').material_select();
     $('#id_program-validity_year').material_select();
     $('#id_program-validity_date_m').material_select();
     $('#id_program-validity_year').on('change', function() {
@@ -20,22 +26,24 @@ $(document).ready(function() {
     $('#id_program-code').material_select();
 
     if ( $('#id_program-validity_year').val() == "") {
-    	$('#id_program-validity_date_m').val("");
-    	$('#id_program-validity_date_m').attr('disabled','disabled');
-    	$('#id_program-validity_date_m').material_select();
-    	$('#id_program-validity_date_d').val("");
-    	$('#id_program-validity_date_d').attr('disabled','disabled');
+        $('#id_program-validity_date_m').val("");
+        $('#id_program-validity_date_m').attr('disabled','disabled');
+        $('#id_program-validity_date_m').material_select();
+        $('#id_program-validity_date_d').val("");
+        $('#id_program-validity_date_d').attr('disabled','disabled');
     }
     else {
-    	$('#id_program-validity_date_m').removeAttr('disabled');
-    	$('#id_program-validity_date_m').material_select();
-    	if ($('#id_program-validity_date_m').val() == "") {
-    		$('#id_program-validity_date_d').val("");
-    		$('#id_program-validity_date_d').attr('disabled','disabled');
-    	}
-    	else {
-    		$('#id_program-validity_date_d').removeAttr('disabled');
-    	}
+        $('#id_program-validity_date_m').removeAttr('disabled');
+        $('#id_program-validity_date_m').material_select();
+        if ($('#id_program-validity_date_m').val() == "") {
+            $('#id_program-validity_date_d').val("");
+            $('#id_program-validity_date_d').attr('disabled','disabled');
+            $('#id_program-validity_date_d').material_select();
+        }
+        else {
+            $('#id_program-validity_date_d').removeAttr('disabled');
+            $('#id_program-validity_date_d').material_select();
+        }
     }
 
 
@@ -51,22 +59,26 @@ $(document).ready(function() {
 
     $('#objectives').on('click', function(){
         if (showingObjectives) {
-            $('#specific_objectives').hide();
-            showingObjectives = false;
-            $('#objectives').text('Agregar Objetivos Específicos');
-            var aux = $('#id_program-objectives').val();
-            if ($('#id_program-specific_objectives').val() != "") {
-                aux = aux + "\n"+ $('#id_program-specific_objectives').val(); 
-            }          
-            $('#id_program-objectives').val(aux);
-            $('#id_program-specific_objectives').val("");
+            if (confirm("Está Apunto de Elimintar los Objetivos Específicos, ¿Está seguro?")) {
+                $('#specific_objectives').hide();
+                showingObjectives = false;
+                $('#objectives').text('Agregar Objetivos Específicos');
+                var aux = $('#id_program-objectives').val();
+                if ($('#id_program-specific_objectives').val() != "") {
+                    aux = aux + "\n"+ $('#id_program-specific_objectives').val(); 
+                }          
+                $('#id_program-objectives').val(aux);
+                $('#id_program-specific_objectives').val("");
+            }
 
         }
         else
         {
-            $('#specific_objectives').show();
-            showingObjectives = true;
-            $('#objectives').text('Quitar Objetivos Específicos');
+            if (confirm("Está Apunto de Agregar los Objetivos Específicos, ¿Está seguro?")) {
+                $('#specific_objectives').show();
+                showingObjectives = true;
+                $('#objectives').text('Quitar Objetivos Específicos');
+            }
         }
     });
   });
@@ -74,26 +86,29 @@ $(document).ready(function() {
 
 function handleYear(sel)
 {
-	if (sel.value == "") {
-		$('#id_program-validity_date_m').val("");
-		$('#id_program-validity_date_m').attr('disabled','disabled');
-		$('#id_program-validity_date_m').material_select();
-		$('#id_program-validity_date_d').val("");
-		$('#id_program-validity_date_d').attr('disabled','disabled');
-	}
-	else {
-		$('#id_program-validity_date_m').removeAttr('disabled');
-		$('#id_program-validity_date_m').material_select();
-	}
+    if (sel.value == "") {
+        $('#id_program-validity_date_m').val("");
+        $('#id_program-validity_date_m').attr('disabled','disabled');
+        $('#id_program-validity_date_m').material_select();
+        $('#id_program-validity_date_d').val("");
+        $('#id_program-validity_date_d').attr('disabled','disabled');
+        $('#id_program-validity_date_d').material_select();
+    }
+    else {
+        $('#id_program-validity_date_m').removeAttr('disabled');
+        $('#id_program-validity_date_m').material_select();
+        $('#id_program-validity_date_d').material_select();
+    }
 }
 
 function handleMonth(sel)
 {
-	if (sel.value == "") {
-		$('#id_program-validity_date_d').val("");
-		$('#id_program-validity_date_d').attr('disabled','disabled');
-	}
-	else {
-		$('#id_program-validity_date_d').removeAttr('disabled');
-	}
+    if (sel.value == "") {
+        $('#id_program-validity_date_d').val("");
+        $('#id_program-validity_date_d').attr('disabled','disabled');
+    }
+    else {
+        $('#id_program-validity_date_d').removeAttr('disabled');
+        $('#id_program-validity_date_d').material_select();
+    }
 }

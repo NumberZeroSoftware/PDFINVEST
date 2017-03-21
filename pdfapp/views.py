@@ -138,7 +138,6 @@ def edit_view(request, fileName, filePath=None,):
             doc.processing_html = True
             doc.save()
 
-    render_dic['Name'] = doc.name
     print("---------------")
     print("Checking:", full_filePath+".pdf")
     print("Folder:", doc.file_path)
@@ -227,6 +226,7 @@ def edit_view(request, fileName, filePath=None,):
         additionalFieldsForm = additionalFieldsFormset(initial=initial_fields, error_class=DivErrorList)
 
 
+    render_dic['Name'] = doc.name
     render_dic['additionalFieldsForm'] = additionalFieldsForm
     render_dic['program_form'] = program_form
     render_dic['textstring_form'] = textstring_form
