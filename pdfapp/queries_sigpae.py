@@ -1,8 +1,8 @@
-from .models import Programa
+from .models import Programa, Program, Code
 
 def if_in_sigpae(codigo,trimestre,anio):
-    query = Programa.objects.filter(codigo=codigo,fecha_vigAno=anio,fecha_vigTrim=trimestre).order_by('fecha_vigAno','fecha_vigTrim')
-    return len(query) > 0
+    query = Programa.objects.filter(codigo=codigo,fecha_vigAno=anio,fecha_vigTrim=trimestre)
+    return query.exists()
 
 
 def queries_sigpae(codigo,trimestre,anio):
@@ -24,3 +24,15 @@ def queries_sigpae(codigo,trimestre,anio):
 
     else:
         return list_code.filter(fecha_vigAno__lte=anio,fecha_vigTrim__lte=trimestre).order_by('-fecha_vigAno','-fecha_vigTrim')
+
+def report_transcriptions(code):
+    # Return all transcriptions related to code.
+    return Program.objects.filter(code__code=code).order_by('code__code','validity_year','validity_trimester')
+
+def report_programs(code):
+    # Return all programs related to code.
+    if (len(code) == 3):
+        list_codes = Programa.objects.filter(codigo__regex='^[a-zA-Z]{3}[0-9]{3}$')
+    elif (len(code) == 2):
+        list_codes = Programa.objects.filter(codigo__regex='^[a-zA-Z]{2}[0-9]{4}$')
+    return list_codes.filter(codigo__istartswith=code).order_by('codigo','fecha_vigAno','fecha_vigTrim')
