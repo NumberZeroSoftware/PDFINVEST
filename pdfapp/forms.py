@@ -166,16 +166,26 @@ class ProgramForm(forms.ModelForm):
         def years():
             return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
 
+        def days():
+            return [i for i in range(1, 32)]
+
+        def credits():
+            return [i for i in range(0, 17)]
+
+        def hours():
+            return [i for i in range(0, 41)]
+
         model = Program
         fields = ('code', 'number', 'denomination', 'validity_trimester', 'validity_year',
-                  'validity_date_m', 'validity_date_d',
+                  'validity_date_y', 'validity_date_m', 'validity_date_d',
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
                   'division', 'department', 'coordination', 'passes', 'specific_objectives'
                    )
         widgets = {
-            'validity_year': forms.Select(choices=zip([""]+years(), ["------"]+years())),
+            'validity_year' : forms.Select(choices=zip([""]+years(), ["------"]+years())),
+            'validity_date_y': forms.Select(choices=zip([""]+years(), ["------"]+years())),
             'validity_date_m': Select(),
             'validity_date_d': NumberRangeFieldInput(range_min=1, range_max=31),
             'division': forms.ModelChoiceField(
@@ -184,10 +194,11 @@ class ProgramForm(forms.ModelForm):
                             required=False
                             ),
             'department': DepartmentChainedSelectWidget(),
-            'theory_hours': NumberRangeFieldInput(range_max=40),
-            'practice_hours': NumberRangeFieldInput(range_max=40),
-            'laboratory_hours': NumberRangeFieldInput(range_max=40),
-            'credits': NumberRangeFieldInput(range_max=16),
+            'theory_hours': Select(choices=zip([""]+hours(), ["--"]+hours())),
+            'practice_hours': Select(choices=zip([""]+hours(), ["--"]+hours())),
+            'laboratory_hours': Select(choices=zip([""]+hours(), ["--"]+hours())),
+            'credits': Select(choices=zip([""]+credits(), ["--"]+credits())),
+            'validity_date_d': Select(choices=zip([""]+days(), ["--"]+days())),
             'requirements': Textarea(attrs={'class':'materialize-textarea'}),
             'objectives': Textarea(attrs={'class':'materialize-textarea'}),
             'synoptic_content': Textarea(attrs={'class':'materialize-textarea'}),
@@ -248,6 +259,7 @@ class AdditionalFieldForm(forms.Form):
         label=u'Nombre', 
         choices=Programa.TRIMESTRE,
         required=False, 
+        # commit this line when makemigrations and migrate first time
         widget=SelectMaterialize(choices=AdditionalName.objects.all())
         )
 

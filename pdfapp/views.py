@@ -138,7 +138,6 @@ def edit_view(request, fileName, filePath=None,):
             doc.processing_html = True
             doc.save()
 
-    render_dic['Name'] = doc.name
     print("---------------")
     print("Checking:", full_filePath+".pdf")
     print("Folder:", doc.file_path)
@@ -176,18 +175,25 @@ def edit_view(request, fileName, filePath=None,):
             textstring_form.save(commit=True)
             # Lets Check If a something Changed
             if program_form.has_changed():
-                if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data:
-                    month = int(program_form.cleaned_data['validity_date_m'])
-                    day = int(program_form.cleaned_data['validity_date_d'])
-                    if month == 1:
-                        program.validity_trimester = Program.TRIMESTER[0][0]
-                    elif month == 2 or month == 3 or (month == 4 and day <= 15):
-                        program.validity_trimester = Program.TRIMESTER[1][0]
-                    elif (month == 4 and 15 < day) or (4 < month and month <= 9):
-                        program.validity_trimester = Program.TRIMESTER[3][0]
-                    elif 9 < month and month <= 12:
-                        program.validity_trimester = Program.TRIMESTER[0][0]
-                    program.save()
+                if 'validity_date_m' in program_form.changed_data or 'validity_date_d' in program_form.changed_data \
+                    or 'validity_date_y' in program_form.changed_data:
+                    # Lets check we are not using null values
+                    if program_form.cleaned_data['validity_date_y'] is not None \
+                        and program_form.cleaned_data['validity_date_m'] is not None \
+                        and program_form.cleaned_data['validity_date_d'] is not None:
+                        program.validity_year = int(program_form.cleaned_data['validity_date_y'])
+                        month = int(program_form.cleaned_data['validity_date_m'])
+                        day = int(program_form.cleaned_data['validity_date_d'])
+                        if month == 1:
+                            program.validity_trimester = Program.TRIMESTER[0][0]
+                        elif month == 2 or month == 3 or (month == 4 and day <= 15):
+                            program.validity_trimester = Program.TRIMESTER[1][0]
+                        elif (month == 4 and 15 < day) or (4 < month and month <= 9):
+                            program.validity_trimester = Program.TRIMESTER[3][0]
+                        elif 9 < month and month <= 12:
+                            program.validity_trimester = Program.TRIMESTER[0][0]
+                            program.validity_year += 1
+                        program.save()
 
                 # Lets put a fancy name
                 if 'code' in program_form.changed_data or 'number' in program_form.changed_data \
@@ -201,6 +207,7 @@ def edit_view(request, fileName, filePath=None,):
                                 + '-' + str(program.get_validity_trimester_display())
                         doc.save()
 
+                # Check if it is already in SIGPAE
                 if if_in_sigpae((str(program.code)+str(program.number)), program.validity_trimester, str(program.validity_year)):
                     render_dic['alert'] = "Advertencia: El Programa " + program.denomination + " " + str(program.code) + str(program.number) \
                         + " " + str(program.validity_year) + " " + program.get_validity_trimester_display() + " ya se encuentra en SIGPAE"
@@ -223,6 +230,7 @@ def edit_view(request, fileName, filePath=None,):
         additionalFieldsForm = additionalFieldsFormset(initial=initial_fields, error_class=DivErrorList)
 
 
+    render_dic['Name'] = doc.name
     render_dic['additionalFieldsForm'] = additionalFieldsForm
     render_dic['program_form'] = program_form
     render_dic['textstring_form'] = textstring_form
