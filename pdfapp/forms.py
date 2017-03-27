@@ -231,6 +231,24 @@ class SigpaeSearchForm(forms.Form):
         widget=SelectMaterialize(choices=Programa.TRIMESTRE)
         )
 
+# Reports on SIGPAE
+class SigpaeReportForm(forms.Form):
+    REPORT = (
+        ('Transcripciones', 'Transcripciones'),
+        ('Programas', 'Programas'),
+        ('Transcripciones y Programas', 'Transcripciones y Programas'),
+    )
+    code = forms.ModelChoiceField(
+        label=u'Código de Dependencia',
+        required=True,
+        queryset=Code.objects.all(),
+        to_field_name="code",
+        )
+    report_type = forms.ChoiceField(
+        label=u'Tipo de reporte',
+        choices=REPORT,
+        required=True,
+    )
 
 # AdditionalField
 

@@ -7,8 +7,8 @@ from django.conf import settings
 from django.forms import formset_factory
 
 from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm
-from .queries_sigpae import queries_sigpae, if_in_sigpae 
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm
+from .queries_sigpae import queries_sigpae, if_in_sigpae, report_transcriptions, report_programs
 
 from datetime import date
 from pathlib import Path
@@ -283,5 +283,42 @@ def sigpae_show(request, pk):
     return render(
         request,
         'sigpae_show.html',
+        render_dic
+    )
+
+def sigpae_report(request):
+    render_dic = {}
+    results = []
+    resultT=None
+    resultP=None
+    if request.method == "POST":
+        report_form = SigpaeReportForm(request.POST, error_class=DivErrorList)
+        if report_form.is_valid():
+            t = report_form.cleaned_data['report_type']
+            c = str(report_form.cleaned_data['code'].code)
+            if (t == 'Transcripciones'):
+                resultT = report_transcriptions(c)
+                if not resultT:
+                    report_form.add_error(None, "No se encontraron transcripciones asociadas en la búsqueda de " + c)
+            elif (t  == 'Programas'):
+                resultP = report_programs(c)
+                if not resultP:
+                    report_form.add_error(None, "No se encontraron programas asociados en la búsqueda de " + c)
+            else:
+                resultT = report_transcriptions(c)
+                resultP = report_programs(c)
+                if not (resultT or resultP):
+                    report_form.add_error(None, "No se encontraron transcripciones ni programas asociados en la búsqueda de " + c)
+    else:
+        report_form = SigpaeReportForm(error_class=DivErrorList)
+
+
+    render_dic['report_form'] = report_form
+    render_dic['resultT'] = resultT
+    render_dic['resultP'] = resultP
+
+    return render(
+        request,
+        'global_report.html',
         render_dic
     )
