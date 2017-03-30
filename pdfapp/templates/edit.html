@@ -256,14 +256,14 @@
                                                 <div data-formset-body>
                                                     <!-- New forms will be inserted in here -->
                                                     {% for form in additionalFieldsForm %}
-                                                        <div data-formset-form>
+                                                        <div data-formset-form class="additionalFieldsFormPreload">
                                                             {{ form.pk }}
                                                             <div class="input-field">
                                                                 {{ form.name }}
                                                                 {{ form.name.label_tag }} 
                                                                 {{ form.name.errors }}
                                                             </div>
-                                                            <div class="input-field">
+                                                            <div class="input-field new_name">
                                                                 {{ form.new_name }}
                                                                 {{ form.new_name.label_tag }} 
                                                                 {{ form.new_name.errors }}

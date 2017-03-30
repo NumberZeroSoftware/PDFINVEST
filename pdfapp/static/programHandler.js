@@ -115,8 +115,8 @@ $(window).load(function(){
         newForm = event.target;
         nameSelect = $(newForm).find("select");
         newName = $(newForm).find('.new_name');
-        newName.hide();
         nameSelect.material_select();
+        newName.hide();
         if (nameSelect.val() == "1") {
             newName.show();
             //newName.find("input").prop('required',true);
@@ -129,7 +129,7 @@ $(window).load(function(){
         }
 
         nameSelect.on('change', function() {
-            // IMPORTANTE ESTO SOLO SIRVE SI OTROS ES 1
+            // IMPORTANTE ESTO SOLO SIRVE SI OTRO ES 1
             if ($(this).val() == "1") {
                 newName.show();
                 //newName.find("input").prop('required',true);
@@ -142,6 +142,8 @@ $(window).load(function(){
             }
         });
     });
+
+
 });
 
 
