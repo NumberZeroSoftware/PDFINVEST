@@ -17,10 +17,10 @@ $(document).ready(function() {
     $('#id_program-validity_date_m').material_select();
     $('#id_program-validity_date_y').on('change', function() {
       handleYear( this );
-    })
+    });
     $('#id_program-validity_date_m').on('change', function() {
       handleMonth( this );
-    })
+    });
     $('#id_program-department').material_select();
     $('#id_program-division').material_select();
     $('#id_program-validity_trimester').material_select();
@@ -102,7 +102,49 @@ $(document).ready(function() {
         handleProposedTrimester();
     });
 
+    $("#additionalFieldsForm").formset({
+        animateForms: true,
+        reorderMode: 'dom',
+    });
+
   });
+
+$(window).load(function(){
+
+    $('#additionalFieldsForm').on('formAgregado', function(event) {
+        newForm = event.target;
+        nameSelect = $(newForm).find("select");
+        newName = $(newForm).find('.new_name');
+        newName.hide();
+        nameSelect.material_select();
+        if (nameSelect.val() == "1") {
+            newName.show();
+            //newName.find("input").prop('required',true);
+        }
+        else {
+            newName.hide();
+            inputString = newName.find('[id*="new_name"]');
+            inputString.val("");
+            inputString.removeAttr('required');
+        }
+
+        nameSelect.on('change', function() {
+            // IMPORTANTE ESTO SOLO SIRVE SI OTROS ES 1
+            if ($(this).val() == "1") {
+                newName.show();
+                //newName.find("input").prop('required',true);
+            }
+            else {
+                newName.hide();
+                inputString = newName.find('[id*="new_name"]');
+                inputString.val("");
+                inputString.removeAttr('required');
+            }
+        });
+    });
+});
+
+
 
 function handleYear(sel)
 {

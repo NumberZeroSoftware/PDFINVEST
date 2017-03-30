@@ -253,22 +253,24 @@ class SigpaeReportForm(forms.Form):
 # AdditionalField
 
 class AdditionalFieldForm(forms.Form):
-    pk = forms.IntegerField(widget=HiddenInput())
+    pk = forms.IntegerField(widget=HiddenInput(),
+        required=False,)
 
-    name = forms.ChoiceField(
+    name = forms.ModelChoiceField(
         label=u'Nombre', 
-        choices=Programa.TRIMESTRE,
-        required=False, 
         # commit this line when makemigrations and migrate first time
-        widget=SelectMaterialize(choices=AdditionalName.objects.all())
+        queryset=AdditionalName.objects.all(),
+        required=False,
         )
 
     new_name = forms.CharField(
         label=u'Nuevo Nombre',
-        max_length=30
+        max_length=30,
+        required=False, 
         )
 
     description = forms.CharField(
         label=u'Contenido',
+        required=False, 
         widget=Textarea(attrs={'class':'materialize-textarea'})
         )

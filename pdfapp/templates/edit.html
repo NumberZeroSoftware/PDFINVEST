@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load formset_tags %}
 <!DOCTYPE html>
 <html style="width: 100%; height: 100%;">
         
@@ -14,6 +15,8 @@
         <!-- Jquery and Chained Selection-->
         <script src="{% static "/js/jquery-1.10.2.min.js" %}"></script>
         <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
+        <!-- Formset JS-->
+        <script src="{% static "/js/jquery.formset.js" %}"></script>
 
         <!-- Compiled and minified CSS -->
         <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
@@ -246,12 +249,87 @@
                                                 {{ program_form.coordination.label_tag }} 
                                                 {{ program_form.coordination.errors }}
                                             </div>
+                                            <h4>Campos Adicionales</h4>
+                                            <div id="additionalFieldsForm" data-formset-prefix="{{ additionalFieldsForm.prefix }}">
+                                                {{ additionalFieldsForm.management_form }}
+
+                                                <div data-formset-body>
+                                                    <!-- New forms will be inserted in here -->
+                                                    {% for form in additionalFieldsForm %}
+                                                        <div data-formset-form>
+                                                            {{ form.pk }}
+                                                            <div class="input-field">
+                                                                {{ form.name }}
+                                                                {{ form.name.label_tag }} 
+                                                                {{ form.name.errors }}
+                                                            </div>
+                                                            <div class="input-field">
+                                                                {{ form.new_name }}
+                                                                {{ form.new_name.label_tag }} 
+                                                                {{ form.new_name.errors }}
+                                                            </div>
+                                                            <div class="input-field">
+                                                                {{ form.description }}
+                                                                {{ form.description.label_tag }} 
+                                                                {{ form.description.errors }}
+                                                            </div>
+                                                            <div class="hidden">{{ form.DELETE }}</div>
+                                                            <div class="hidden">{{ form.ORDER }}</div>
+                                                            <button type="button" class="save waves-effect red darken-3 btn" data-formset-delete-button>Borrar Campo Adicional</button>
+                                                            <br><br>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <!-- The empty form template. By wrapping this in a <script> tag, the
+                                                __prefix__ placeholder can easily be replaced in both attributes and
+                                                any scripts -->
+                                                <script type="form-template" data-formset-empty-form>
+                                                    {% escapescript %}
+                                                        <div data-formset-form>
+                                                            {{ additionalFieldsForm.empty_form.pk }}
+                                                            <div class="input-field">
+                                                                {{ additionalFieldsForm.empty_form.name }}
+                                                                {{ additionalFieldsForm.empty_form.name.label_tag }} 
+                                                                {{ additionalFieldsForm.empty_form.name.errors }}
+                                                            </div>
+                                                            <div class="input-field new_name">
+                                                                {{ additionalFieldsForm.empty_form.new_name }}
+                                                                {{ additionalFieldsForm.empty_form.new_name.label_tag }} 
+                                                                {{ additionalFieldsForm.empty_form.new_name.errors }}
+                                                            </div>
+                                                            <div class="input-field">
+                                                                {{ additionalFieldsForm.empty_form.description }}
+                                                                {{ additionalFieldsForm.empty_form.description.label_tag }} 
+                                                                {{ additionalFieldsForm.empty_form.description.errors }}
+                                                            </div>
+                                                            <div class="hidden">{{ additionalFieldsForm.empty_form.DELETE }}</div>
+                                                            <div class="hidden">{{ additionalFieldsForm.empty_form.ORDER }}</div>
+                                                            <button type="button" class="save waves-effect red darken-3 btn" data-formset-delete-button>Borrar Campo Adicional</button>
+                                                            <br><br>
+                                                        </div>
+                                                    {% endescapescript %}
+                                                </script>
+
+                                                <!-- This button will add a new form when clicked -->
+                                                <input type="button" class="save waves-effect red darken-3 btn" value="Agregar Campo Adicional" data-formset-add>
+
+                                                <!-- <script>jQuery(function($) {
+                                                    $("#additionalFieldsForm").formset({
+                                                        animateForms: true,
+                                                        reorderMode: 'dom',
+                                                    });
+                                                });</script> -->
+
+
+                                            </div>
+
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
                                         </div>  
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
-                                        </div>  
+                                        </div>
                                         </div> 
                                         <table>
                                             <tbody>

@@ -162,7 +162,7 @@ def edit_view(request, fileName, filePath=None,):
             }
         )
 
-    additionalFieldsFormset = formset_factory(AdditionalFieldForm, can_delete=True)
+    additionalFieldsFormset = formset_factory(AdditionalFieldForm, can_delete=True, extra=0)
 
     # Lets see if they are sending the information or requesting it
     if request.method == "POST": 
@@ -211,6 +211,68 @@ def edit_view(request, fileName, filePath=None,):
                 if if_in_sigpae((str(program.code)+str(program.number)), program.validity_trimester, str(program.validity_year)):
                     render_dic['alert'] = "Advertencia: El Programa " + program.denomination + " " + str(program.code) + str(program.number) \
                         + " " + str(program.validity_year) + " " + program.get_validity_trimester_display() + " ya se encuentra en SIGPAE"
+
+            for form in additionalFieldsForm.forms:
+                if form.is_valid(): 
+                    isPK = 'pk' in form.cleaned_data and (form.cleaned_data['pk'] is not None and form.cleaned_data['pk'] != "")
+                    isName = 'name' in form.cleaned_data and (form.cleaned_data['name'] is not None and form.cleaned_data['name'] != "")
+                    isNewName = 'new_name' in form.cleaned_data and (form.cleaned_data['new_name'] is not None and form.cleaned_data['new_name'] != "")
+                    if 'DELETE' in form.cleaned_data and form.cleaned_data['DELETE'] and isPK :
+                        print("Borrando", form.cleaned_data)
+                        try:
+                            AdditionalField.objects.get(pk=int(form.cleaned_data['pk'])).delete()
+                        except Exception as e:
+                            print (e)
+                        
+                        continue
+                    elif 'name' not in form.cleaned_data or form.cleaned_data['name'] is None or form.cleaned_data['name'] == "":
+                        print("Falta nombre en", form.cleaned_data)
+                        form.add_error("name", "El Campo Nombre es Requerido") 
+                        continue
+                    elif isPK:
+                        print("Ya lo conocia", form.cleaned_data)
+                        obj = AdditionalField.objects.get(pk=int(form.cleaned_data['pk']))
+                        if form.cleaned_data['name'] ==  AdditionalName.objects.get(name="Otro"):
+                            if not isNewName:
+                                form.add_error("new_name", "El Campo Nombre es Requerido") 
+                                continue
+                            real_name = AdditionalName.objects.get_or_create(name=form.cleaned_data['new_name'].title())[0]
+                            real_name.save()
+                        else:
+                            real_name = form.cleaned_data['name']
+                        obj.name = real_name
+                        if 'description' in form.cleaned_data:
+                            obj.description = form.cleaned_data['description']
+                        else:
+                            obj.description = ""
+                        obj.save()
+                    elif isName:
+                        print("Nuevo", form.cleaned_data)
+                        if form.cleaned_data['name'] ==  AdditionalName.objects.get(name="Otro"):
+                            if not isNewName:
+                                form.add_error("new_name", "El Campo Nombre es Requerido") 
+                                continue
+                            real_name = AdditionalName.objects.get_or_create(name=form.cleaned_data['new_name'].title())[0]
+                            real_name.save()
+                        else:
+                            real_name = form.cleaned_data['name']
+                        if 'description' in form.cleaned_data:
+                            new_description = form.cleaned_data['description']
+                        else:
+                            new_description = ""
+
+                        obj = AdditionalField(description=new_description, name=real_name)
+                        obj.save()
+                        program.additional_fields.add(obj.id)
+                        program.save()
+                    else:
+                        print("What", form.cleaned_data)
+
+                else:
+                    print(form)
+
+                    
+
 
             program_form_initial = {}
             # Lets select the right division if a department was chosen
