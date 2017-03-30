@@ -20,7 +20,7 @@
         <!-- Materialize icons -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        <script src="{% static "globalreportHandler.js" %}"></script> 
+        <script src="{% static "reportHandler.js" %}"></script> 
 
     </head>
 
@@ -35,7 +35,7 @@
             </ul>
         </div>
     </nav>
-    <form method="POST" action="{% url 'global_report' %}" >
+    <form method="POST" action="{% url 'ref_report' %}" >
     {% csrf_token %}
     <table style="width: 100%;">
         <tbody>
@@ -46,10 +46,14 @@
                     {{ report_form.code.errors }}
                 </div></td>
                 <td><div class="input-field">
-                    {{ report_form.report_type }}
-                    {{ report_form.report_type.label_tag }}
-                    {{ search_form.report_type.errors }}
+                    {{ report_form.year }}
+                    {{ report_form.year.label_tag }}
+                    {{ search_form.year.errors }}
                 </div></td>
+                <td><div class="input-field">
+                    {{ report_form.trimester }}
+                    {{ report_form.trimester.label_tag }}
+                    {{ report_form.trimester.errors }}
                 <td><button type="submit" class="save waves-effect red darken-3 btn">Buscar</button></td>
             </tr>
         </tbody>
@@ -58,12 +62,8 @@
     <div style="text-align: left; margin: 1% 3% 3% 8%;">
     {{ report_form.non_field_errors }}
     <ul class="collection">
-    {% for program in resultT%}
-        <a class="collection-item" href="#">{{ program.code.code }}{{ program.number }} : {{ program.get_validity_trimester_display|default_if_none:"" }} {{ program.validity_year|default_if_none:"" }}</a>
-    {% empty %}
-    {% endfor %}
-    {% for program in resultP%}
-        <a class="collection-item" href={% url 'sigpae_show' pk=program.pk %}>{{ program.codigo }} : {{ program.get_fecha_vigTrim_display }} {{ program.fecha_vigAno }}</a>
+    {% for source in results%}
+        <a class="collection-item" href="#">{{ source.author.all|join:", " }}, {{ source.name }}, {{ source.editorial }}, edición nro. {{ source.edition_number }}, {{ source.year }} </a>
     {% empty %}
     {% endfor %}
     </ul>

@@ -1,4 +1,5 @@
-from .models import Programa, Program, Code
+from .models import Programa, Program, Code, Reference, Author
+from django.db.models import Min
 
 # Checks if a str variable is none or empty
 def check_none(a):
@@ -13,8 +14,8 @@ def if_in_sigpae(codigo,trimestre,anio):
 
 def queries_sigpae(codigo,trimestre,anio):
     # Consulta para tratar de hallar el programa vigente para un trimestre.
-    trimestre_none = check_none(trimestre_none)
-    anio_none = check_none(anio_none)
+    trimestre_none = check_none(trimestre)
+    anio_none = check_none(anio)
 
     list_code = Programa.objects.filter(codigo=codigo)
 
@@ -42,3 +43,26 @@ def report_programs(code):
     elif (len(code) == 2):
         list_codes = Programa.objects.filter(codigo__regex='^[a-zA-Z]{2}[0-9]{4}$')
     return list_codes.filter(codigo__istartswith=code).order_by('codigo','fecha_vigAno','fecha_vigTrim')
+
+
+def report_refs(code,trimester,year):
+    # Returns information sources for a code and a time period.
+    list_programs = Program.objects.none()
+    if check_none(code):
+        list_programs = Program.objects.filter(validity_year__lte=year,
+                                                validity_trimester__lte=trimester
+                                                ).order_by('-validity_year',
+                                                            '-validity_trimester'
+                                                )
+    else:
+        list_programs = Program.objects.filter(code__code=code,
+                                                validity_year__lte=year,
+                                                validity_trimester__lte=trimester
+                                                ).order_by('-validity_year',
+                                                            '-validity_trimester'
+                                                )
+    list_refs = Reference.objects.none()
+    for p in list_programs:
+        list_refs = list_refs | p.recommended_sources    
+    return list_refs.annotate(mini=Min('author__first_surname')).order_by('mini').distinct()
+        

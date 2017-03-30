@@ -7,8 +7,8 @@ from django.conf import settings
 from django.forms import formset_factory
 
 from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm
-from .queries_sigpae import queries_sigpae, if_in_sigpae, report_transcriptions, report_programs
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm, RefReportForm
+from .queries_sigpae import queries_sigpae, if_in_sigpae, report_transcriptions, report_programs, report_refs
 
 from datetime import date
 from pathlib import Path
@@ -288,7 +288,6 @@ def sigpae_show(request, pk):
 
 def sigpae_report(request):
     render_dic = {}
-    results = []
     resultT=None
     resultP=None
     if request.method == "POST":
@@ -320,5 +319,35 @@ def sigpae_report(request):
     return render(
         request,
         'global_report.html',
+        render_dic
+    )
+
+def ref_report(request):
+    render_dic = {}
+    results = []
+    if request.method == "POST":
+        report_form = RefReportForm(request.POST, error_class=DivErrorList)
+        if report_form.is_valid():
+            c = report_form.cleaned_data['code']
+            t = report_form.cleaned_data['trimester']
+            y = report_form.cleaned_data['year']
+            if c:
+                results = report_refs(c.code,t,y)
+                if not results:
+                    report_form.add_error(None, "No se encontraron fuentes de información vigentes para " + t + " " + y + " asociadas a " + c )
+            else:
+                results = report_refs(None,t,y)
+                if not results:
+                    report_form.add_error(None, "No se encontraron fuentes de información vigentes para " + t + " " + y )
+    else:
+        report_form = RefReportForm(error_class=DivErrorList)
+
+
+    render_dic['report_form'] = report_form
+    render_dic['results'] = results
+
+    return render(
+        request,
+        'ref_report.html',
         render_dic
     )

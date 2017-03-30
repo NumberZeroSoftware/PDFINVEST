@@ -225,6 +225,10 @@ class Author(models.Model):
         blank=True,
         verbose_name='Segundo apelido',
     )
+    def __str__(self): 
+        return self.first_surname
+    class Meta:
+        ordering = ['first_surname','first_name']
 
 # Recommended sources.
 class Reference(models.Model):
@@ -488,7 +492,8 @@ class Program(models.Model):
                 self.laboratory_hours) and self.credits and \
                 self.requirements and self.objectives and \
                 self.synoptic_content and  self.methodological_strategies and \
-                self.evaluation_strategies and self.recommended_sources)
+                self.evaluation_strategies and self.recommended_sources and \
+                self.department)
 
     # Checks the that the sum of the hours is positive.
     def clean(self):
