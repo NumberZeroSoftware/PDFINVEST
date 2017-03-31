@@ -147,5 +147,29 @@ class TestProgram(TestCase):
                 code=c,
                 number="123",
             )
-            
+
+    # Prueba de esquina: Formato de código inválido (4 números, 3 letras).
+    def test_invalid_code2(self):
+        with self.assertRaises(ValidationError):
+            c = Code.objects.create(code="AAA")
+            Program.objects.create(
+                code=c,
+                number="1234",
+            )
+
+    # Prueba de borde: Formato de código válido (3 números, 3 letras).
+    def test_valid_code(self):
+        c = Code.objects.create(code="AAA")            
+        Program.objects.create(
+            code=c,
+            number="123",
+        )
+
+    # Prueba de esquina: Formato de código válido (4 números, 2 letras).
+    def test_valid_code2(self):
+        c = Code.objects.create(code="AA")
+        Program.objects.create(
+            code=c,
+            number="1234",
+        )
 
