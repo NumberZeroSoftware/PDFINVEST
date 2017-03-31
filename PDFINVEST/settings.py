@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pdfapp',
-    'django_extensions'
+    'django_extensions',
+    'jquery',
+    'djangoformsetjs',
 ]
 
 MIDDLEWARE = [

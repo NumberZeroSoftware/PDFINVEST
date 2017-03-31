@@ -7,7 +7,7 @@ from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Sel
 from django.forms.utils import ErrorList, flatatt
 
 
-from .models import Document, Program, Division, Department, Coordination, Code, Programa, AdditionalName
+from .models import Document, Program, Division, Department, Coordination, Code, Programa, AdditionalName, Reference, Author
 
 from datetime import date
 
@@ -278,22 +278,34 @@ class RefReportForm(forms.Form):
 # AdditionalField
 
 class AdditionalFieldForm(forms.Form):
-    pk = forms.IntegerField(widget=HiddenInput())
+    pk = forms.IntegerField(widget=HiddenInput(),
+        required=False,)
 
-    name = forms.ChoiceField(
+    name = forms.ModelChoiceField(
         label=u'Nombre', 
-        choices=Programa.TRIMESTRE,
-        required=False, 
         # commit this line when makemigrations and migrate first time
-        widget=SelectMaterialize(choices=AdditionalName.objects.all())
+        queryset=AdditionalName.objects.all(),
+        required=False,
         )
 
     new_name = forms.CharField(
         label=u'Nuevo Nombre',
-        max_length=30
+        max_length=30,
+        required=False, 
         )
 
     description = forms.CharField(
         label=u'Contenido',
+        required=False, 
         widget=Textarea(attrs={'class':'materialize-textarea'})
         )
+
+
+class ReferenceForm(forms.ModelForm):
+    
+    class Meta:
+        model = Reference
+        exclude = ('author',)
+        widgets = {
+            'title' : Textarea(attrs={'class':'materialize-textarea'}),
+        }
