@@ -443,12 +443,12 @@ def book_show(request, pk):
         book_form = ReferenceForm(request.POST, instance=book, error_class=DivErrorList)
         author_form = authorFormSet(request.POST, queryset=book.author.all(), error_class=DivErrorList)
         if book_form.is_valid() and author_form.is_valid():
-            book = book_form.save(commit=True)
-            authors = author_form.save(commit=True) 
+            book = book_form.save()
+            authors = author_form.save() 
             for author in authors:
                 if author not in book.author.all():
                     book.author.add(author)
-            book.save(commit=True)
+            book.save()
     else:
         book_form = ReferenceForm(instance=book, error_class=DivErrorList)
         author_form = authorFormSet(queryset=book.author.all(), error_class=DivErrorList)
@@ -456,6 +456,7 @@ def book_show(request, pk):
     render_dic['book'] = book_form
     render_dic['title'] = book.title
     render_dic['authorsForm'] = author_form
+    render_dic['pk'] = book.pk
     return render(
         request,
         'book.html',

@@ -42,7 +42,11 @@
         {% if error %}
             <div class="error red-text longText">{{ error }}</div>
         {% else %}
+        {% if pk %}
+        <form class="col s12" method="POST" action="{% url 'book_show' pk=pk  %}" >
+        {% else %}
         <form class="col s12" method="POST" action="{% url 'book_new' %}" >
+        {% endif %}
         <div>
             {% csrf_token %}
             
