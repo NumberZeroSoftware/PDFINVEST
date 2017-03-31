@@ -30,7 +30,11 @@ def queries_sigpae(codigo,trimestre,anio):
         return list_code.filter(fecha_vigAno__lte=anio).order_by('-fecha_vigAno','-fecha_vigTrim')  
 
     else:
-        return list_code.filter(fecha_vigAno__lte=anio,fecha_vigTrim__lte=trimestre).order_by('-fecha_vigAno','-fecha_vigTrim')
+        l = list_code.filter(fecha_vigAno=anio,fecha_vigTrim__lte=trimestre).order_by('-fecha_vigAno','-fecha_vigTrim')
+        if l:
+            return l
+        else:
+            return list_code.filter(fecha_vigAno__lt=anio).order_by('-fecha_vigAno','-fecha_vigTrim')
 
 def report_transcriptions(code):
     # Return all transcriptions related to code.
@@ -61,6 +65,7 @@ def report_refs(code,trimester,year):
                                                 ).order_by('-validity_year',
                                                             '-validity_trimester'
                                                 )
+        print(list_programs)
     list_refs = Reference.objects.none()
     for p in list_programs:
         list_refs = list_refs | p.recommended_sources    

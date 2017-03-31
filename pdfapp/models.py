@@ -235,6 +235,7 @@ class Reference(models.Model):
     # Author of the author's book.
     author = models.ManyToManyField(
         Author,
+        blank=True,
         verbose_name='Autor',
     )
 
