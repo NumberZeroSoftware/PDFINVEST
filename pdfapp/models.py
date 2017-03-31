@@ -16,6 +16,8 @@ import re
 
 
 
+
+
 class Document(models.Model):
     # Document in PDF format to be uploaded to the page.
     
@@ -267,6 +269,9 @@ class Reference(models.Model):
         null=True,
         verbose_name='Año',
     )
+
+    def __str__(self):
+        return "{}".format(self.title)
 
 class Program(models.Model):
     # The program of an assignature and all its related data.

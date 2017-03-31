@@ -7,7 +7,7 @@ from django.conf import settings
 from django.forms import formset_factory, modelformset_factory
 
 from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField, Reference, Author
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm, RefReportForm, ReferenceForm
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm, RefReportForm, ReferenceForm, ProgramReferenceForm
 from .queries_sigpae import queries_sigpae, if_in_sigpae, report_transcriptions, report_programs, report_refs
 
 from datetime import date
@@ -164,12 +164,26 @@ def edit_view(request, fileName, filePath=None,):
 
     additionalFieldsFormset = formset_factory(AdditionalFieldForm, can_delete=True, extra=0)
 
+
+    # # Let get the references
+    # initial_refs = []
+    # for ref in program.recommended_sources.all():
+    #     initial_refs.append(
+    #         {
+    #         'reference' : extraField,
+    #         }
+    #     )
+
+    #referenceFormset = formset_factory(ProgramReferenceForm, can_delete=True, extra=0)
+
+
     # Lets see if they are sending the information or requesting it
     if request.method == "POST": 
         program_form = ProgramForm(request.POST, instance=program, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(request.POST, instance=doc, prefix="textstring", error_class=DivErrorList)
         additionalFieldsForm = additionalFieldsFormset(request.POST, initial=initial_fields, error_class=DivErrorList)
-        
+        #referenceForm = referenceFormset(request.POST, initial=initial_refs, error_class=DivErrorList)
+
         if program_form.is_valid() and textstring_form.is_valid():
             program_form.save(commit=True)
             textstring_form.save(commit=True)
@@ -271,7 +285,17 @@ def edit_view(request, fileName, filePath=None,):
                 else:
                     print(form)
 
-                    
+            # print(referenceForm.forms)
+            # present_ref = []
+            # for form in referenceForm.forms:
+            #     if form.is_valid():
+            #         if 'DELETE' in form.cleaned_data and form.cleaned_data['DELETE']:
+            #             print("Quitando", form.cleaned_data['reference'])
+            #             program.recommended_sources.remove(form.cleaned_data['reference'])
+            #             program.save()
+            #         else:
+            #             print("Encontrado", form.cleaned_data['reference'])
+            #             present_ref.append(form.cleaned_data['reference'])
 
 
             program_form_initial = {}
@@ -290,11 +314,13 @@ def edit_view(request, fileName, filePath=None,):
         program_form = ProgramForm(instance=program, initial=program_form_initial, prefix="program", error_class=DivErrorList)
         textstring_form = TextStringForm(instance=doc, prefix="textstring", error_class=DivErrorList)
         additionalFieldsForm = additionalFieldsFormset(initial=initial_fields, error_class=DivErrorList)
+        #referenceForm = referenceFormset(initial=initial_refs, error_class=DivErrorList)
 
 
     render_dic['Name'] = doc.name
     render_dic['additionalFieldsForm'] = additionalFieldsForm
     render_dic['program_form'] = program_form
+    #render_dic['ref_form'] = referenceForm
     render_dic['textstring_form'] = textstring_form
 
     return render(request, 'edit.html', render_dic)
@@ -448,6 +474,7 @@ def book_show(request, pk):
             for author in authors:
                 if author not in book.author.all():
                     book.author.add(author)
+
             book.save()
     else:
         book_form = ReferenceForm(instance=book, error_class=DivErrorList)

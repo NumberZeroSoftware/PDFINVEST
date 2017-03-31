@@ -309,3 +309,10 @@ class ReferenceForm(forms.ModelForm):
         widgets = {
             'title' : Textarea(attrs={'class':'materialize-textarea'}),
         }
+
+class ProgramReferenceForm(forms.Form):
+    reference = forms.ModelChoiceField(
+        label=u'Referencia',
+        required=False,
+        queryset=Reference.objects.all(),
+        )
