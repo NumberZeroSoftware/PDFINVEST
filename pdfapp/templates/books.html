@@ -47,7 +47,7 @@
     <button class="waves-effect red darken-3 btn" onClick="window.open('{% url 'book_new' %}', '_blank'); return false;">Nueva Referencia</button>
     <ul class="collection">
     {% for book in books%}
-        <a class="collection-item" onClick="window.open('{% url 'book_show' pk=book.pk %}', '_blank'); return false;"> {% for author in book.author.all%} {{ author.first_surname }}, {{ author.first_name }}. {% empty %}{% endfor %} {{ book.title }}.{% if book.edition_number %} Edición {{ book.edition_number }}.{% endif %}{% if book.year %} Año {{ book.year }}{% endif %}</a>
+        <a class="collection-item" onClick="window.open('{% url 'book_show' pk=book.pk %}', '_blank'); return false;"> {% for author in book.author.all%} {{ author.first_surname }}, {{ author.first_name }}. {% empty %}{% endfor %} {{ book.title }}.{% if book.editorial %} Editorial {{ book.editorial }}.{% endif %}{% if book.edition_number %} Edición {{ book.edition_number }}.{% endif %}{% if book.year %} Año {{ book.year }}{% endif %}</a>
     {% empty %}
     {% endfor %}
     </ul>
