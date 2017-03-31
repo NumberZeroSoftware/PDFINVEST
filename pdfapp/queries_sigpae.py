@@ -52,22 +52,36 @@ def report_programs(code):
 def report_refs(code,trimester,year):
     # Returns information sources for a code and a time period.
     list_programs = Program.objects.none()
+    list_codes = []
+    latest_programs = []
     if check_none(code):
-        list_programs = Program.objects.filter(validity_year__lte=year,
+        list_programs = Program.objects.filter(validity_year=year,
                                                 validity_trimester__lte=trimester
+                                                ).order_by('-validity_year',
+                                                            '-validity_trimester'
+                                                )
+        list_programs = list_programs | Program.objects.filter(validity_year__lt=year
                                                 ).order_by('-validity_year',
                                                             '-validity_trimester'
                                                 )
     else:
         list_programs = Program.objects.filter(code__code=code,
-                                                validity_year__lte=year,
+                                                validity_year=year,
                                                 validity_trimester__lte=trimester
                                                 ).order_by('-validity_year',
                                                             '-validity_trimester'
                                                 )
-        print(list_programs)
+        list_programs = list_programs | Program.objects.filter(code__code=code,
+                                                validity_year__lt=year
+                                                ).order_by('-validity_year',
+                                                            '-validity_trimester'
+                                                )
+    for prog in list_programs:
+        if (prog.code.code,prog.number) not in list_codes:
+            list_codes.append((prog.code.code,prog.number))
+            latest_programs.append(prog)
     list_refs = Reference.objects.none()
-    for p in list_programs:
+    for p in latest_programs:
         list_refs = list_refs | p.recommended_sources    
     return list_refs.annotate(mini=Min('author__first_surname')).order_by('mini').distinct()
         

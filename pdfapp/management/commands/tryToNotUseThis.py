@@ -40,6 +40,9 @@ class Command(BaseCommand):
 
             r1 = Reference.objects.create(
                 title="Author's book",
+                editorial="Idk",
+                edition_number=1,
+                year=1994,
             )
             r1.author.add(a1)
 
@@ -48,7 +51,14 @@ class Command(BaseCommand):
             )
             r2.author.add(a2,a3)
 
-            print("Number = 2505.")
+            r3 = Reference.objects.create(
+                title="Author's book",
+                editorial="Idk",
+                edition_number=3,
+                year=2008,
+            )
+            r3.author.add(a1)
+
             p1 = Program.objects.create(
                 code = Code.objects.filter(code="CI").get(),
                 number="2505",
@@ -56,6 +66,14 @@ class Command(BaseCommand):
                 validity_trimester="1Abr-Jul",
             )
             p1.recommended_sources.add(r1,r2)
+
+            p2 = Program.objects.create(
+                code= Code.objects.filter(code="CI").get(),
+                number="2505",
+                validity_year=2017,
+                validity_trimester="0Ene-Mar",
+            )
+            p2.recommended_sources.add(r2, r3)
             print("Done.")
         else:
             print("Non-valid option. Bye.")
