@@ -271,7 +271,14 @@ class Reference(models.Model):
     )
 
     def __str__(self):
-        return "{}".format(self.title)
+        rep = str(self.title)
+        if self.edition_number is not None and self.edition_number != "":
+             rep += " Edicion Nro. " + str(self.edition_number)
+        if self.year is not None and self.year != "":
+             rep += " Año " + str(self.year)
+        if self.editorial is not None and self.editorial != "":
+             rep += " Editorial " + str(self.editorial)
+        return "{}".format(rep)
 
 class Program(models.Model):
     # The program of an assignature and all its related data.

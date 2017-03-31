@@ -15,6 +15,7 @@ $(document).ready(function() {
     $('#id_program-credits').material_select();
     $('#id_program-validity_date_y').material_select();
     $('#id_program-validity_date_m').material_select();
+    $('#id_program-recommended_sources').material_select();
     $('#id_program-validity_date_y').on('change', function() {
       handleYear( this );
     });

@@ -181,8 +181,8 @@ class ProgramForm(forms.ModelForm):
                   'theory_hours', 'practice_hours', 'laboratory_hours', 
                   'credits', 'requirements', 'objectives', 'synoptic_content', 
                   'methodological_strategies', 'evaluation_strategies',
-                  'division', 'department', 'coordination', 'passes', 'specific_objectives'
-                   )
+                  'division', 'department', 'coordination', 'passes', 'specific_objectives',
+                  'recommended_sources')
         widgets = {
             'validity_year' : forms.Select(choices=zip([""]+years(), ["------"]+years())),
             'validity_date_y': forms.Select(choices=zip([""]+years(), ["------"]+years())),
@@ -207,6 +207,7 @@ class ProgramForm(forms.ModelForm):
             'specific_objectives' : Textarea(attrs={'class':'materialize-textarea'}),
             # commit this line when makemigrations and migrate first time
             'coordination': SelectMultipleMaterialize(choices=Coordination.objects.all()),
+            'recommended_sources': SelectMultipleMaterialize(),
         }
 
 # Sigpae Search

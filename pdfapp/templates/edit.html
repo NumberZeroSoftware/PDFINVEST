@@ -31,7 +31,7 @@
         <link rel="stylesheet" href="{% static "edit.css" %}">
         
         <style>
-            #dropdown1 {
+            #dropdown2 {
                 width: 30% !important;
             }
         </style>
@@ -125,8 +125,8 @@
                                             <div class="error red-text longText">{{ program_form.non_field_errors }}</div>
                                             <h4>Identificación</h4> 
                                             
-                                            <a class='dropdown-button waves-effect red darken-3 btn' data-activates='dropdown1'>Extraer</a>
-                                            <ul id='dropdown1' class='dropdown-content'>
+                                            <a class='dropdown-button waves-effect red darken-3 btn' data-activates='dropdown2'>Extraer</a>
+                                            <ul id='dropdown2' class='dropdown-content'>
                                                 <li id='show_dpt_code'><a>Código y Departamento</a></li>
                                             </ul>
                                             
@@ -333,7 +333,15 @@
                                             </div>
 
                                             <h4>Referencias</h4>
-                                            <h1>ABRIR ESTO EN OTRA PAGINA</h1>
+                                            <button class="waves-effect red darken-3 btn" onClick="window.open('{% url 'books' %}', '_blank'); return false;">
+                                                Agregar Referencias
+                                            </button>
+                                            <div class="input-field">
+                                                {{ program_form.recommended_sources }}
+                                                {{ program_form.recommended_sources.label_tag }} 
+                                                {{ program_form.recommended_sources.errors }}
+                                            </div>
+                                            
 
                                             <div style="display: none;">{{ textstring_form.as_p }}</div>
                                             </br>
