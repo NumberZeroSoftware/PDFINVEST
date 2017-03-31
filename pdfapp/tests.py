@@ -7,6 +7,7 @@ from pdfapp.models import Department
 from pdfapp.models import Coordination
 from pdfapp.models import Program
 from pdfapp.models import Document
+from pdfapp.models import Code
 from django.core.exceptions import ValidationError
 
 class TestProgram(TestCase):
@@ -138,4 +139,13 @@ class TestProgram(TestCase):
         with self.assertRaises(ValidationError):
             Program.objects.create(passes=True)
 
+    # Prueba de esquina: Formato de código inválido (3 números, 2 letras).
+    def test_invalid_code(self):
+        with self.assertRaises(ValidationError):
+            c = Code.objects.create(code="AA")            
+            Program.objects.create(
+                code=c,
+                number="123",
+            )
+            
 

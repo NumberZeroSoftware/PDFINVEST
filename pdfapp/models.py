@@ -498,10 +498,10 @@ class Program(models.Model):
 
     #Checks that the code is all-righty.
     def right_code(self):
-        if (self.code):
-            if (len(self.number) == 3 and len(self.code.code) != 3):
+        if self.code:
+            if (len(self.number) != 3 and len(self.code.code) == 3):
                 return False
-            elif (len(self.number) == 4 and len(self.code.code) != 3):
+            elif (len(self.number) != 4 and len(self.code.code) == 2):
                 return False
         return True
 
@@ -521,7 +521,7 @@ class Program(models.Model):
             raise ValidationError('La fecha de validación del programa no es una fecha válida.')
         if self.passes and not self.completed():
             raise ValidationError('Faltan campos por ser llenados para pasar el programa.')
-        if not self.right_code:
+        if not self.right_code():
             raise ValidationError('Formato de código incorrecto.')
 
     # Saves Program objects into the database.
