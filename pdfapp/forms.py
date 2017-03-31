@@ -250,6 +250,31 @@ class SigpaeReportForm(forms.Form):
         required=True,
     )
 
+
+# Reports on references
+class RefReportForm(forms.Form):
+    def years():
+        return [i for i in range(date.today().year + settings.FUTURE_YEARS, 1968, -1)]
+    code = forms.ModelChoiceField(
+        label=u'Código de Dependencia',
+        required=False,
+        queryset=Code.objects.all(),
+        to_field_name="code",
+        empty_label=u'Todos',
+        )
+    year = forms.ChoiceField(
+        label=u'Año', 
+        choices=zip([""]+years(), ["------"]+years()),
+        required=True
+        )
+    trimester = forms.ChoiceField(
+        label=u'Trimestre', 
+        choices=Programa.TRIMESTRE,
+        required=True, 
+        widget=SelectMaterialize(choices=Programa.TRIMESTRE)
+        )
+
+
 # AdditionalField
 
 class AdditionalFieldForm(forms.Form):
