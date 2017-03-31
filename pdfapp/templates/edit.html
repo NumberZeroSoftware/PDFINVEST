@@ -149,7 +149,7 @@
                                                 {{ program_form.denomination.errors }}
                                             </div>
                                             <h4>Fecha</h4>
-                                            <button type="button" class="waves-effect red darken-3 btn" id="dates_btn">Mostrar Trimestre Prppuesto De Entrada en Vigencia</button>
+                                            <button type="button" class="waves-effect red darken-3 btn" id="dates_btn">Mostrar Trimestre Propuesto De Entrada en Vigencia</button>
                                             <div id="validity_date">
                                                 <div class="input-field">
                                                     {{ program_form.validity_date_y }}
@@ -256,6 +256,7 @@
                                                 <div data-formset-body>
                                                     <!-- New forms will be inserted in here -->
                                                     {% for form in additionalFieldsForm %}
+                                                        <div class="error red-text longText">{{ form.non_field_errors }}</div>
                                                         <div data-formset-form class="additionalFieldsFormPreload">
                                                             {{ form.pk }}
                                                             <div class="input-field">

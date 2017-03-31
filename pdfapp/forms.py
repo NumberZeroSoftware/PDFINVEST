@@ -7,7 +7,7 @@ from django.forms.widgets import TextInput, Textarea, Input, SelectMultiple, Sel
 from django.forms.utils import ErrorList, flatatt
 
 
-from .models import Document, Program, Division, Department, Coordination, Code, Programa, AdditionalName
+from .models import Document, Program, Division, Department, Coordination, Code, Programa, AdditionalName, Reference, Author
 
 from datetime import date
 
@@ -274,3 +274,13 @@ class AdditionalFieldForm(forms.Form):
         required=False, 
         widget=Textarea(attrs={'class':'materialize-textarea'})
         )
+
+
+class ReferenceForm(forms.ModelForm):
+    
+    class Meta:
+        model = Reference
+        exclude = ('author',)
+        widgets = {
+            'title' : Textarea(attrs={'class':'materialize-textarea'}),
+        }

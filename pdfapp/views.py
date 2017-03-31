@@ -4,10 +4,10 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.forms import formset_factory
+from django.forms import formset_factory, modelformset_factory
 
-from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField
-from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm
+from .models import Document, Program, Department, Division, Code, Programa, AdditionalName, AdditionalField, Reference, Author
+from .forms import UploadFileForm, ProgramForm, TextStringForm, DivErrorList, SigpaeSearchForm, AdditionalFieldForm, SigpaeReportForm, ReferenceForm
 from .queries_sigpae import queries_sigpae, if_in_sigpae, report_transcriptions, report_programs
 
 from datetime import date
@@ -382,5 +382,82 @@ def sigpae_report(request):
     return render(
         request,
         'global_report.html',
+        render_dic
+    )
+
+
+def books(request):
+    render_dic = {}
+    render_dic['books'] = Reference.objects.all()
+    return render(
+        request,
+        'books.html',
+        render_dic
+    )
+
+def book_show(request, pk):
+    render_dic = {}
+    try:
+        book = Reference.objects.get(pk=pk)
+    except Exception as e:
+        render_dic['error'] = "Referencia no encontrada"
+        render_dic['title'] = "Referencia no encontrada"
+        return render(
+            request,
+            'book.html',
+            render_dic
+        )
+
+    authorFormSet = modelformset_factory(Author, exclude=(), can_delete=True, extra=0)
+
+    if request.method == "POST":
+        book_form = ReferenceForm(request.POST, instance=book, error_class=DivErrorList)
+        author_form = authorFormSet(request.POST, queryset=book.author.all(), error_class=DivErrorList)
+        if book_form.is_valid() and author_form.is_valid():
+            book = book_form.save(commit=True)
+            authors = author_form.save(commit=True) 
+            for author in authors:
+                if author not in book.author.all():
+                    book.author.add(author)
+            book.save(commit=True)
+    else:
+        book_form = ReferenceForm(instance=book, error_class=DivErrorList)
+        author_form = authorFormSet(queryset=book.author.all(), error_class=DivErrorList)
+
+    render_dic['book'] = book_form
+    render_dic['title'] = book.title
+    render_dic['authorsForm'] = author_form
+    return render(
+        request,
+        'book.html',
+        render_dic
+    )
+
+def book_new(request):
+    render_dic = {}
+    authorFormSet = modelformset_factory(Author, exclude=(), can_delete=True, extra=0)
+    if request.method == "POST":
+        book_form = ReferenceForm(request.POST, error_class=DivErrorList)
+        author_form = authorFormSet(request.POST, queryset=Author.objects.none(), error_class=DivErrorList)
+        if book_form.is_valid() and author_form.is_valid():
+            book = book_form.save(commit=True)
+            authors = author_form.save(commit=True) 
+            for author in authors:
+                book.author.add(author)
+            book.save()
+            return HttpResponseRedirect(reverse(book_show, args=(str(book.pk),)))
+        else:
+            title = "Nueva Referencia"
+    else:
+        book_form = ReferenceForm(error_class=DivErrorList)
+        author_form = authorFormSet(queryset=Author.objects.none(), error_class=DivErrorList)
+        title = "Nueva Referencia"
+
+    render_dic['book'] = book_form
+    render_dic['title'] = title
+    render_dic['authorsForm'] = author_form
+    return render(
+        request,
+        'book.html',
         render_dic
     )

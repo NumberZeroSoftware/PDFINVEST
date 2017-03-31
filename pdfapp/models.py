@@ -247,7 +247,7 @@ class Reference(models.Model):
     )
 
     # Recommended edition.
-    edition_number = models.IntegerField(
+    edition_number = models.PositiveIntegerField(
         validators=[validate_non_zero],
         blank=True,
         null=True,
@@ -256,7 +256,7 @@ class Reference(models.Model):
 
 
     # Recommended year.
-    year = models.IntegerField(
+    year = models.PositiveIntegerField(
         validators=[validate_years],
         blank=True,
         null=True,
