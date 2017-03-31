@@ -496,7 +496,16 @@ class Program(models.Model):
                 self.evaluation_strategies and self.recommended_sources and \
                 self.department)
 
-    # Checks the that the sum of the hours is positive.
+    #Checks that the code is all-righty.
+    def right_code(self):
+        if (self.code):
+            if (len(self.number) == 3 and len(self.code.code) != 3):
+                return False
+            elif (len(self.number) == 4 and len(self.code.code) != 3):
+                return False
+        return True
+
+    # Checks that the sum of the hours is positive and less than forty.
     def clean(self):
         hours_sum = 0
         if self.theory_hours is not None:
@@ -512,6 +521,8 @@ class Program(models.Model):
             raise ValidationError('La fecha de validación del programa no es una fecha válida.')
         if self.passes and not self.completed():
             raise ValidationError('Faltan campos por ser llenados para pasar el programa.')
+        if not self.right_code:
+            raise ValidationError('Formato de código incorrecto.')
 
     # Saves Program objects into the database.
     def save(self, *args, **kwargs):
