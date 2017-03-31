@@ -34,7 +34,7 @@ def queries_sigpae(codigo,trimestre,anio):
         if l:
             return l
         else:
-            return list_code.filter(fecha_vigAno__lt=anio).order_by('-fecha_vigAno','-fecha_vigTrim')
+            return list_code.filter(fecha_vigAno__lt=anio).order_by('-fecha_vigAno','-fecha_vigTrim')[0:1]
 
 def report_transcriptions(code):
     # Return all transcriptions related to code.

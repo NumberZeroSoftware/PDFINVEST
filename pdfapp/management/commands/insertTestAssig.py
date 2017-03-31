@@ -63,6 +63,20 @@ class Command(BaseCommand):
         )
 
         Programa.objects.create(
+            codigo='LA1111',
+            denominacion='Lenguajes I',
+            creditos='4',
+            h_teoria=30,
+            fecha_vigAno=2013,
+            fecha_vigTrim='1Abr-Jul',
+            obj_g='Enseñar redacción a ingenieros.',
+            contenidos='Estudio de distintos textos.',
+            estrategias='Clases presenciales.',
+            estrat_eval='Tres parciales y dos ensayos.',
+            fuentes='Textos entregados por el profesor.',
+        )
+
+        Programa.objects.create(
             codigo='FS1111',
             denominacion='Física I',
             creditos='4',

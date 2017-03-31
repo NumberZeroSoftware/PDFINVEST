@@ -397,7 +397,7 @@ def ref_report(request):
             if c:
                 results = report_refs(c.code,t,y)
                 if not results:
-                    report_form.add_error(None, "No se encontraron fuentes de información vigentes para " + t + " " + y + " asociadas a " + c )
+                    report_form.add_error(None, "No se encontraron fuentes de información vigentes para " + t + " " + y + " asociadas a " + c.code )
             else:
                 results = report_refs(None,t,y)
                 if not results:
