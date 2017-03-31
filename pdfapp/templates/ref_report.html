@@ -63,7 +63,7 @@
     {{ report_form.non_field_errors }}
     <ul class="collection">
     {% for source in results%}
-        <a class="collection-item" href="#">{{ source.author.all|join:", " }}, {{ source.name }}, {{ source.editorial }}, edición nro. {{ source.edition_number }}, {{ source.year }} </a>
+        <a class="collection-item" href="#">{{ source.author.all|join:", " }}, {{ source.title }}, {{ source.editorial|default:"editorial desconocida" }}, edición nro. {{ source.edition_number|default:"desconocido" }}, {{ source.year|default:"año desconocido" }} </a>
     {% empty %}
     {% endfor %}
     </ul>

@@ -59,7 +59,7 @@
     {{ report_form.non_field_errors }}
     <ul class="collection">
     {% for program in resultT%}
-        <a class="collection-item" href="#">{{ program.code.code }}{{ program.number }} : {{ program.get_validity_trimester_display|default_if_none:"" }} {{ program.validity_year|default_if_none:"" }}</a>
+        <a class="collection-item" href="#">{{ program.code.code }}{{ program.number }} : {{ program.get_validity_trimester_display|default:"trimestre de validez desconocido," }} {{ program.validity_year|default:"año de validez desconocido" }}</a>
     {% empty %}
     {% endfor %}
     {% for program in resultP%}
