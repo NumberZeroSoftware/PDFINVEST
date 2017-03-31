@@ -32,6 +32,13 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="/pdfapp/files/">Archivos</a></li>
                 <li><a href="/pdfapp/sigpae/">SIGPAE</a></li>
+                <li>
+                    <a class='dropdown-button btn red darken-4' href='#' data-hover="true" data-beloworigin="" data-activates='dropdown1'>Reportes</a>
+                    <ul id='dropdown1' class='dropdown-content'>
+                        <li><a href="/pdfapp/report/global/">Reportes Globales</a></li>
+                        <li><a href="/pdfapp/report/ref/">Fuentes de Información</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
@@ -59,7 +66,7 @@
     {{ report_form.non_field_errors }}
     <ul class="collection">
     {% for program in resultT%}
-        <a class="collection-item" href="#">{{ program.code.code }}{{ program.number }} : {{ program.get_validity_trimester_display|default:"trimestre de validez desconocido," }} {{ program.validity_year|default:"año de validez desconocido" }}</a>
+        <a class="collection-item" href={% url 'edit' filePath=program.document.file_path fileName=program.document.file_name %}>{{ program.code.code }}{{ program.number }} : {{ program.get_validity_trimester_display|default:"trimestre de validez desconocido," }} {{ program.validity_year|default:"año de validez desconocido" }}</a>
     {% empty %}
     {% endfor %}
     {% for program in resultP%}
