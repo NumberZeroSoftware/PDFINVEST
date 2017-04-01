@@ -1,89 +1,384 @@
 {% load staticfiles %}
+{% load formset_tags %}
 <!DOCTYPE html>
 <html style="width: 100%; height: 100%;">
-<head>
-    <meta charset="utf-8">
-    {{ error }}
-    {% if fileName %}
-    <title>Edit PDF's: {{ fileName }}</title>
-    {% else %}
-    <!-- No Wabbit -->
-    <title>Edit PDF's: Sorry. File Not Found :(</title>
-    {% endif %}
-    <!-- Jquery and Chained Selection-->
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
-</head>
-<body style="width: 100%; height: 100%;">
-    {% if reload %}
-    <!-- Reload page every 60s to check if the file is ready -->
-    <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>    
-    {% endif %}
-    <table style="width: 100%; height: 100%; max-width: 100%; min-width: 100%; max-height: 100%; table-layout: fixed;">
-        <tr>
-            <td rowspan="2">
-                <div style=" width: 100%; height: 100%;">
-                    <!-- Doc to Edit-->
-                    {% if doc %}
-                    <!-- Wabbit -->
-                    <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: hidden; white-space: nowrap;">
-                        <embed src="{{ doc.docfile.url }}" style="width: 100%; height: 100%;"/>
-                    </div>
-                    {% else %}
-                    <!-- No Wabbit -->
-                    Sorry. File Not Found :(
-                    {% endif %}
-                </div>
+        
+    <head>
+        <meta charset="utf-8">
+        {{ error }}
+        {% if fileName %}
+        <title>Edit PDF's: {{ Name }}</title>
+        {% else %}
+        <!-- No Wabbit -->
+        <title>Edit PDF's: Sorry. File Not Found :(</title>
+        {% endif %}
+        <!-- Jquery and Chained Selection-->
+        <script src="{% static "/js/jquery-1.10.2.min.js" %}"></script>
+        <script src="{% static "tuupola-jquery_chained-44a7f83/jquery.chained.js" %}"></script>
+        <!-- Formset JS-->
+        <script src="{% static "/js/jquery.formset.js" %}"></script>
 
-            </td>
-            <td rowspan="1">
-                <div style=" width: 100%; height: 91%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
-                    {{ error }}
-                    {% if error %}
-                        <p>Sorry. File Not Found :(</p>
-                    {% else %}
-                        {% if reload %}
-                            <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="{% static "css/materialize.min.css" %}">
+        
+        <!-- Compiled and minified JavaScript -->
+        <script src="{% static "js/materialize.min.js" %}"></script>  
+
+        <!-- text String Handler Script -->
+        <script src="{% static "programHandler.js" %}"></script> 
+
+        <!-- Edit CSS -->
+        <link rel="stylesheet" href="{% static "edit.css" %}">
+        
+        <style>
+            #dropdown2 {
+                width: 30% !important;
+            }
+        </style>
+          
+        <script type="text/javascript">    
+            $(document).ready(
+                function() {
+                    $("#show_dpt_code").click(function() {
+                        $("#dpt_code").toggle();
+                    });
+            });        
+        </script>
+        
+    </head>
+    
+    <body style="width: 100%; height: 100%;">
+        
+        <nav>
+            <div class="nav-wrapper  red darken-3">
+                <a href="/pdfapp/upload/" class="brand-logo">&ensp; Conversor de PDF a HTML</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="/pdfapp/files/">Archivos</a></li>
+                    <li><a href="/pdfapp/sigpae/">SIGPAE</a></li>
+                    <li>
+                        <a class='dropdown-button btn red darken-4' href='#' data-hover="true" data-beloworigin="" data-activates='dropdown1'>Reportes</a>
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li><a href="/pdfapp/report/global/">Reportes Globales</a></li>
+                            <li><a href="/pdfapp/report/ref/">Fuentes de Información</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        {% if reload %}
+        <!-- Reload page every 60s to check if the file is ready -->
+        <script type="text/javascript">setTimeout("location.reload(true);",60000);</script>    
+        {% endif %}
+        <table style="width: 100%; height: 100%; max-width: 100%; min-width: 100%; max-height: 100%; table-layout: fixed;">
+            <tr>
+                <td rowspan="2">
+                    <div style=" width: 100%; height: 100%;">
+                        <!-- Doc to Edit-->
+                        {% if doc %}
+                        <!-- Wabbit -->
+                        <div style="width: 100%; height: 100%; overflow-y: hidden; overflow-x: hidden; white-space: nowrap;">
+                            <embed src="{{ doc.docfile.url }}" style="width: 100%; height: 100%;"/>
+                        </div>
                         {% else %}
-                            <div style="height: 5%; text-align: left; margin: 1% 3% 3% 8%; "><button id="showOther">Show HTML</button></div>
-                            <textarea class="input" id="textStringHTML" style="width: 100%; height: 95%; text-align: left; margin: 1% 3% 3% 8%;" value=":C"></textarea>
-                            <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; "></div>
+                        <!-- No Wabbit -->
+                        Sorry. File Not Found :(
                         {% endif %}
-                    {% endif %}
-                </div>
-                <div><hr style="height: 9%;  color:gray; width:95%; size:1; margin-top:5%"></div>  
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="1">
-                <div style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; margin: 9% 3% 3% 8%; overflow:scroll;">
-                    {{ error }}
-                    {% if fileName %}
-                        {% if reload %}
-                            <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+                    </div>
+    
+                </td>
+                <td rowspan="1">
+                    <div style=" width: 100%; height: 90%; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+                        {{ error }}
+                        {% if error %}
+                            <p>Sorry. File Not Found :(</p>
                         {% else %}
-                            {% if program_form %}
-                                {% if textstring_form %}
-                                <form action="{% url 'edit' filePath=filePath fileName=fileName %}" method="post">
-                                <form method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
-                                    {% csrf_token %}
-                                    {{ program_form.as_p }}
-                                    <div style="display: none;">{{ textstring_form.as_p }}</div>
-                                    </br>
-                                    <button type="submit" class="save btn btn-default">Salvar Cambios</button>
-                                </form>
-                                </form>
-                                <script src="{% static "textStringHandler.js" %}"></script>
-                                <script type="text/javascript">$("#id_program-department").chained("#id_program-division");</script>
-                                {% endif %}
+                            {% if reload %}
+                                <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+                            {% else %}
+                                <div style="height: 5%; text-align: right; margin: 1% 3% 3% 8%; ">
+                                    <button class="waves-effect red darken-3 btn" id="showOther">Mostrar HTML</button>
+                                </div>
+                                <textarea class="input" id="textStringHTML" style="width: 100%; height: 95%; text-align: left; margin: 1% 3% 3% 8%;" value=":C"></textarea>
+                                <div id="textString" contenteditable="true" style="height: 95%; text-align: left; margin: 1% 3% 3% 8%; "></div>
                             {% endif %}
                         {% endif %}
-                    {% else %}
-                    <p>Sorry. File Not Found :(</p>
-                    {% endif %}
-                </div>
-            </th>
-        </tr>
-    </table>
-</body>
+                    </div>
+                    <div style="height: 10%; width: 100%;"><hr style="color:gray; width:95%; size:1; margin-top:5%"></div>  
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="1">
+                    <div class="row" style="width: 100%; height: 100%; overflow-y: auto; overflow-x: auto; white-space: nowrap; text-align: left; overflow:scroll;">
+                        {{ error }}
+                        {% if fileName %}
+                            {% if reload %}
+                                <p style="text-align: left; margin: 1% 3% 3% 8%;">Generating OCR HTML.</p>
+                            {% else %}
+                                {% if program_form %}
+                                    {% if textstring_form %}
+                                    <form class="col s12" method="POST" action="{% url 'edit' filePath=filePath fileName=fileName %}" onsubmit="updateTextString(); loadTextstring();">
+                                        <div>
+                                            {% csrf_token %}
+                                            <div class="container" style="margin-left:3%;">
+                                            {% if alert %} <div class="error red-text longText">{{ alert }}</div>{% endif%}
+                                            <div class="error red-text longText">{{ program_form.non_field_errors }}</div>
+                                            <h4>Identificación</h4> 
+                                            
+                                            <a class='dropdown-button waves-effect red darken-3 btn' data-activates='dropdown2'>Extraer</a>
+                                            <ul id='dropdown2' class='dropdown-content'>
+                                                <li id='show_dpt_code'><a>Código y Departamento</a></li>
+                                            </ul>
+                                            
+                                            <div id="dpt_code" style="display:none;"></br>
+                                                Codigos sugeridos:
+                                                <ol>
+                                                {% for course_code, tup in course_dept_dict.items %}
+                                                    <li> {{ course_code }}  : {{ tup.0 }} , {{ tup.1 }} </li>
+                                                {% endfor %}
+                                                </ol>
+                                                </br>
+                                            </div>
+                                            
+                                            <div class="input-field">
+                                                {{ program_form.code }}
+                                                {{ program_form.code.label_tag }} 
+                                                {{ program_form.code.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.number }}
+                                                {{ program_form.number.label_tag }} 
+                                                {{ program_form.number.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.denomination }}
+                                                {{ program_form.denomination.label_tag }} 
+                                                {{ program_form.denomination.errors }}
+                                            </div>
+                                            <h4>Fecha</h4>
+                                            <button type="button" class="waves-effect red darken-3 btn" id="dates_btn">Mostrar Trimestre Propuesto De Entrada en Vigencia</button>
+                                            <div id="validity_date">
+                                                <div class="input-field">
+                                                    {{ program_form.validity_date_y }}
+                                                    {{ program_form.validity_date_y.label_tag }} 
+                                                    {{ program_form.validity_date_y.errors }}
+                                                </div>
+                                                <div class="input-field">
+                                                    {{ program_form.validity_date_m }}
+                                                    {{ program_form.validity_date_m.label_tag }} 
+                                                    {{ program_form.validity_date_m.errors }}
+                                                </div>
+                                                <div class="">
+                                                    {{ program_form.validity_date_d.label_tag }}
+                                                    {{ program_form.validity_date_d }}
+                                                    {{ program_form.validity_date_d.errors }}
+                                                </div>
+                                            </div>
+                                            <div id="proposed_trimester">
+                                                <div class="input-field">
+                                                    {{ program_form.validity_year }}
+                                                    {{ program_form.validity_year.label_tag }} 
+                                                    {{ program_form.validity_year.errors }}
+                                                </div>
+                                                <div class="input-field">
+                                                    {{ program_form.validity_trimester }}
+                                                    {{ program_form.validity_trimester.label_tag }} 
+                                                    {{ program_form.validity_trimester.errors }}
+                                                </div>
+                                            </div>
+                                            <h4>Horas</h4>
+                                            <div class="">
+                                                {{ program_form.theory_hours.label_tag }} 
+                                                {{ program_form.theory_hours }}
+                                                {{ program_form.theory_hours.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.practice_hours.label_tag }} 
+                                                {{ program_form.practice_hours }}
+                                                {{ program_form.practice_hours.errors }}
+                                            </div>
+                                            <div class="">
+                                                {{ program_form.laboratory_hours.label_tag }} 
+                                                {{ program_form.laboratory_hours }}
+                                                {{ program_form.laboratory_hours.errors }}
+                                            </div>
+                                            <h4>Normados</h4>
+                                            <div class="">
+                                                {{ program_form.credits.label_tag }} 
+                                                {{ program_form.credits }}
+                                                {{ program_form.credits.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.requirements }}
+                                                {{ program_form.requirements.label_tag }} 
+                                                {{ program_form.requirements.errors }}
+                                            </div>
+                                            <button type="button" class="waves-effect red darken-3 btn" id="objectives">Mostrar Objetivos Específicos</button>
+                                            <div class="input-field">
+                                                {{ program_form.objectives }}
+                                                {{ program_form.objectives.label_tag }} 
+                                                {{ program_form.objectives.errors }}
+                                            </div>
+                                            <div class="input-field" id="specific_objectives">
+                                                {{ program_form.specific_objectives }}
+                                                {{ program_form.specific_objectives.label_tag }} 
+                                                {{ program_form.specific_objectives.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.synoptic_content }}
+                                                {{ program_form.synoptic_content.label_tag }} 
+                                                {{ program_form.synoptic_content.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.methodological_strategies }}
+                                                {{ program_form.methodological_strategies.label_tag }} 
+                                                {{ program_form.methodological_strategies.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.evaluation_strategies }}
+                                                {{ program_form.evaluation_strategies.label_tag }} 
+                                                {{ program_form.evaluation_strategies.errors }}
+                                            </div>
+                                            <h4>Encargado del Programa</h4>
+                                            <div class="input-field">
+                                                {{ program_form.division }}
+                                                {{ program_form.division.label_tag }} 
+                                                {{ program_form.division.errors }}
+                                            </div>
+                                            </h4>
+                                            <div class="input-field">
+                                                {{ program_form.department }}
+                                                {{ program_form.department.label_tag }} 
+                                                {{ program_form.department.errors }}
+                                            </div>
+                                            <div class="input-field">
+                                                {{ program_form.coordination }}
+                                                {{ program_form.coordination.label_tag }} 
+                                                {{ program_form.coordination.errors }}
+                                            </div>
+                                            <h4>Campos Adicionales</h4>
+                                            <div id="additionalFieldsForm" data-formset-prefix="{{ additionalFieldsForm.prefix }}">
+                                                {{ additionalFieldsForm.management_form }}
+
+                                                <div data-formset-body>
+                                                    <!-- New forms will be inserted in here -->
+                                                    {% for form in additionalFieldsForm %}
+                                                        <div class="error red-text longText">{{ form.non_field_errors }}</div>
+                                                        <div data-formset-form class="additionalFieldsFormPreload">
+                                                            {{ form.pk }}
+                                                            <div class="input-field">
+                                                                {{ form.name }}
+                                                                {{ form.name.label_tag }} 
+                                                                {{ form.name.errors }}
+                                                            </div>
+                                                            <div class="input-field new_name">
+                                                                {{ form.new_name }}
+                                                                {{ form.new_name.label_tag }} 
+                                                                {{ form.new_name.errors }}
+                                                            </div>
+                                                            <div class="input-field">
+                                                                {{ form.description }}
+                                                                {{ form.description.label_tag }} 
+                                                                {{ form.description.errors }}
+                                                            </div>
+                                                            <div class="hidden">{{ form.DELETE }}</div>
+                                                            <div class="hidden">{{ form.ORDER }}</div>
+                                                            <button type="button" class="save waves-effect red darken-3 btn" data-formset-delete-button>Borrar Campo Adicional</button>
+                                                            <br><br>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <!-- The empty form template. By wrapping this in a <script> tag, the
+                                                __prefix__ placeholder can easily be replaced in both attributes and
+                                                any scripts -->
+                                                <script type="form-template" data-formset-empty-form>
+                                                    {% escapescript %}
+                                                        <div data-formset-form>
+                                                            {{ additionalFieldsForm.empty_form.pk }}
+                                                            <div class="input-field">
+                                                                {{ additionalFieldsForm.empty_form.name }}
+                                                                {{ additionalFieldsForm.empty_form.name.label_tag }} 
+                                                                {{ additionalFieldsForm.empty_form.name.errors }}
+                                                            </div>
+                                                            <div class="input-field new_name">
+                                                                {{ additionalFieldsForm.empty_form.new_name }}
+                                                                {{ additionalFieldsForm.empty_form.new_name.label_tag }} 
+                                                                {{ additionalFieldsForm.empty_form.new_name.errors }}
+                                                            </div>
+                                                            <div class="input-field">
+                                                                {{ additionalFieldsForm.empty_form.description }}
+                                                                {{ additionalFieldsForm.empty_form.description.label_tag }} 
+                                                                {{ additionalFieldsForm.empty_form.description.errors }}
+                                                            </div>
+                                                            <div class="hidden">{{ additionalFieldsForm.empty_form.DELETE }}</div>
+                                                            <div class="hidden">{{ additionalFieldsForm.empty_form.ORDER }}</div>
+                                                            <button type="button" class="save waves-effect red darken-3 btn" data-formset-delete-button>Borrar Campo Adicional</button>
+                                                            <br><br>
+                                                        </div>
+                                                    {% endescapescript %}
+                                                </script>
+
+                                                <!-- This button will add a new form when clicked -->
+                                                <input type="button" class="save waves-effect red darken-3 btn" value="Agregar Campo Adicional" data-formset-add>
+
+                                                <!-- <script>jQuery(function($) {
+                                                    $("#additionalFieldsForm").formset({
+                                                        animateForms: true,
+                                                        reorderMode: 'dom',
+                                                    });
+                                                });</script> -->
+
+
+                                            </div>
+
+                                            <h4>Referencias</h4>
+                                            <button class="waves-effect red darken-3 btn" onClick="window.open('{% url 'books' %}', '_blank'); return false;">
+                                                Agregar Referencias
+                                            </button>
+                                            <div class="input-field">
+                                                {{ program_form.recommended_sources }}
+                                                {{ program_form.recommended_sources.label_tag }} 
+                                                {{ program_form.recommended_sources.errors }}
+                                            </div>
+                                            
+
+                                            <div style="display: none;">{{ textstring_form.as_p }}</div>
+                                            </br>
+                                        </div>  
+                                            <div style="display: none;">{{ textstring_form.as_p }}</div>
+                                            </br>
+                                        </div>
+                                        </div> 
+                                        <table>
+                                            <tbody>
+                                                <tr>                                                    
+                                                    <td>
+                                                        <div class="">{{ program_form.passes }}{{ program_form.passes.label_tag }}{{ program_form.passes.errors }}
+                                                        </div>
+                                                    </td>
+                                                    <td><button type="submit" class="save waves-effect red darken-3 btn">Guardar Cambios</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        
+                                        
+                                    </form>
+                                    <!-- text String Handler Script -->
+                                    <script src="{% static "textStringHandler.js" %}"></script>
+                                    <!-- Chained Script -->
+                                    <script type="text/javascript">
+                                        $("#id_program-department").chained("#id_program-division");
+                                    </script> 
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <p>Sorry. File Not Found :(</p>
+                        {% endif %}
+                    </div>
+                </th>
+            </tr>
+        </table>
+    </body>
 </html>

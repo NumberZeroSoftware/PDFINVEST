@@ -1,0 +1,65 @@
+<div id="ref_form" data-formset-prefix="{{ ref_form.prefix }}">
+    {{ ref_form.management_form }}
+
+    <div data-formset-body>
+        <!-- New forms will be inserted in here -->
+        {% for form in ref_form %}
+            <div class="error red-text longText">{{ form.non_field_errors }}</div>
+            <div data-formset-form >
+                {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+                <div class="input-field">
+                    {{ form.reference }}
+                    {{ form.reference.label_tag }} 
+                    {{ form.reference.errors }}
+                </div>
+                <div class="hidden">{{ form.DELETE }}</div>
+                <div class="hidden">{{ form.ORDER }}</div>
+                <button type="button" class="save waves-effect red darken-3 btn" data-formset-delete-button>Borrar Referencia</button>
+                <br><br>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- The empty form template. By wrapping this in a <script> tag, the
+    __prefix__ placeholder can easily be replaced in both attributes and
+    any scripts -->
+    <script type="form-template" data-formset-empty-form>
+        {% escapescript %}
+            <div data-formset-form>
+                {% for hidden in ref_form.empty_form.hidden_fields %} {{ hidden }} {% endfor %}
+                <div class="input-field">
+                    {{ ref_form.empty_form.reference }}
+                    {{ ref_form.empty_form.reference.label_tag }} 
+                    {{ ref_form.empty_form.reference.errors }}
+                </div>
+                <div class="hidden">{{ ref_form.empty_form.DELETE }}</div>
+                <div class="hidden">{{ ref_form.empty_form.ORDER }}</div>
+                <button type="button" class="save waves-effect red darken-3 btn" data-formset-delete-button>Borrar Referencia</button>
+                <br><br>
+            </div>
+        {% endescapescript %}
+    </script>
+
+    <!-- This button will add a new form when clicked -->
+    <input type="button" class="save waves-effect red darken-3 btn" value="Agregar Referencia" data-formset-add>
+
+    <script>jQuery(function($) {
+        $("#ref_form").formset({
+            animateForms: true,
+            reorderMode: 'dom',
+        });
+    });</script>
+</div>
+
+
+$("#ref_form").formset({
+    animateForms: true,
+    reorderMode: 'dom',
+});
+
+
+$('#ref_form').on('formAdded', function(event) {
+    newForm = event.target;
+    select = $(newForm).find("select");
+    select.material_select();
+});

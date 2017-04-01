@@ -1,3 +1,5 @@
 django
 django-extensions
 pyyaml
+django-formset-js
+django-jquery-js

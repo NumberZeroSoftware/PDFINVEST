@@ -1,5 +1,5 @@
 // Made by Christian Oliveros ( oliveroschristian.wordpress.com )
-// Last edit 02/03/2017
+// Last edit 29/03/2017
 
 
 $("#textStringHTML").hide();
@@ -47,12 +47,12 @@ $('#showOther').on('click', function(){
 	if (!showingHtmlTextstring) {
 		textString.hide();
 		textStringHTML.show();
-		$('#showOther').text('Show Text');
+		$('#showOther').text('Mostrar Texto');
 	}
 	else {
 		textString.show();
 		textStringHTML.hide();
-		$('#showOther').text('Show HTML');
+		$('#showOther').text('Mostrar HTML');
 	}
 	showingHtmlTextstring = !showingHtmlTextstring;
 });
